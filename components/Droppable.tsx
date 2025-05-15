@@ -6,6 +6,7 @@ import React, {
   useContext,
   ReactNode,
   useCallback,
+  useState,
 } from "react";
 import { View, StyleProp, ViewStyle } from "react-native";
 
@@ -23,6 +24,8 @@ export interface SlotsContextValue<TData = unknown> {
   unregister: (id: number) => void;
   getSlots: () => Record<number, DropSlot<TData>>;
   isRegistered: (id: number) => boolean;
+  setActiveHoverSlot: (id: number | null) => void;
+  activeHoverSlotId: number | null;
 }
 
 // Using 'any' for the default context to accommodate generic TData variance.
@@ -49,6 +52,14 @@ const defaultSlotsContextValue: SlotsContextValue<any> = {
     }
     return false;
   },
+  setActiveHoverSlot: (_id: number | null) => {
+    if (process.env.NODE_ENV !== "production") {
+      console.warn(
+        "SlotsContext: setActiveHoverSlot called without a Provider."
+      );
+    }
+  },
+  activeHoverSlotId: null,
 };
 
 // Context is initialized with SlotsContextValue<any>.
@@ -65,6 +76,9 @@ export const DropProvider = <TData = unknown,>({
   children,
 }: DropProviderProps): React.ReactElement => {
   const slotsRef = useRef<Record<number, DropSlot<TData>>>({});
+  const [activeHoverSlotId, setActiveHoverSlotIdState] = useState<
+    number | null
+  >(null);
 
   const contextValue = React.useMemo<SlotsContextValue<TData>>(
     () => ({
@@ -78,8 +92,10 @@ export const DropProvider = <TData = unknown,>({
         return slotsRef.current[id] !== undefined;
       },
       getSlots: () => slotsRef.current,
+      setActiveHoverSlot: (id: number | null) => setActiveHoverSlotIdState(id),
+      activeHoverSlotId,
     }),
-    []
+    [activeHoverSlotId]
   );
 
   // Cast to SlotsContextValue<any> is necessary because contextValue is SlotsContextValue<TData>.
@@ -97,6 +113,7 @@ interface DroppableProps<TData = unknown> {
   style?: StyleProp<ViewStyle>;
   children: ReactNode;
   dropDisabled?: boolean;
+  onActiveChange?: (isActive: boolean) => void;
 }
 
 export const Droppable = <TData = unknown,>({
@@ -104,15 +121,23 @@ export const Droppable = <TData = unknown,>({
   style,
   children,
   dropDisabled,
+  onActiveChange,
 }: DroppableProps<TData>): React.ReactElement => {
   const id = useRef(_nextDroppableId++).current;
   const viewRef = useRef<View>(null);
 
-  // Cast to SlotsContextValue<TData> is an assertion by this component
-  // that the DropProvider<TData> above it provides the correct specific context type.
-  const { register, unregister, isRegistered } = useContext(
-    SlotsContext
-  ) as SlotsContextValue<TData>;
+  const {
+    register,
+    unregister,
+    isRegistered,
+    activeHoverSlotId: contextActiveHoverSlotId,
+  } = useContext(SlotsContext) as SlotsContextValue<TData>;
+
+  const isActive = contextActiveHoverSlotId === id;
+
+  useEffect(() => {
+    onActiveChange?.(isActive);
+  }, [isActive, onActiveChange]);
 
   const handleLayout = useCallback(() => {
     if (viewRef.current) {
@@ -128,8 +153,6 @@ export const Droppable = <TData = unknown,>({
     if (dropDisabled) {
       unregister(id);
     } else {
-      // Ensure the droppable is registered if enabled and not already registered.
-      // The View's onLayout will also call handleLayout if the layout changes or onDrop (a dependency of handleLayout) changes.
       if (!isRegistered(id)) {
         handleLayout();
       }
@@ -137,7 +160,6 @@ export const Droppable = <TData = unknown,>({
   }, [dropDisabled, id, register, unregister, isRegistered, handleLayout]);
 
   useEffect(() => {
-    // Cleanup: unregister on unmount
     return () => {
       unregister(id);
     };

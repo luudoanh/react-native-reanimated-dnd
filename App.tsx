@@ -1,7 +1,8 @@
 // App.tsx
 import React, { useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
-import { DropProvider, Droppable } from "./components/Droppable";
+import { DropProvider } from "./context/DropContext";
+import { Droppable } from "./components/Droppable";
 import { Draggable } from "./components/Draggable";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 

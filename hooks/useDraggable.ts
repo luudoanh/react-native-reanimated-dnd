@@ -20,27 +20,21 @@ import {
   SlotsContextValue,
 } from "../context/DropContext";
 
-const animateToPositionWorklet = (
-  tx: Animated.SharedValue<number>,
-  ty: Animated.SharedValue<number>,
-  toX: number,
-  toY: number
-) => {
-  "worklet";
-  tx.value = withSpring(toX);
-  ty.value = withSpring(toY);
-};
+// Type for the custom animation function
+// This function itself must be a worklet or compatible with automatic workletization.
+export type AnimationFunction = (toValue: number) => number; // number is the typical return for Reanimated animations
 
 export interface UseDraggableOptions<TData = unknown> {
   data: TData;
   dragDisabled?: boolean;
   onDragStart?: (data: TData) => void;
   onDragEnd?: (data: TData) => void;
+  animationFunction?: AnimationFunction; // New option for custom animation
 }
 
 export interface UseDraggableReturn {
   animatedViewProps: {
-    style: AnimatedStyle<ViewStyle>; // More specific type
+    style: AnimatedStyle<ViewStyle>;
     onLayout: (event: LayoutChangeEvent) => void;
   };
   gesture: GestureType;
@@ -50,7 +44,13 @@ export const useDraggable = <TData = unknown>(
   options: UseDraggableOptions<TData>,
   animatedViewRef: React.RefObject<Animated.View>
 ): UseDraggableReturn => {
-  const { data, dragDisabled = false, onDragStart, onDragEnd } = options;
+  const {
+    data,
+    dragDisabled = false,
+    onDragStart,
+    onDragEnd,
+    animationFunction, // Captured from options
+  } = options;
 
   const tx = useSharedValue(0);
   const ty = useSharedValue(0);
@@ -96,21 +96,37 @@ export const useDraggable = <TData = unknown>(
     SlotsContext
   ) as SlotsContextValue<TData>;
 
+  // New worklet for animating drag end position, captures animationFunction
+  const animateDragEndPosition = useCallback(
+    (targetXValue: number, targetYValue: number) => {
+      "worklet";
+      if (animationFunction) {
+        tx.value = animationFunction(targetXValue);
+        ty.value = animationFunction(targetYValue);
+      } else {
+        tx.value = withSpring(targetXValue);
+        ty.value = withSpring(targetYValue);
+      }
+    },
+    [animationFunction, tx, ty] // Dependencies: animationFunction and the shared values it modifies
+  );
+
   const processDropAndAnimate = useCallback(
     (
-      currentTx: number,
-      currentTy: number,
+      currentTxVal: number, // Renamed to avoid confusion, tx.value at the moment of drop
+      currentTyVal: number, // ty.value at the moment of drop
       draggableData: TData,
       currentOriginX: number,
       currentOriginY: number,
       currentItemW: number,
       currentItemH: number
+      // animFunc parameter removed
     ) => {
       const slots = getSlots();
       const halfWidth = currentItemW / 2;
       const halfHeight = currentItemH / 2;
-      const centerX = currentOriginX + currentTx + halfWidth;
-      const centerY = currentOriginY + currentTy + halfHeight;
+      const centerX = currentOriginX + currentTxVal + halfWidth;
+      const centerY = currentOriginY + currentTyVal + halfHeight;
 
       let hit: DropSlot<TData> | null = null;
       let hitSlotId: number | null = null;
@@ -130,9 +146,12 @@ export const useDraggable = <TData = unknown>(
         }
       }
 
+      let finalTxValue: number;
+      let finalTyValue: number;
+
       if (hit && hitSlotId !== null) {
         if (hit.onDrop) {
-          hit.onDrop(draggableData);
+          hit.onDrop(draggableData); // Call onDrop on the JS thread
         }
         const slotCenterX = hit.x + hit.width / 2;
         const slotCenterY = hit.y + hit.height / 2;
@@ -140,17 +159,16 @@ export const useDraggable = <TData = unknown>(
         const draggableTargetX = slotCenterX - currentItemW / 2;
         const draggableTargetY = slotCenterY - currentItemH / 2;
 
-        runOnUI(animateToPositionWorklet)(
-          tx,
-          ty,
-          draggableTargetX - currentOriginX,
-          draggableTargetY - currentOriginY
-        );
+        finalTxValue = draggableTargetX - currentOriginX;
+        finalTyValue = draggableTargetY - currentOriginY;
       } else {
-        runOnUI(animateToPositionWorklet)(tx, ty, 0, 0);
+        finalTxValue = 0; // Animate back to origin (0,0 translation)
+        finalTyValue = 0;
       }
+      // Call the new worklet, which uses the captured animationFunction
+      runOnUI(animateDragEndPosition)(finalTxValue, finalTyValue);
     },
-    [getSlots, tx, ty]
+    [getSlots, animateDragEndPosition] // Dependency on the new animation worklet
   );
 
   const updateHoverState = useCallback(
@@ -219,13 +237,14 @@ export const useDraggable = <TData = unknown>(
           if (dragDisabledShared.value) return;
           if (onDragEnd) runOnJS(onDragEnd)(data);
           runOnJS(processDropAndAnimate)(
-            tx.value,
+            tx.value, // Pass current translation values
             ty.value,
             data,
             originX.value,
             originY.value,
             itemW.value,
             itemH.value
+            // animationFunction argument removed
           );
           runOnJS(setActiveHoverSlot)(null);
         }),
@@ -233,7 +252,7 @@ export const useDraggable = <TData = unknown>(
       dragDisabledShared,
       offsetX,
       offsetY,
-      tx,
+      tx, // tx, ty are captured by animateDragEndPosition, which is part of processDropAndAnimate's closure indirectly
       ty,
       originX,
       originY,
@@ -242,9 +261,10 @@ export const useDraggable = <TData = unknown>(
       onDragStart,
       onDragEnd,
       data,
-      processDropAndAnimate,
+      processDropAndAnimate, // This now depends on animateDragEndPosition, which depends on animationFunction
       updateHoverState,
       setActiveHoverSlot,
+      animationFunction, // Keep animationFunction here, as it affects animateDragEndPosition, which in turn affects processDropAndAnimate
     ]
   );
 
@@ -253,7 +273,7 @@ export const useDraggable = <TData = unknown>(
       transform: [{ translateX: tx.value }, { translateY: ty.value }],
     }),
     [tx, ty]
-  ); // Added dependencies for useAnimatedStyle
+  );
 
   return {
     animatedViewProps: {

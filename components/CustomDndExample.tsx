@@ -1,6 +1,10 @@
 import React, { useRef, useState } from "react";
 import { View, Text, StyleSheet, StyleProp, ViewStyle } from "react-native";
-import Animated from "react-native-reanimated";
+import Animated, {
+  withTiming,
+  Easing,
+  SharedValue,
+} from "react-native-reanimated";
 import {
   GestureDetector,
   GestureHandlerRootView,
@@ -50,6 +54,17 @@ interface MyDroppableProps<TData> extends UseDroppableOptions<TData> {
   children: React.ReactNode;
   style?: StyleProp<ViewStyle>;
 }
+
+// Example of a custom animation function (must be a worklet or workletizable)
+const customAnimation: UseDraggableOptions<any>["animationFunction"] = (
+  toValue
+) => {
+  "worklet";
+  return withTiming(toValue, {
+    duration: 100,
+    easing: Easing.out(Easing.exp),
+  });
+};
 
 const MyDroppable = <TData extends object>({
   children,
@@ -135,6 +150,22 @@ export default function CustomDndExample() {
               <Text>Drag Me (2)</Text>
             </View>
           </MyDraggable>
+
+          <MyDraggable<{
+            id: number;
+            message: string;
+          }>
+            data={{ id: 3, message: "Draggable 3 with Custom Animation" }}
+            initialStyle={styles.customCard3}
+            onDragStart={() => console.log("Drag Start: Card 3 (Custom Anim)")}
+            onDragEnd={() => console.log("Drag End: Card 3 (Custom Anim)")}
+            animationFunction={customAnimation}
+          >
+            <View style={styles.cardContent}>
+              <Text>Drag Me (3)</Text>
+              <Text style={{ fontSize: 10 }}>(Custom Anim)</Text>
+            </View>
+          </MyDraggable>
         </View>
       </DropProvider>
     </GestureHandlerRootView>
@@ -186,6 +217,11 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 500,
     left: 150,
+  },
+  customCard3: {
+    position: "absolute",
+    top: 450,
+    left: 250,
   },
   cardContent: {
     width: 120,

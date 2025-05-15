@@ -7,10 +7,11 @@ import {
   useDraggable,
   UseDraggableOptions,
   UseDraggableReturn,
+  AnimationFunction,
 } from "../hooks/useDraggable"; // Adjust path as needed
 
 // Re-export UseDraggableOptions if it's meant to be part of the public API of Draggable component
-export { UseDraggableOptions };
+export { UseDraggableOptions, AnimationFunction };
 
 interface DraggableProps<TData = unknown> extends UseDraggableOptions<TData> {
   style?: StyleProp<ViewStyle>;
@@ -23,6 +24,7 @@ export const Draggable = <TData = unknown,>({
   dragDisabled,
   onDragStart,
   onDragEnd,
+  animationFunction,
   // Component-specific props
   style: componentStyle, // Rename to avoid conflict with hook's returned style
   children,
@@ -31,7 +33,7 @@ export const Draggable = <TData = unknown,>({
 
   const { animatedViewProps, gesture }: UseDraggableReturn =
     useDraggable<TData>(
-      { data, dragDisabled, onDragStart, onDragEnd }, // Pass hook options
+      { data, dragDisabled, onDragStart, onDragEnd, animationFunction }, // Pass hook options
       animatedViewRef
     );
 

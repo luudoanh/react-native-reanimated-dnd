@@ -1,16 +1,18 @@
 // hooks/useDraggable.ts
 import React, { useRef, useCallback, useContext, useEffect } from "react";
-import { LayoutChangeEvent } from "react-native";
+import { LayoutChangeEvent, ViewStyle } from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withSpring,
   runOnJS,
   runOnUI,
+  AnimatedStyle,
 } from "react-native-reanimated";
 import {
   Gesture,
   PanGestureHandlerEventPayload,
+  GestureType,
 } from "react-native-gesture-handler";
 import {
   DropSlot,
@@ -36,10 +38,18 @@ export interface UseDraggableOptions<TData = unknown> {
   onDragEnd?: (data: TData) => void;
 }
 
+export interface UseDraggableReturn {
+  animatedViewProps: {
+    style: AnimatedStyle<ViewStyle>; // More specific type
+    onLayout: (event: LayoutChangeEvent) => void;
+  };
+  gesture: GestureType;
+}
+
 export const useDraggable = <TData = unknown>(
   options: UseDraggableOptions<TData>,
   animatedViewRef: React.RefObject<Animated.View>
-) => {
+): UseDraggableReturn => {
   const { data, dragDisabled = false, onDragStart, onDragEnd } = options;
 
   const tx = useSharedValue(0);
@@ -59,7 +69,7 @@ export const useDraggable = <TData = unknown>(
   }, [dragDisabled, dragDisabledShared]);
 
   const handleLayoutHandler = useCallback(
-    (_event: LayoutChangeEvent) => {
+    (event: LayoutChangeEvent) => {
       animatedViewRef.current?.measure(
         (
           _x: number,
@@ -180,7 +190,7 @@ export const useDraggable = <TData = unknown>(
     [getSlots, setActiveHoverSlot, activeHoverSlotId]
   );
 
-  const gesture = React.useMemo(
+  const gesture = React.useMemo<GestureType>(
     () =>
       Gesture.Pan()
         .onBegin(() => {
@@ -238,9 +248,18 @@ export const useDraggable = <TData = unknown>(
     ]
   );
 
-  const style = useAnimatedStyle(() => ({
-    transform: [{ translateX: tx.value }, { translateY: ty.value }],
-  }));
+  const animatedStyleProp = useAnimatedStyle(
+    () => ({
+      transform: [{ translateX: tx.value }, { translateY: ty.value }],
+    }),
+    [tx, ty]
+  ); // Added dependencies for useAnimatedStyle
 
-  return { gesture, style, onLayoutHandler: handleLayoutHandler };
+  return {
+    animatedViewProps: {
+      style: animatedStyleProp,
+      onLayout: handleLayoutHandler,
+    },
+    gesture,
+  };
 };

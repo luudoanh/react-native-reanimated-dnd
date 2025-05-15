@@ -9,10 +9,17 @@ export interface UseDroppableOptions<TData = unknown> {
   onActiveChange?: (isActive: boolean) => void;
 }
 
+export interface UseDroppableReturn {
+  viewProps: {
+    onLayout: (event: LayoutChangeEvent) => void;
+  };
+  isActive: boolean;
+}
+
 export const useDroppable = <TData = unknown>(
   options: UseDroppableOptions<TData>,
   viewRef: React.RefObject<View> // Ref to the View acting as droppable
-) => {
+): UseDroppableReturn => {
   const { onDrop, dropDisabled, onActiveChange } = options;
   const id = useRef(_getUniqueDroppableId()).current; // Get unique ID
 
@@ -29,38 +36,29 @@ export const useDroppable = <TData = unknown>(
     onActiveChange?.(isActive);
   }, [isActive, onActiveChange]);
 
-  const handleLayoutHandler = useCallback(() => {
-    if (viewRef.current) {
-      viewRef.current.measure(
-        (_frameX, _frameY, width, height, pageX, pageY) => {
-          // Pass id along with slot data for registration
-          register(id, { x: pageX, y: pageY, width, height, onDrop });
-        }
-      );
-    }
-  }, [id, onDrop, register, viewRef]);
+  const handleLayoutHandler = useCallback(
+    (event: LayoutChangeEvent) => {
+      if (viewRef.current) {
+        viewRef.current.measure(
+          (_frameX, _frameY, width, height, pageX, pageY) => {
+            // Pass id along with slot data for registration
+            register(id, { x: pageX, y: pageY, width, height, onDrop });
+          }
+        );
+      }
+    },
+    [id, onDrop, register, viewRef]
+  );
 
   useEffect(() => {
     if (dropDisabled) {
       unregister(id);
     } else {
       if (!isRegistered(id)) {
-        handleLayoutHandler(); // Call the memoized handler
+        handleLayoutHandler(undefined as any);
       }
     }
-    // Re-register if onDrop changes and not disabled
-    // The handleLayoutHandler dependency on `onDrop` ensures it runs if onDrop changes,
-    // and the View's onLayout will pick it up.
-    // If it was disabled and then enabled with a new onDrop, this effect also ensures registration.
-  }, [
-    dropDisabled,
-    id,
-    register,
-    unregister,
-    isRegistered,
-    handleLayoutHandler, // Use memoized handler
-    // onDrop is a dependency of handleLayoutHandler
-  ]);
+  }, [dropDisabled, id, register, unregister, isRegistered]);
 
   useEffect(() => {
     return () => {
@@ -68,5 +66,10 @@ export const useDroppable = <TData = unknown>(
     };
   }, [id, unregister]);
 
-  return { onLayoutHandler: handleLayoutHandler };
+  return {
+    viewProps: {
+      onLayout: handleLayoutHandler,
+    },
+    isActive,
+  };
 };

@@ -1,8 +1,11 @@
 // Node Modules
-import React, { useRef, useContext, ReactNode } from "react";
+import React, { useRef, ReactNode, useContext } from "react";
 import { View, StyleProp, ViewStyle } from "react-native";
-import { useDroppable, UseDroppableOptions } from "../hooks/useDroppable";
-import { SlotsContext, SlotsContextValue } from "../context/DropContext";
+import {
+  useDroppable,
+  UseDroppableOptions,
+  UseDroppableReturn,
+} from "../hooks/useDroppable";
 
 let _nextDroppableId = 1;
 export const _getUniqueDroppableId = () => {
@@ -25,13 +28,13 @@ export const Droppable = <TData = unknown,>({
 }: DroppableProps<TData>): React.ReactElement => {
   const viewRef = useRef<View>(null);
 
-  const { onLayoutHandler } = useDroppable<TData>(
+  const { viewProps, isActive: _isActive } = useDroppable<TData>(
     { onDrop, dropDisabled, onActiveChange },
     viewRef
   );
 
   return (
-    <View ref={viewRef} onLayout={onLayoutHandler} style={style}>
+    <View ref={viewRef} {...viewProps} style={style}>
       {children}
     </View>
   );

@@ -135,15 +135,7 @@ export default function CustomDndExample() {
   // Replace the interval with a callback
   const handleDroppedItemsUpdate = useCallback((items: DroppedItemsMap) => {
     setDroppedItemsMap(items);
-    console.log("Dropped items updated:", items);
   }, []);
-
-  // ... existing log effect can stay ...
-  useEffect(() => {
-    if (Object.keys(droppedItemsMap).length > 0) {
-      console.log("Current dropped items map:", droppedItemsMap);
-    }
-  }, [droppedItemsMap]);
 
   const handleScrollEnd = useCallback(() => {
     let localScrollTimeout: NodeJS.Timeout | null = null;

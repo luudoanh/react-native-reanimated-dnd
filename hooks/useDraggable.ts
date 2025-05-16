@@ -29,6 +29,13 @@ export interface UseDraggableOptions<TData = unknown> {
   dragDisabled?: boolean;
   onDragStart?: (data: TData) => void;
   onDragEnd?: (data: TData) => void;
+  onDragging?: (payload: {
+    x: number;
+    y: number;
+    tx: number;
+    ty: number;
+    itemData: TData;
+  }) => void;
   animationFunction?: AnimationFunction; // New option for custom animation
 }
 
@@ -49,6 +56,7 @@ export const useDraggable = <TData = unknown>(
     dragDisabled = false,
     onDragStart,
     onDragEnd,
+    onDragging,
     animationFunction, // Captured from options
   } = options;
 
@@ -223,6 +231,15 @@ export const useDraggable = <TData = unknown>(
           if (dragDisabledShared.value) return;
           tx.value = offsetX.value + event.translationX;
           ty.value = offsetY.value + event.translationY;
+          if (onDragging) {
+            runOnJS(onDragging)({
+              x: originX.value,
+              y: originY.value,
+              tx: tx.value,
+              ty: ty.value,
+              itemData: data,
+            });
+          }
           runOnJS(updateHoverState)(
             tx.value,
             ty.value,
@@ -265,6 +282,7 @@ export const useDraggable = <TData = unknown>(
       updateHoverState,
       setActiveHoverSlot,
       animationFunction, // Keep animationFunction here, as it affects animateDragEndPosition, which in turn affects processDropAndAnimate
+      onDragging,
     ]
   );
 

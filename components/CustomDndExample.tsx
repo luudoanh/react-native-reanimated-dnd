@@ -133,6 +133,15 @@ export default function CustomDndExample() {
             initialStyle={styles.customCard1}
             onDragStart={() => console.log("Drag Start: Card 1")}
             onDragEnd={() => console.log("Drag End: Card 1")}
+            onDragging={({ x, y, tx, ty, itemData }) => {
+              console.log(
+                `Dragging Card 1 (ID: ${itemData.id}): Position (x: ${x.toFixed(
+                  2
+                )}, y: ${y.toFixed(2)}), Translation (tx: ${tx.toFixed(
+                  2
+                )}, ty: ${ty.toFixed(2)})`
+              );
+            }}
           >
             <View style={styles.cardContent}>
               <Text>Drag Me (1)</Text>

@@ -25,6 +25,7 @@ export const Draggable = <TData = unknown,>({
   onDragStart,
   onDragEnd,
   animationFunction,
+  onDragging,
   // Component-specific props
   style: componentStyle, // Rename to avoid conflict with hook's returned style
   children,
@@ -33,7 +34,14 @@ export const Draggable = <TData = unknown,>({
 
   const { animatedViewProps, gesture }: UseDraggableReturn =
     useDraggable<TData>(
-      { data, dragDisabled, onDragStart, onDragEnd, animationFunction }, // Pass hook options
+      {
+        data,
+        dragDisabled,
+        onDragStart,
+        onDragEnd,
+        animationFunction,
+        onDragging,
+      }, // Pass hook options
       animatedViewRef
     );
 

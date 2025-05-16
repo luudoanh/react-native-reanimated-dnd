@@ -11,8 +11,8 @@
 - [x] Dragging Event (`onDragging` with position/translation updates)
 - [x] Drag Bounds (`dragBoundsRef` to confine dragging to a view)
 - [x] Drop Alignment & Offset (gravity options like 'top-left', 'center', and `dropOffset` for fine-tuning)
-- [ ] **Drag Axis Constraints:** Restrict dragging to X-axis, Y-axis, or both.
-- [ ] **Customizable Drop Zone Active Styles (via prop):** Allow passing `activeStyle` to `Droppable`/`useDroppable`.
+- [x] **Drag Axis Constraints:** Restrict dragging to X-axis, Y-axis, or both.
+- [x] **Customizable Drop Zone Active Styles (via prop):** Allow passing `activeStyle` to `Droppable`/`useDroppable`.
 
 ### Medium Priority
 
@@ -20,8 +20,8 @@
 - [x] Droppable Active State Change (`onActiveChange` for hover indication)
 - [x] Disabled Draggables (`dragDisabled` prop)
 - [x] Disabled Droppables (`dropDisabled` prop)
-- [ ] **`onHoverEnter` / `onHoverLeave` for Drop Zones:** More granular hover events.
-- [ ] **Dynamic Disabling/Enabling of Drop Zones:** Based on app state or drag data.
+- [x] **`onHoverEnter` / `onHoverLeave` for Drop Zones:** More granular hover events.
+- [x] **Dynamic Disabling/Enabling of Drop Zones:** Based on app state or drag data.
 - [ ] **Collision Detection Algorithm Options:** E.g., 'center' vs. 'intersect'.
 - [ ] **Drag Preview / Clone:** Render a custom preview while dragging.
 

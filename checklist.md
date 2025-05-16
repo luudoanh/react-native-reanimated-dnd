@@ -27,6 +27,7 @@
 ### Low Priority
 
 - [x] **Conditional Dragging:** `dragDisabled` as a function.
+- [x] Add drag state management to Draggable and update useDraggable hook to have IDLE, DRAGGING, and DROPPED states.
 - [ ] **Snap-to-Grid / Snap Lines:** For precise placement.
 - [ ] **`onOutOfBounds` Event for Draggables:** Event when bounded drag is clamped.
 - [ ] **External Control over Drag Position:** Programmatic positioning.

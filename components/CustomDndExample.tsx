@@ -374,12 +374,12 @@ const styles = StyleSheet.create({
   boundsContainer: {
     minHeight: 150,
     borderWidth: 2,
+    width: 300,
     borderColor: "#dc3545",
     backgroundColor: "rgba(220, 53, 69, 0.05)",
     borderRadius: 8,
     justifyContent: "center",
     alignItems: "center",
-    padding: 10,
   },
   disabledItemsArea: {
     flexDirection: "row",

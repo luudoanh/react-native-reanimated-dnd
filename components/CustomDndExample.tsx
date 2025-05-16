@@ -23,16 +23,11 @@ import {
   UseDroppableOptions,
   UseDroppableReturn,
 } from "../hooks/useDroppable";
-import {
-  DropProvider,
-  DropAlignment,
-  DropOffset,
-  DropProviderRef,
-} from "../context/DropContext";
+import { DropProvider, DropProviderRef } from "../context/DropContext";
 import { Droppable } from "../components/Droppable";
 import { Draggable } from "../components/Draggable";
 
-// 1. Custom Draggable Component using the hook (restored)
+// 1. Custom Draggable Component using the hook (restored and modified)
 interface MyDraggableProps<TData> extends UseDraggableOptions<TData> {
   children: React.ReactNode;
   initialStyle?: StyleProp<ViewStyle>;
@@ -44,22 +39,10 @@ const MyDraggable = <TData extends object>({
   ...draggableOptions
 }: MyDraggableProps<TData>) => {
   const animatedViewRef = useRef<Animated.View>(null);
-  const {
-    animatedViewProps,
-    gesture,
-    isDragging,
-    activeStyle,
-  }: UseDraggableReturn = useDraggable<TData>(
-    draggableOptions,
-    animatedViewRef
-  );
+  const { animatedViewProps, gesture }: UseDraggableReturn =
+    useDraggable<TData>(draggableOptions, animatedViewRef);
 
-  // Apply active style when dragging
-  const combinedStyle = [
-    initialStyle,
-    animatedViewProps.style,
-    isDragging && activeStyle,
-  ];
+  const combinedStyle = [initialStyle, animatedViewProps.style];
 
   return (
     <GestureDetector gesture={gesture}>
@@ -91,10 +74,16 @@ const MyDroppable = <TData extends object>({
     viewRef
   );
 
-  const activeStyle = droppableOptions.onActiveChange ? styles.slotActive : {};
+  const droppableActiveStyle = droppableOptions.onActiveChange
+    ? styles.slotActive
+    : {};
 
   return (
-    <View ref={viewRef} {...viewProps} style={[style, isActive && activeStyle]}>
+    <View
+      ref={viewRef}
+      {...viewProps}
+      style={[style, isActive && droppableActiveStyle]}
+    >
       {children}
     </View>
   );
@@ -124,10 +113,6 @@ export default function CustomDndExample() {
   const dropProviderRef = useRef<DropProviderRef>(null);
 
   const handleScrollEnd = useCallback(() => {
-    // Debounce the call to prevent rapid firing during scroll bounce
-    // User had removed the timeout ref, re-adding a simplified version here
-    // as direct calls on every micro-scroll-end can be excessive.
-    // This is a local debounce, not using the previous shared timeout ref.
     let localScrollTimeout: NodeJS.Timeout | null = null;
     if (localScrollTimeout) {
       clearTimeout(localScrollTimeout);
@@ -138,7 +123,6 @@ export default function CustomDndExample() {
   }, []);
 
   const handleLayoutUpdateComplete = useCallback(() => {
-    // This can be used for logging or other side effects after positions are updated.
     // console.log('DropProvider: Position recalculation completed.');
   }, []);
 
@@ -164,28 +148,6 @@ export default function CustomDndExample() {
     elevation: 10,
   };
 
-  // Custom active styles for draggables
-  const draggablePulseStyle: StyleProp<ViewStyle> = {
-    borderColor: "#ff6b6b",
-    borderWidth: 3,
-    transform: [{ scale: 1.1 }],
-    shadowColor: "#ff6b6b",
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.8,
-    shadowRadius: 10,
-    elevation: 8,
-  };
-
-  const draggableGlowStyle: StyleProp<ViewStyle> = {
-    borderColor: "#4cc9f0",
-    backgroundColor: "rgba(76, 201, 240, 0.3)",
-    shadowColor: "#4cc9f0",
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.9,
-    shadowRadius: 15,
-    elevation: 10,
-  };
-
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <DropProvider
@@ -200,101 +162,6 @@ export default function CustomDndExample() {
           scrollEventThrottle={16}
         >
           <Text style={styles.header}>Drag & Drop Playground</Text>
-
-          {/* Add new section for draggable active styles */}
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Draggable Active Styles</Text>
-            <Text style={styles.sectionDescription}>
-              These items show different active styles when being dragged
-            </Text>
-
-            <View style={styles.draggableItemsArea}>
-              <Draggable<DraggableItemData>
-                data={{
-                  id: "D-AS1",
-                  label: "Pulse Effect Draggable",
-                  backgroundColor: "#ffd6ff",
-                }}
-                style={[
-                  styles.draggable,
-                  { top: 0, left: 30, backgroundColor: "#ffd6ff" },
-                ]}
-                activeStyle={draggablePulseStyle}
-              >
-                <View style={commonCardStyle}>
-                  <Text style={styles.cardLabel}>Pulse Effect</Text>
-                  <Text style={styles.cardHint}>Try me!</Text>
-                </View>
-              </Draggable>
-
-              <Draggable<DraggableItemData>
-                data={{
-                  id: "D-AS2",
-                  label: "Glow Effect Draggable",
-                  backgroundColor: "#c8b6ff",
-                }}
-                style={[
-                  styles.draggable,
-                  { top: 0, left: 170, backgroundColor: "#c8b6ff" },
-                ]}
-                activeStyle={draggableGlowStyle}
-              >
-                <View style={commonCardStyle}>
-                  <Text style={styles.cardLabel}>Glow Effect</Text>
-                  <Text style={styles.cardHint}>Try me!</Text>
-                </View>
-              </Draggable>
-
-              {/* Using MyDraggable with activeStyle */}
-              <MyDraggable<DraggableItemData>
-                data={{
-                  id: "D-AS3",
-                  label: "Custom Component with Active Style",
-                  backgroundColor: "#b8e0d2",
-                }}
-                initialStyle={[
-                  styles.draggable,
-                  { top: 100, left: 30, backgroundColor: "#b8e0d2" },
-                ]}
-                activeStyle={{
-                  borderWidth: 2,
-                  borderColor: "#006d77",
-                  shadowColor: "#006d77",
-                  shadowOpacity: 0.7,
-                  shadowRadius: 8,
-                  shadowOffset: { width: 0, height: 0 },
-                  elevation: 8,
-                }}
-              >
-                <View style={commonCardStyle}>
-                  <Text style={styles.cardLabel}>Custom Comp</Text>
-                  <Text style={styles.cardHint}>With Active Style</Text>
-                </View>
-              </MyDraggable>
-
-              {/* Another example with different style */}
-              <MyDraggable<DraggableItemData>
-                data={{
-                  id: "D-AS4",
-                  label: "Zoom Effect",
-                  backgroundColor: "#eac4d5",
-                }}
-                initialStyle={[
-                  styles.draggable,
-                  { top: 100, left: 170, backgroundColor: "#eac4d5" },
-                ]}
-                activeStyle={{
-                  transform: [{ scale: 1.2 }],
-                  zIndex: 10,
-                }}
-              >
-                <View style={commonCardStyle}>
-                  <Text style={styles.cardLabel}>Zoom</Text>
-                  <Text style={styles.cardHint}>Scale up</Text>
-                </View>
-              </MyDraggable>
-            </View>
-          </View>
 
           {/* Section 1: Free Draggables & Multiple Drop Zones */}
           <View style={styles.section}>
@@ -323,6 +190,7 @@ export default function CustomDndExample() {
 
             <View style={styles.draggableItemsArea}>
               <MyDraggable<DraggableItemData>
+                key="D1"
                 data={{
                   id: "D1",
                   label: "Draggable 1 (Basic)",
@@ -330,7 +198,12 @@ export default function CustomDndExample() {
                 }}
                 initialStyle={[
                   styles.draggable,
-                  { top: 0, left: 20, backgroundColor: "#a2d2ff" },
+                  {
+                    top: 0,
+                    left: 20,
+                    backgroundColor: "#a2d2ff",
+                    borderRadius: 12,
+                  },
                 ]}
               >
                 <View style={commonCardStyle}>
@@ -339,6 +212,7 @@ export default function CustomDndExample() {
               </MyDraggable>
 
               <MyDraggable<DraggableItemData>
+                key="D2"
                 data={{
                   id: "D2",
                   label: "Draggable 2 (Custom Anim)",
@@ -346,7 +220,12 @@ export default function CustomDndExample() {
                 }}
                 initialStyle={[
                   styles.draggable,
-                  { top: 0, left: 170, backgroundColor: "#bde0fe" },
+                  {
+                    top: 0,
+                    left: 160,
+                    backgroundColor: "#bde0fe",
+                    borderRadius: 12,
+                  },
                 ]}
                 animationFunction={customAnimation}
               >
@@ -359,7 +238,7 @@ export default function CustomDndExample() {
 
           {/* Section with custom activeStyle prop examples */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Custom Active Styles</Text>
+            <Text style={styles.sectionTitle}>Droppable Active Styles</Text>
             <View style={styles.dropZoneArea}>
               <View style={styles.dropZoneColumn}>
                 <Text style={styles.customStyleLabel}>Pulse Effect</Text>
@@ -370,7 +249,7 @@ export default function CustomDndExample() {
                   }
                   activeStyle={pulseActiveStyle}
                 >
-                  <Text>Pulse Zone</Text>
+                  <Text style={styles.dropZoneText}>Pulse Zone</Text>
                 </Droppable>
               </View>
 
@@ -383,13 +262,14 @@ export default function CustomDndExample() {
                   }
                   activeStyle={glowActiveStyle}
                 >
-                  <Text>Glow Zone</Text>
+                  <Text style={styles.dropZoneText}>Glow Zone</Text>
                 </Droppable>
               </View>
             </View>
 
             <View style={styles.draggableItemsArea}>
               <MyDraggable<DraggableItemData>
+                key="D10"
                 data={{
                   id: "D10",
                   label: "Drop me on the custom zones",
@@ -424,6 +304,7 @@ export default function CustomDndExample() {
               </MyDroppable>
 
               <MyDraggable<DraggableItemData>
+                key="D3"
                 data={{
                   id: "D3",
                   label: "Draggable 3 (Bounded)",
@@ -432,7 +313,10 @@ export default function CustomDndExample() {
                 dragBoundsRef={boundsViewRef}
                 initialStyle={[
                   styles.cardCentered,
-                  { backgroundColor: "#ffafcc" },
+                  {
+                    backgroundColor: "#ffafcc",
+                    borderRadius: 12,
+                  },
                 ]}
               >
                 <View style={commonCardStyle}>
@@ -473,6 +357,7 @@ export default function CustomDndExample() {
               </MyDroppable>
 
               <MyDraggable<DraggableItemData>
+                key="D5"
                 data={{
                   id: "D5",
                   label: "X-axis Constrained",
@@ -481,7 +366,11 @@ export default function CustomDndExample() {
                 dragAxis="x"
                 initialStyle={[
                   styles.cardCentered,
-                  { backgroundColor: "#80ed99", alignSelf: "center" },
+                  {
+                    backgroundColor: "#80ed99",
+                    alignSelf: "center",
+                    borderRadius: 12,
+                  },
                 ]}
               >
                 <View style={commonCardStyle}>
@@ -519,6 +408,7 @@ export default function CustomDndExample() {
               </MyDroppable>
 
               <MyDraggable<DraggableItemData>
+                key="D6"
                 data={{
                   id: "D6",
                   label: "Y-axis Constrained",
@@ -527,7 +417,11 @@ export default function CustomDndExample() {
                 dragAxis="y"
                 initialStyle={[
                   styles.cardCentered,
-                  { backgroundColor: "#f7d9c4", alignSelf: "center" },
+                  {
+                    backgroundColor: "#f7d9c4",
+                    alignSelf: "center",
+                    borderRadius: 12,
+                  },
                 ]}
               >
                 <View style={commonCardStyle}>
@@ -556,6 +450,7 @@ export default function CustomDndExample() {
               </MyDroppable>
 
               <MyDraggable<DraggableItemData>
+                key="D7"
                 data={{
                   id: "D7",
                   label: "Bounded Y-axis",
@@ -565,7 +460,11 @@ export default function CustomDndExample() {
                 dragAxis="y"
                 initialStyle={[
                   styles.cardCentered,
-                  { backgroundColor: "#c6def1", marginTop: 20 },
+                  {
+                    backgroundColor: "#c6def1",
+                    marginTop: 20,
+                    borderRadius: 12,
+                  },
                 ]}
               >
                 <View style={commonCardStyle}>
@@ -584,193 +483,213 @@ export default function CustomDndExample() {
 const styles = StyleSheet.create({
   scrollViewBase: {
     flex: 1,
-    backgroundColor: "#f8f9fa",
+    backgroundColor: "#0a0c10",
   },
   scrollContentContainer: {
-    paddingTop: 40,
-    paddingBottom: 40,
-    paddingHorizontal: 16,
+    paddingTop: 48,
+    paddingBottom: 48,
+    paddingHorizontal: 20,
   },
   header: {
-    fontSize: 24,
-    fontWeight: "bold",
+    fontSize: 28,
+    fontWeight: "700",
     textAlign: "center",
-    marginBottom: 20,
-    color: "#343a40",
+    marginBottom: 32,
+    color: "#ffffff",
+    letterSpacing: 0.5,
   },
   section: {
-    marginBottom: 24,
-    padding: 16,
-    backgroundColor: "#ffffff",
-    borderRadius: 12,
+    marginBottom: 32,
+    padding: 24,
+    backgroundColor: "#161b22",
+    borderRadius: 20,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 6,
-    elevation: 3,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    elevation: 4,
   },
   sectionTitle: {
-    fontSize: 18,
-    fontWeight: "600",
-    marginBottom: 16,
-    color: "#343a40",
-    borderBottomWidth: 1,
-    borderBottomColor: "#e9ecef",
-    paddingBottom: 8,
+    fontSize: 20,
+    fontWeight: "700",
+    marginBottom: 20,
+    color: "#ffffff",
+    letterSpacing: 0.3,
+  },
+  sectionDescription: {
+    fontSize: 15,
+    color: "#a3b3bc",
+    marginBottom: 24,
+    lineHeight: 22,
   },
   dropZoneArea: {
     flexDirection: "row",
     justifyContent: "space-around",
-    minHeight: 90,
-    marginBottom: 24,
+    minHeight: 100,
+    marginBottom: 32,
   },
   dropZoneColumn: {
     alignItems: "center",
     width: "45%",
   },
   customStyleLabel: {
-    fontSize: 12,
-    fontWeight: "500",
-    marginBottom: 8,
-    color: "#666",
+    fontSize: 14,
+    fontWeight: "600",
+    marginBottom: 12,
+    color: "#e6edf3",
+    letterSpacing: 0.2,
   },
   customDropZone: {
-    borderColor: "#adb5bd",
-    backgroundColor: "rgba(173, 181, 189, 0.08)",
-    height: 100,
+    borderColor: "#30363d",
+    backgroundColor: "#1c2128",
+    height: 120,
     width: "100%",
+    borderRadius: 16,
   },
   dropZone: {
     width: "45%",
-    height: 90,
+    height: 100,
     borderWidth: 2,
     borderStyle: "dashed",
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: 8,
-    padding: 5,
+    borderRadius: 16,
+    padding: 8,
   },
   dropZoneBlue: {
-    borderColor: "#4361ee",
-    backgroundColor: "rgba(67, 97, 238, 0.08)",
+    borderColor: "#58a6ff",
+    backgroundColor: "rgba(88, 166, 255, 0.08)",
   },
   dropZoneGreen: {
-    borderColor: "#38b000",
-    backgroundColor: "rgba(56, 176, 0, 0.08)",
+    borderColor: "#3fb950",
+    backgroundColor: "rgba(63, 185, 80, 0.08)",
   },
   dropZoneText: {
     textAlign: "center",
-    fontSize: 14,
-    fontWeight: "500",
-    color: "#343a40",
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#e6edf3",
+    letterSpacing: 0.2,
   },
   dZoneSubText: {
-    fontSize: 10,
-    color: "#6c757d",
-    marginTop: 4,
+    fontSize: 12,
+    color: "#a3b3bc",
+    marginTop: 6,
+    letterSpacing: 0.1,
   },
   slotActive: {
-    backgroundColor: "rgba(67, 97, 238, 0.15)",
-    borderColor: "#4361ee",
-    transform: [{ scale: 1.05 }],
+    backgroundColor: "rgba(88, 166, 255, 0.15)",
+    borderColor: "#58a6ff",
+    transform: [{ scale: 1.02 }],
   },
   draggableItemsArea: {
-    minHeight: 80,
+    minHeight: 100,
     position: "relative",
+    marginTop: 16,
+    width: "100%",
   },
   draggable: {
     position: "absolute",
   },
   cardContent: {
-    width: 100,
-    height: 60,
-    padding: 8,
-    borderRadius: 8,
+    width: 120,
+    height: 72,
+    padding: 12,
+    borderRadius: 12,
     justifyContent: "center",
     alignItems: "center",
-    borderWidth: 1,
-    borderColor: "rgba(0,0,0,0.1)",
+    backgroundColor: "#1c2128",
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.15,
-    shadowRadius: 2,
-    elevation: 2,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 3,
   },
   cardLabel: {
-    fontSize: 14,
-    fontWeight: "500",
-    color: "#343a40",
+    fontSize: 15,
+    fontWeight: "600",
+    color: "#e6edf3",
+    letterSpacing: 0.2,
+    textAlign: "center",
   },
   cardHint: {
-    fontSize: 18,
-    marginTop: 4,
-    color: "#6c757d",
+    fontSize: 13,
+    marginTop: 6,
+    color: "#a3b3bc",
+    letterSpacing: 0.1,
+    textAlign: "center",
   },
   cardSubText: {
-    fontSize: 10,
-    color: "#6c757d",
-    marginTop: 2,
+    fontSize: 12,
+    color: "#a3b3bc",
+    marginTop: 4,
+    letterSpacing: 0.1,
+    textAlign: "center",
   },
   boundsContainer: {
-    minHeight: 180,
+    minHeight: 200,
     borderWidth: 2,
-    borderColor: "#4cc9f0",
-    backgroundColor: "rgba(76, 201, 240, 0.05)",
-    borderRadius: 12,
-    padding: 16,
+    borderColor: "#58a6ff",
+    backgroundColor: "rgba(88, 166, 255, 0.08)",
+    borderRadius: 16,
+    padding: 24,
     justifyContent: "flex-start",
     alignItems: "center",
   },
   verticalBoundsContainer: {
-    height: 240,
+    height: 280,
     borderWidth: 2,
-    width: 150,
-    borderColor: "#4cc9f0",
-    backgroundColor: "rgba(76, 201, 240, 0.05)",
-    borderRadius: 12,
-    padding: 16,
+    width: 180,
+    borderColor: "#58a6ff",
+    backgroundColor: "rgba(88, 166, 255, 0.08)",
+    borderRadius: 16,
+    padding: 24,
     alignSelf: "center",
     justifyContent: "flex-start",
     alignItems: "center",
   },
   innerDropZone: {
     width: "80%",
-    height: 60,
-    marginBottom: 20,
+    height: 72,
+    marginBottom: 24,
   },
   axisConstraintContainer: {
-    height: 120,
+    height: 140,
     position: "relative",
     justifyContent: "center",
+    backgroundColor: "#161b22",
+    borderRadius: 16,
+    padding: 16,
   },
   xAxisDropZone: {
-    width: 90,
-    height: 90,
-    top: 15,
+    width: 100,
+    height: 100,
+    top: 20,
     position: "absolute",
+    borderRadius: 12,
   },
   yAxisConstraintContainer: {
-    height: 200,
+    height: 240,
     position: "relative",
     justifyContent: "center",
+    backgroundColor: "#161b22",
+    borderRadius: 16,
+    padding: 16,
   },
   yAxisDropZone: {
     position: "absolute",
     width: "100%",
-    height: 60,
+    height: 72,
     left: 0,
     right: 0,
+    borderRadius: 12,
   },
   yAxisBoundedDropZone: {
     width: "90%",
-    height: 50,
+    height: 60,
+    borderRadius: 12,
   },
   cardCentered: {
     alignSelf: "center",
-  },
-  sectionDescription: {
-    fontSize: 14,
-    color: "#6c757d",
-    marginBottom: 16,
   },
 });

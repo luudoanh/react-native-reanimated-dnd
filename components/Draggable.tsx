@@ -6,7 +6,6 @@ import { GestureDetector } from "react-native-gesture-handler";
 import {
   useDraggable,
   UseDraggableOptions,
-  UseDraggableReturn,
   AnimationFunction,
 } from "../hooks/useDraggable"; // Adjust path as needed
 
@@ -19,34 +18,17 @@ interface DraggableProps<TData = unknown> extends UseDraggableOptions<TData> {
 }
 
 export const Draggable = <TData = unknown,>({
-  // Options for useDraggable hook
-  data,
-  dragDisabled,
-  onDragStart,
-  onDragEnd,
-  animationFunction,
-  onDragging,
-  dragBoundsRef,
-  dragAxis, // Added dragAxis here
-  activeStyle, // Add activeStyle prop
-  // Component-specific props
-  style: componentStyle, // Rename to avoid conflict with hook's returned style
+  // Destructure component-specific props first
+  style: componentStyle,
   children,
+  // Collect all other props (which are now the modified UseDraggableOptions)
+  ...useDraggableHookOptions
 }: DraggableProps<TData>) => {
   const animatedViewRef = useRef<Animated.View>(null);
 
+  // Pass the collected useDraggableHookOptions object directly to the hook
   const { animatedViewProps, gesture } = useDraggable<TData>(
-    {
-      data,
-      dragDisabled,
-      onDragStart,
-      onDragEnd,
-      animationFunction,
-      onDragging,
-      dragBoundsRef,
-      dragAxis,
-      activeStyle,
-    },
+    useDraggableHookOptions, // This object no longer contains activeStyle
     animatedViewRef
   );
 

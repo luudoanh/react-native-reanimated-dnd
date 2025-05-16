@@ -1,12 +1,19 @@
 import React, { useRef, useEffect, useContext, useCallback } from "react";
 import { View, LayoutChangeEvent } from "react-native";
-import { SlotsContext, SlotsContextValue } from "../context/DropContext"; // Updated path
-import { _getUniqueDroppableId } from "../components/Droppable"; // Path for ID generator remains
+import {
+  SlotsContext,
+  SlotsContextValue,
+  DropAlignment,
+  DropOffset,
+} from "../context/DropContext";
+import { _getUniqueDroppableId } from "../components/Droppable";
 
 export interface UseDroppableOptions<TData = unknown> {
   onDrop: (data: TData) => void;
   dropDisabled?: boolean;
   onActiveChange?: (isActive: boolean) => void;
+  dropAlignment?: DropAlignment;
+  dropOffset?: DropOffset;
 }
 
 export interface UseDroppableReturn {
@@ -18,10 +25,11 @@ export interface UseDroppableReturn {
 
 export const useDroppable = <TData = unknown>(
   options: UseDroppableOptions<TData>,
-  viewRef: React.RefObject<View> // Ref to the View acting as droppable
+  viewRef: React.RefObject<View>
 ): UseDroppableReturn => {
-  const { onDrop, dropDisabled, onActiveChange } = options;
-  const id = useRef(_getUniqueDroppableId()).current; // Get unique ID
+  const { onDrop, dropDisabled, onActiveChange, dropAlignment, dropOffset } =
+    options;
+  const id = useRef(_getUniqueDroppableId()).current;
 
   const {
     register,
@@ -41,13 +49,20 @@ export const useDroppable = <TData = unknown>(
       if (viewRef.current) {
         viewRef.current.measure(
           (_frameX, _frameY, width, height, pageX, pageY) => {
-            // Pass id along with slot data for registration
-            register(id, { x: pageX, y: pageY, width, height, onDrop });
+            register(id, {
+              x: pageX,
+              y: pageY,
+              width,
+              height,
+              onDrop,
+              dropAlignment: dropAlignment || "center",
+              dropOffset: dropOffset || { x: 0, y: 0 },
+            });
           }
         );
       }
     },
-    [id, onDrop, register, viewRef]
+    [id, onDrop, register, viewRef, dropAlignment, dropOffset]
   );
 
   useEffect(() => {

@@ -15,9 +15,10 @@ import {
   GestureType,
 } from "react-native-gesture-handler";
 import {
-  DropSlot,
   SlotsContext,
   SlotsContextValue,
+  DropAlignment,
+  DropOffset,
 } from "../context/DropContext";
 
 // Type for the custom animation function
@@ -187,27 +188,27 @@ export const useDraggable = <TData = unknown>(
       currentOriginY: number,
       currentItemW: number,
       currentItemH: number
-      // animFunc parameter removed
     ) => {
       const slots = getSlots();
       const halfWidth = currentItemW / 2;
       const halfHeight = currentItemH / 2;
-      const centerX = currentOriginX + currentTxVal + halfWidth;
-      const centerY = currentOriginY + currentTyVal + halfHeight;
+      const currentDraggableCenterX = currentOriginX + currentTxVal + halfWidth;
+      const currentDraggableCenterY =
+        currentOriginY + currentTyVal + halfHeight;
 
-      let hit: DropSlot<TData> | null = null;
+      let hitSlotData: any = null; // Assume DropSlot structure with new fields
       let hitSlotId: number | null = null;
 
       for (const key in slots) {
         const slotId = parseInt(key, 10);
         const s = slots[slotId];
         if (
-          centerX >= s.x &&
-          centerX <= s.x + s.width &&
-          centerY >= s.y &&
-          centerY <= s.y + s.height
+          currentDraggableCenterX >= s.x &&
+          currentDraggableCenterX <= s.x + s.width &&
+          currentDraggableCenterY >= s.y &&
+          currentDraggableCenterY <= s.y + s.height
         ) {
-          hit = s;
+          hitSlotData = s;
           hitSlotId = slotId;
           break;
         }
@@ -216,15 +217,64 @@ export const useDraggable = <TData = unknown>(
       let finalTxValue: number;
       let finalTyValue: number;
 
-      if (hit && hitSlotId !== null) {
-        if (hit.onDrop) {
-          hit.onDrop(draggableData); // Call onDrop on the JS thread
+      if (hitSlotData && hitSlotId !== null) {
+        if (hitSlotData.onDrop) {
+          runOnJS(hitSlotData.onDrop)(draggableData);
         }
-        const slotCenterX = hit.x + hit.width / 2;
-        const slotCenterY = hit.y + hit.height / 2;
 
-        const draggableTargetX = slotCenterX - currentItemW / 2;
-        const draggableTargetY = slotCenterY - currentItemH / 2;
+        const alignment: DropAlignment = hitSlotData.dropAlignment || "center";
+        const offset: DropOffset = hitSlotData.dropOffset || { x: 0, y: 0 };
+
+        let targetX = 0;
+        let targetY = 0;
+
+        // Calculate target based on alignment
+        switch (alignment) {
+          case "top-left":
+            targetX = hitSlotData.x;
+            targetY = hitSlotData.y;
+            break;
+          case "top-center":
+            targetX = hitSlotData.x + hitSlotData.width / 2 - currentItemW / 2;
+            targetY = hitSlotData.y;
+            break;
+          case "top-right":
+            targetX = hitSlotData.x + hitSlotData.width - currentItemW;
+            targetY = hitSlotData.y;
+            break;
+          case "center-left":
+            targetX = hitSlotData.x;
+            targetY = hitSlotData.y + hitSlotData.height / 2 - currentItemH / 2;
+            break;
+          case "center": // Default
+            targetX = hitSlotData.x + hitSlotData.width / 2 - currentItemW / 2;
+            targetY = hitSlotData.y + hitSlotData.height / 2 - currentItemH / 2;
+            break;
+          case "center-right":
+            targetX = hitSlotData.x + hitSlotData.width - currentItemW;
+            targetY = hitSlotData.y + hitSlotData.height / 2 - currentItemH / 2;
+            break;
+          case "bottom-left":
+            targetX = hitSlotData.x;
+            targetY = hitSlotData.y + hitSlotData.height - currentItemH;
+            break;
+          case "bottom-center":
+            targetX = hitSlotData.x + hitSlotData.width / 2 - currentItemW / 2;
+            targetY = hitSlotData.y + hitSlotData.height - currentItemH;
+            break;
+          case "bottom-right":
+            targetX = hitSlotData.x + hitSlotData.width - currentItemW;
+            targetY = hitSlotData.y + hitSlotData.height - currentItemH;
+            break;
+          default:
+            // Same as center for any unexpected value
+            targetX = hitSlotData.x + hitSlotData.width / 2 - currentItemW / 2;
+            targetY = hitSlotData.y + hitSlotData.height / 2 - currentItemH / 2;
+        }
+
+        // Apply offset
+        const draggableTargetX = targetX + offset.x;
+        const draggableTargetY = targetY + offset.y;
 
         finalTxValue = draggableTargetX - currentOriginX;
         finalTyValue = draggableTargetY - currentOriginY;
@@ -342,7 +392,6 @@ export const useDraggable = <TData = unknown>(
             originY.value,
             itemW.value,
             itemH.value
-            // animationFunction argument removed
           );
           runOnJS(setActiveHoverSlot)(null);
         }),

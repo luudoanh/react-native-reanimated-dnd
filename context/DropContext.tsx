@@ -7,6 +7,23 @@ import React, {
   useMemo,
 } from "react";
 
+// Define DropAlignment and DropOffset types here
+export type DropAlignment =
+  | "center"
+  | "top-left"
+  | "top-center"
+  | "top-right"
+  | "center-left"
+  | "center-right"
+  | "bottom-left"
+  | "bottom-center"
+  | "bottom-right";
+
+export interface DropOffset {
+  x: number;
+  y: number;
+}
+
 // Interface for a single drop slot
 export interface DropSlot<TData = unknown> {
   x: number;
@@ -14,6 +31,8 @@ export interface DropSlot<TData = unknown> {
   width: number;
   height: number;
   onDrop: (data: TData) => void;
+  dropAlignment?: DropAlignment; // New optional property
+  dropOffset?: DropOffset; // New optional property
 }
 
 // Interface for the context value

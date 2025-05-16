@@ -23,7 +23,11 @@ import {
   UseDroppableOptions,
   UseDroppableReturn,
 } from "../hooks/useDroppable";
-import { DropProvider } from "../context/DropContext";
+import {
+  DropProvider,
+  DropAlignment,
+  DropOffset,
+} from "../context/DropContext";
 
 // 1. Custom Draggable Component using the hook (restored)
 interface MyDraggableProps<TData> extends UseDraggableOptions<TData> {
@@ -116,21 +120,44 @@ export default function CustomDndExample() {
               <MyDroppable<DraggableItemData>
                 style={[styles.dropZone, styles.dropZone1]}
                 onDrop={(data) =>
-                  Alert.alert("Drop!", `"${data.label}" dropped on Zone Alpha`)
+                  Alert.alert(
+                    "Drop!",
+                    `"${data.label}" dropped on Zone Alpha (default center)`
+                  )
                 }
                 onActiveChange={(active) =>
                   console.log(`Zone Alpha active: ${active}`)
                 }
               >
-                <Text style={styles.dropZoneText}>Drop Zone Alpha</Text>
+                <Text style={styles.dropZoneText}>Zone Alpha</Text>
+                <Text style={styles.dZoneSubText}>(Align: Center)</Text>
               </MyDroppable>
               <MyDroppable<DraggableItemData>
                 style={[styles.dropZone, styles.dropZone2]}
                 onDrop={(data) =>
-                  Alert.alert("Drop!", `"${data.label}" dropped on Zone Beta`)
+                  Alert.alert(
+                    "Drop!",
+                    `"${data.label}" dropped on Zone Beta (top-left with offset)`
+                  )
                 }
+                dropAlignment="top-left"
+                dropOffset={{ x: -25, y: -25 }}
               >
-                <Text style={styles.dropZoneText}>Drop Zone Beta</Text>
+                <Text style={styles.dropZoneText}>Zone Beta</Text>
+                <Text style={styles.dZoneSubText}>(Align: TL, Off:5,5)</Text>
+              </MyDroppable>
+              <MyDroppable<DraggableItemData>
+                style={[styles.dropZone, styles.dropZone3]}
+                onDrop={(data) =>
+                  Alert.alert(
+                    "Drop!",
+                    `"${data.label}" dropped on Zone Delta (bottom-right)`
+                  )
+                }
+                dropAlignment="bottom-right"
+              >
+                <Text style={styles.dropZoneText}>Zone Delta</Text>
+                <Text style={styles.dZoneSubText}>(Align: BR)</Text>
               </MyDroppable>
             </View>
 
@@ -273,7 +300,7 @@ const styles = StyleSheet.create({
   },
   dropZoneArea: {
     flexDirection: "row",
-    justifyContent: "space-around",
+    justifyContent: "space-between",
     minHeight: 100,
     marginBottom: 15,
     paddingVertical: 10,
@@ -282,8 +309,8 @@ const styles = StyleSheet.create({
     borderColor: "#eee",
   },
   dropZone: {
-    width: 130,
-    height: 80,
+    width: "30%",
+    height: 90,
     borderWidth: 2,
     borderStyle: "dashed",
     justifyContent: "center",
@@ -299,10 +326,19 @@ const styles = StyleSheet.create({
     borderColor: "#28a745",
     backgroundColor: "rgba(40, 167, 69, 0.1)",
   },
+  dropZone3: {
+    borderColor: "#ffc107",
+    backgroundColor: "rgba(255, 193, 7, 0.1)",
+  },
   dropZoneText: {
     textAlign: "center",
     fontSize: 13,
     fontWeight: "500",
+  },
+  dZoneSubText: {
+    fontSize: 9,
+    color: "#555",
+    marginTop: 3,
   },
   slotActive: {
     backgroundColor: "rgba(0, 123, 255, 0.2)",

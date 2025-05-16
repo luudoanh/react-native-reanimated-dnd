@@ -1,5 +1,11 @@
 // hooks/useDraggable.ts
-import React, { useRef, useCallback, useContext, useEffect } from "react";
+import React, {
+  useRef,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { LayoutChangeEvent, ViewStyle, View } from "react-native";
 import Animated, {
   useSharedValue,
@@ -8,6 +14,7 @@ import Animated, {
   runOnJS,
   runOnUI,
   AnimatedStyle,
+  useAnimatedReaction,
 } from "react-native-reanimated";
 import {
   Gesture,
@@ -21,6 +28,13 @@ import {
   DropOffset,
   DropSlot,
 } from "../context/DropContext";
+
+// Define DraggableState enum
+export enum DraggableState {
+  IDLE = "IDLE",
+  DRAGGING = "DRAGGING",
+  DROPPED = "DROPPED",
+}
 
 // Type for the custom animation function
 export type AnimationFunction = (toValue: number) => number;
@@ -40,6 +54,7 @@ export interface UseDraggableOptions<TData = unknown> {
     ty: number;
     itemData: TData;
   }) => void;
+  onStateChange?: (state: DraggableState) => void;
   animationFunction?: AnimationFunction;
   dragBoundsRef?: React.RefObject<Animated.View | View>;
   dragAxis?: "x" | "y" | "both";
@@ -52,6 +67,7 @@ export interface UseDraggableReturn {
     onLayout: (event: LayoutChangeEvent) => void;
   };
   gesture: GestureType;
+  state: DraggableState;
 }
 
 export const useDraggable = <TData = unknown>(
@@ -64,11 +80,19 @@ export const useDraggable = <TData = unknown>(
     onDragStart,
     onDragEnd,
     onDragging,
+    onStateChange,
     animationFunction,
     dragBoundsRef,
     dragAxis = "both",
     collisionAlgorithm = "intersect",
   } = options;
+
+  // Add state management
+  const [state, setState] = useState<DraggableState>(DraggableState.IDLE);
+
+  useEffect(() => {
+    onStateChange?.(state);
+  }, [state, onStateChange]);
 
   const tx = useSharedValue(0);
   const ty = useSharedValue(0);
@@ -300,6 +324,9 @@ export const useDraggable = <TData = unknown>(
         if (hitSlotData.onDrop) {
           runOnJS(hitSlotData.onDrop)(draggableData);
         }
+        // Update state to DROPPED when successfully dropped
+        runOnJS(setState)(DraggableState.DROPPED);
+
         const alignment: DropAlignment = hitSlotData.dropAlignment || "center";
         const offset: DropOffset = hitSlotData.dropOffset || { x: 0, y: 0 };
         let targetX = 0;
@@ -350,8 +377,11 @@ export const useDraggable = <TData = unknown>(
         finalTxValue = draggableTargetX - currentOriginX;
         finalTyValue = draggableTargetY - currentOriginY;
       } else {
+        // No hit slot - reset to original position and set state to IDLE
         finalTxValue = 0;
         finalTyValue = 0;
+        // When not dropped in a valid slot, we'll transition back to IDLE
+        runOnJS(setState)(DraggableState.IDLE);
       }
       runOnUI(animateDragEndPosition)(finalTxValue, finalTyValue);
     },
@@ -360,6 +390,7 @@ export const useDraggable = <TData = unknown>(
       animateDragEndPosition,
       collisionAlgorithm,
       performCollisionCheck,
+      setState,
     ]
   );
 
@@ -416,6 +447,8 @@ export const useDraggable = <TData = unknown>(
           if (dragDisabledShared.value) return;
           offsetX.value = tx.value;
           offsetY.value = ty.value;
+          // Update state to DRAGGING when drag begins
+          runOnJS(setState)(DraggableState.DRAGGING);
           if (onDragStart) runOnJS(onDragStart)(data);
         })
         .onUpdate((event: PanGestureHandlerEventPayload) => {
@@ -500,6 +533,7 @@ export const useDraggable = <TData = unknown>(
       boundsWidth,
       boundsHeight,
       dragAxisShared,
+      setState,
     ]
   );
 
@@ -510,11 +544,33 @@ export const useDraggable = <TData = unknown>(
     };
   }, [tx, ty]);
 
+  // Replace the React useEffect with useAnimatedReaction to properly handle shared values
+  useAnimatedReaction(
+    () => {
+      // This runs on the UI thread and detects when position is back to origin
+      // and state needs to be reset
+      return {
+        txValue: tx.value,
+        tyValue: ty.value,
+        isZero: tx.value === 0 && ty.value === 0,
+      };
+    },
+    (result, previous) => {
+      // Only trigger when values change to zero (returned to original position)
+      if (result.isZero && previous && !previous.isZero) {
+        // Use runOnJS to call setState from the UI thread
+        runOnJS(setState)(DraggableState.IDLE);
+      }
+    },
+    [setState] // Dependencies
+  );
+
   return {
     animatedViewProps: {
       style: animatedStyleProp,
       onLayout: handleLayoutHandler,
     },
     gesture,
+    state,
   };
 };

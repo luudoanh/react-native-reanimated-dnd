@@ -1,10 +1,11 @@
-import React, { useRef, useCallback } from "react";
+import React, { useRef, useCallback, useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
   StyleProp,
   ViewStyle,
+  TextStyle,
   Alert,
   ScrollView,
 } from "react-native";
@@ -18,6 +19,7 @@ import {
   UseDraggableOptions,
   UseDraggableReturn,
   CollisionAlgorithm,
+  DraggableState,
 } from "../hooks/useDraggable";
 import {
   useDroppable,
@@ -114,6 +116,11 @@ export default function CustomDndExample() {
   const commonCardStyle = styles.cardContent;
   const dropProviderRef = useRef<DropProviderRef>(null);
 
+  // New state for tracking drag state of the example item
+  const [dragState, setDragState] = useState<DraggableState>(
+    DraggableState.IDLE
+  );
+
   const handleScrollEnd = useCallback(() => {
     let localScrollTimeout: NodeJS.Timeout | null = null;
     if (localScrollTimeout) {
@@ -164,6 +171,98 @@ export default function CustomDndExample() {
           scrollEventThrottle={16}
         >
           <Text style={styles.header}>Drag & Drop Playground</Text>
+
+          {/* New Section for Drag State Demo */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Drag State Management Demo</Text>
+            <Text style={styles.sectionDescription}>
+              This example demonstrates the DraggableState enum and
+              onStateChange callback. Current State:{" "}
+              <Text style={getStateStyle(dragState)}>{dragState}</Text>
+            </Text>
+
+            <View style={styles.dropZoneArea}>
+              <Droppable<DraggableItemData>
+                style={[styles.dropZone, styles.dropZoneBlue]}
+                onDrop={(data) => {
+                  Alert.alert(
+                    "Drop!",
+                    `Item "${data.label}" dropped with state: ${dragState}`
+                  );
+                }}
+              >
+                <Text style={styles.dropZoneText}>Drop Target</Text>
+                <Text style={styles.dZoneSubText}>(Check state changes)</Text>
+              </Droppable>
+            </View>
+
+            <View style={styles.draggableItemsArea}>
+              <Draggable<DraggableItemData>
+                key="D-State-Demo"
+                data={{
+                  id: "state-demo-item",
+                  label: "State Demo Item",
+                  backgroundColor: "#e63946",
+                }}
+                style={[
+                  styles.draggable,
+                  {
+                    top: 0,
+                    left: "25%",
+                    backgroundColor: "#e63946",
+                    borderWidth: 2,
+                    borderColor: getBorderColor(dragState),
+                    borderRadius: 12,
+                  },
+                ]}
+                onStateChange={(state) => {
+                  console.log("Drag state changed:", state);
+                  setDragState(state);
+                }}
+              >
+                <View style={commonCardStyle}>
+                  <Text style={styles.cardLabel}>Drag Me</Text>
+                  <Text style={styles.cardHint}>State: {dragState}</Text>
+                </View>
+              </Draggable>
+            </View>
+
+            <View style={styles.stateInfo}>
+              <View style={styles.stateItem}>
+                <View
+                  style={[
+                    styles.stateIndicator,
+                    { backgroundColor: "#90be6d" },
+                  ]}
+                />
+                <Text style={styles.stateText}>
+                  IDLE: Initial or reset state
+                </Text>
+              </View>
+              <View style={styles.stateItem}>
+                <View
+                  style={[
+                    styles.stateIndicator,
+                    { backgroundColor: "#f8961e" },
+                  ]}
+                />
+                <Text style={styles.stateText}>
+                  DRAGGING: Currently being dragged
+                </Text>
+              </View>
+              <View style={styles.stateItem}>
+                <View
+                  style={[
+                    styles.stateIndicator,
+                    { backgroundColor: "#577590" },
+                  ]}
+                />
+                <Text style={styles.stateText}>
+                  DROPPED: Successfully dropped on target
+                </Text>
+              </View>
+            </View>
+          </View>
 
           {/* Section for Collision Detection Algorithm Demo */}
           <View style={styles.section}>
@@ -616,6 +715,30 @@ export default function CustomDndExample() {
   );
 }
 
+// Helper function to get state-specific text style
+function getStateStyle(state: DraggableState): StyleProp<TextStyle> {
+  switch (state) {
+    case DraggableState.IDLE:
+      return { color: "#90be6d", fontWeight: "700" };
+    case DraggableState.DRAGGING:
+      return { color: "#f8961e", fontWeight: "700" };
+    case DraggableState.DROPPED:
+      return { color: "#577590", fontWeight: "700" };
+  }
+}
+
+// Helper function to get state-specific border color
+function getBorderColor(state: DraggableState): string {
+  switch (state) {
+    case DraggableState.IDLE:
+      return "#90be6d"; // Green
+    case DraggableState.DRAGGING:
+      return "#f8961e"; // Orange
+    case DraggableState.DROPPED:
+      return "#577590"; // Blue
+  }
+}
+
 const styles = StyleSheet.create({
   scrollViewBase: {
     flex: 1,
@@ -827,5 +950,26 @@ const styles = StyleSheet.create({
   },
   cardCentered: {
     alignSelf: "center",
+  },
+  stateInfo: {
+    marginTop: 24,
+    padding: 16,
+    backgroundColor: "rgba(255, 255, 255, 0.05)",
+    borderRadius: 12,
+  },
+  stateItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 8,
+  },
+  stateIndicator: {
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    marginRight: 8,
+  },
+  stateText: {
+    fontSize: 14,
+    color: "#e6edf3",
   },
 });

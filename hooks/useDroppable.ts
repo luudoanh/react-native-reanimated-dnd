@@ -28,6 +28,7 @@ export interface UseDroppableOptions<TData = unknown> {
   dropOffset?: DropOffset;
   activeStyle?: StyleProp<ViewStyle>;
   droppableId?: string;
+  capacity?: number;
 }
 
 export interface UseDroppableReturn {
@@ -51,6 +52,7 @@ export const useDroppable = <TData = unknown>(
     dropOffset,
     activeStyle,
     droppableId,
+    capacity,
   } = options;
   const id = useRef(_getUniqueDroppableId()).current;
   const stringId = useRef(droppableId || `droppable-${id}`).current;
@@ -140,13 +142,23 @@ export const useDroppable = <TData = unknown>(
           onDrop,
           dropAlignment: dropAlignment || "center",
           dropOffset: dropOffset || { x: 0, y: 0 },
+          capacity,
         });
       } else {
         // Optionally, unregister or handle invalid measurement if needed
         // console.warn(`Droppable ${id} measured with zero dimensions.`);
       }
     });
-  }, [id, droppableId, onDrop, register, viewRef, dropAlignment, dropOffset]);
+  }, [
+    id,
+    droppableId,
+    onDrop,
+    register,
+    viewRef,
+    dropAlignment,
+    dropOffset,
+    capacity,
+  ]);
 
   const handleLayoutHandler = useCallback(
     (_event: LayoutChangeEvent) => {

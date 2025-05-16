@@ -14,6 +14,7 @@ interface DroppableProps<TData = unknown> extends UseDroppableOptions<TData> {
   style?: StyleProp<ViewStyle>;
   children: React.ReactNode;
   droppableId?: string;
+  capacity?: number;
 }
 
 export const Droppable = <TData = unknown,>({
@@ -26,6 +27,7 @@ export const Droppable = <TData = unknown,>({
   style,
   children,
   droppableId,
+  capacity,
 }: DroppableProps<TData>): React.ReactElement => {
   const viewRef = useRef<View>(null);
 
@@ -38,6 +40,7 @@ export const Droppable = <TData = unknown,>({
       dropOffset,
       activeStyle,
       droppableId,
+      capacity,
     },
     viewRef
   );

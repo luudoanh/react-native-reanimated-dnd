@@ -850,6 +850,143 @@ export default function CustomDndExample() {
               </MyDraggable>
             </View>
           </View>
+
+          {/* Add a new demo section for capacity */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Droppable Capacity Demo</Text>
+            <Text style={styles.sectionDescription}>
+              This example demonstrates droppable zones with different
+              capacities. Try dropping multiple items on each zone.
+            </Text>
+
+            <View style={styles.dropZoneArea}>
+              <View style={styles.dropZoneColumn}>
+                <Text style={styles.customStyleLabel}>
+                  Capacity: 1 (Default)
+                </Text>
+                <Droppable<DraggableItemData>
+                  droppableId="capacity-1"
+                  style={[styles.dropZone, styles.customDropZone]}
+                  onDrop={(data) =>
+                    Alert.alert("Dropped!", `${data.label} on capacity-1 zone`)
+                  }
+                  // Default capacity is 1
+                >
+                  <Text style={styles.dropZoneText}>Single Item</Text>
+                  <Text style={styles.dZoneSubText}>(Max: 1 Item)</Text>
+                </Droppable>
+              </View>
+
+              <View style={styles.dropZoneColumn}>
+                <Text style={styles.customStyleLabel}>Capacity: 2</Text>
+                <Droppable<DraggableItemData>
+                  droppableId="capacity-2"
+                  capacity={2}
+                  style={[styles.dropZone, styles.customDropZone]}
+                  onDrop={(data) =>
+                    Alert.alert("Dropped!", `${data.label} on capacity-2 zone`)
+                  }
+                >
+                  <Text style={styles.dropZoneText}>Multi Item</Text>
+                  <Text style={styles.dZoneSubText}>(Max: 2 Items)</Text>
+                </Droppable>
+              </View>
+            </View>
+
+            <View style={styles.dropZoneArea}>
+              <View style={styles.dropZoneColumn}>
+                <Text style={styles.customStyleLabel}>Capacity: 3</Text>
+                <Droppable<DraggableItemData>
+                  droppableId="capacity-3"
+                  capacity={3}
+                  style={[
+                    styles.dropZone,
+                    styles.customDropZone,
+                    { height: 140 },
+                  ]}
+                  onDrop={(data) =>
+                    Alert.alert("Dropped!", `${data.label} on capacity-3 zone`)
+                  }
+                >
+                  <Text style={styles.dropZoneText}>Large Capacity</Text>
+                  <Text style={styles.dZoneSubText}>(Max: 3 Items)</Text>
+                </Droppable>
+              </View>
+
+              <View style={styles.dropZoneColumn}>
+                <Text style={styles.customStyleLabel}>Capacity: Unlimited</Text>
+                <Droppable<DraggableItemData>
+                  droppableId="capacity-unlimited"
+                  capacity={Infinity}
+                  style={[
+                    styles.dropZone,
+                    styles.customDropZone,
+                    { height: 140 },
+                  ]}
+                  onDrop={(data) =>
+                    Alert.alert(
+                      "Dropped!",
+                      `${data.label} on unlimited capacity zone`
+                    )
+                  }
+                >
+                  <Text style={styles.dropZoneText}>Unlimited</Text>
+                  <Text style={styles.dZoneSubText}>(No Limit)</Text>
+                </Droppable>
+              </View>
+            </View>
+
+            <View style={[styles.draggableItemsArea, { minHeight: 200 }]}>
+              {/* Create 5 draggable items to test capacity */}
+              {Array.from({ length: 5 }).map((_, index) => (
+                <Draggable<DraggableItemData>
+                  key={`capacity-demo-item-${index}`}
+                  draggableId={`capacity-demo-item-${index}`}
+                  data={{
+                    id: `capacity-item-${index}`,
+                    label: `Item ${index + 1}`,
+                    backgroundColor: `hsl(${index * 40}, 80%, 60%)`,
+                  }}
+                  style={[
+                    {
+                      backgroundColor: `hsl(${index * 40}, 80%, 60%)`,
+                      borderRadius: 12,
+                      zIndex: 100 - index,
+                      marginLeft: 10,
+                      marginTop: 10,
+                    },
+                  ]}
+                >
+                  <View style={commonCardStyle}>
+                    <Text style={styles.cardLabel}>{`Item ${index + 1}`}</Text>
+                  </View>
+                </Draggable>
+              ))}
+            </View>
+
+            {/* Add counter to show items in each drop zone */}
+            <View style={styles.mappingContainer}>
+              <Text style={styles.mappingTitle}>Dropped Items Count:</Text>
+              {Object.entries(
+                // Group by droppable ID
+                Object.values(droppedItemsMap).reduce(
+                  (acc, { droppableId }) => {
+                    acc[droppableId] = (acc[droppableId] || 0) + 1;
+                    return acc;
+                  },
+                  {} as Record<string, number>
+                )
+              ).map(([droppableId, count]) => (
+                <View key={droppableId} style={styles.mappingItem}>
+                  <Text style={styles.mappingText}>
+                    <Text style={styles.mappingLabel}>{droppableId}</Text>:{" "}
+                    <Text style={styles.mappingValue}>{count}</Text> item
+                    {count !== 1 ? "s" : ""}
+                  </Text>
+                </View>
+              ))}
+            </View>
+          </View>
         </ScrollView>
       </DropProvider>
     </GestureHandlerRootView>
@@ -986,6 +1123,8 @@ const styles = StyleSheet.create({
     minHeight: 100,
     position: "relative",
     marginTop: 16,
+    flexDirection: "row",
+    flexWrap: "wrap",
     width: "100%",
   },
   draggable: {

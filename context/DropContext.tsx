@@ -46,6 +46,7 @@ export interface DropSlot<TData = unknown> {
   onDrop: (data: TData) => void;
   dropAlignment?: DropAlignment;
   dropOffset?: DropOffset;
+  capacity?: number;
 }
 
 // Listener type for position updates
@@ -74,6 +75,9 @@ export interface SlotsContextValue<TData = unknown> {
   ) => void;
   unregisterDroppedItem: (draggableId: string) => void;
   getDroppedItems: () => DroppedItemsMap<any>;
+
+  // Add new method to check if a droppable has available capacity
+  hasAvailableCapacity: (droppableId: string) => boolean;
 }
 
 // Default context value using 'any' for broad compatibility
@@ -156,6 +160,14 @@ const defaultSlotsContextValue: SlotsContextValue<any> = {
       console.warn("SlotsContext: getDroppedItems called without a Provider.");
     }
     return {} as DroppedItemsMap<any>;
+  },
+  hasAvailableCapacity: (_droppableId: string) => {
+    if (process.env.NODE_ENV !== "production") {
+      console.warn(
+        "SlotsContext: hasAvailableCapacity called without a Provider."
+      );
+    }
+    return false;
   },
 };
 
@@ -258,6 +270,32 @@ export const DropProvider = forwardRef<DropProviderRef, DropProviderProps>(
       getDroppedItems,
     }));
 
+    // Add a method to check if a droppable has capacity available
+    const hasAvailableCapacity = useCallback(
+      (droppableId: string) => {
+        // Find all draggables currently dropped on this droppable
+        const droppedCount = Object.values(droppedItems).filter(
+          (item) => item.droppableId === droppableId
+        ).length;
+
+        // Find the droppable's registered capacity
+        const droppableSlot = Object.values(slotsRef.current).find(
+          (slot) => slot.id === droppableId
+        );
+
+        if (!droppableSlot) return false; // Not found or not registered
+
+        // Use the slot's capacity if specified, default to 1
+        const capacity =
+          droppableSlot.capacity !== undefined ? droppableSlot.capacity : 1;
+
+        // Check if more capacity is available
+        return droppedCount < capacity;
+      },
+      [droppedItems]
+    );
+
+    // Update the context value with the new method
     const contextValue = useMemo<SlotsContextValue<any>>(
       () => ({
         register: (id, slot) => {
@@ -275,23 +313,21 @@ export const DropProvider = forwardRef<DropProviderRef, DropProviderProps>(
         activeHoverSlotId,
         registerPositionUpdateListener,
         unregisterPositionUpdateListener,
-        // Provide internalRequestPositionUpdate to the context for hooks that might still need it,
-        // though direct calls should now prefer the ref method.
         requestPositionUpdate: internalRequestPositionUpdate,
-        // Add the new methods to the context value
         registerDroppedItem,
         unregisterDroppedItem,
         getDroppedItems,
+        hasAvailableCapacity,
       }),
       [
         activeHoverSlotId,
         registerPositionUpdateListener,
         unregisterPositionUpdateListener,
         internalRequestPositionUpdate,
-        // Add the new methods as dependencies
         registerDroppedItem,
         unregisterDroppedItem,
         getDroppedItems,
+        hasAvailableCapacity,
       ]
     );
 

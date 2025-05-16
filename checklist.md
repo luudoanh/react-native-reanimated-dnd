@@ -23,6 +23,7 @@
 - [x] **`onHoverEnter` / `onHoverLeave` for Drop Zones:** More granular hover events.
 - [x] **Dynamic Disabling/Enabling of Drop Zones:** Based on app state or drag data.
 - [x] **Collision Detection Algorithm Options:** Added "center", "intersect" and "contain"
+- [x] **Droppable capacities:** Added "capacities", how many draggables a droppable can allow (defaults to 1)
 
 ### Low Priority
 

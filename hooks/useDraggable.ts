@@ -126,6 +126,7 @@ export const useDraggable = <TData = unknown>(
     unregisterPositionUpdateListener,
     registerDroppedItem,
     unregisterDroppedItem,
+    hasAvailableCapacity,
   } = useContext(SlotsContext) as SlotsContextValue<TData>;
 
   useEffect(() => {
@@ -314,7 +315,7 @@ export const useDraggable = <TData = unknown>(
           collisionAlgorithm
         );
 
-        if (isCollision) {
+        if (isCollision && hasAvailableCapacity(s.id)) {
           hitSlotData = s;
           hitSlotId = slotId;
           break;
@@ -390,7 +391,7 @@ export const useDraggable = <TData = unknown>(
         finalTxValue = draggableTargetX - currentOriginX;
         finalTyValue = draggableTargetY - currentOriginY;
       } else {
-        // No hit slot - reset to original position and set state to IDLE
+        // No hit slot or no capacity available - reset to original position and set state to IDLE
         finalTxValue = 0;
         finalTyValue = 0;
         // When not dropped in a valid slot, we'll transition back to IDLE
@@ -410,6 +411,7 @@ export const useDraggable = <TData = unknown>(
       internalDraggableId,
       registerDroppedItem,
       unregisterDroppedItem,
+      hasAvailableCapacity,
     ]
   );
 

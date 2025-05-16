@@ -1,10 +1,14 @@
-import React, { useRef, useState } from "react";
-import { View, Text, StyleSheet, StyleProp, ViewStyle } from "react-native";
-import Animated, {
-  withTiming,
-  Easing,
-  SharedValue,
-} from "react-native-reanimated";
+import React, { useRef } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  StyleProp,
+  ViewStyle,
+  Alert,
+  ScrollView,
+} from "react-native";
+import Animated, { withTiming, Easing } from "react-native-reanimated";
 import {
   GestureDetector,
   GestureHandlerRootView,
@@ -21,7 +25,7 @@ import {
 } from "../hooks/useDroppable";
 import { DropProvider } from "../context/DropContext";
 
-// 1. Custom Draggable Component using the hook
+// 1. Custom Draggable Component using the hook (restored)
 interface MyDraggableProps<TData> extends UseDraggableOptions<TData> {
   children: React.ReactNode;
   initialStyle?: StyleProp<ViewStyle>;
@@ -49,242 +53,306 @@ const MyDraggable = <TData extends object>({
   );
 };
 
-// 2. Custom Droppable Component using the hook
+// 2. Custom Droppable Component using the hook (restored)
 interface MyDroppableProps<TData> extends UseDroppableOptions<TData> {
   children: React.ReactNode;
   style?: StyleProp<ViewStyle>;
 }
 
-// Example of a custom animation function (must be a worklet or workletizable)
-const customAnimation: UseDraggableOptions<any>["animationFunction"] = (
-  toValue
-) => {
-  "worklet";
-  return withTiming(toValue, {
-    duration: 100,
-    easing: Easing.out(Easing.exp),
-  });
-};
-
 const MyDroppable = <TData extends object>({
   children,
   style,
-  onActiveChange,
   ...droppableOptions
 }: MyDroppableProps<TData>) => {
   const viewRef = useRef<View>(null);
   const { viewProps, isActive }: UseDroppableReturn = useDroppable<TData>(
-    {
-      ...droppableOptions,
-      onActiveChange,
-    },
+    droppableOptions,
     viewRef
   );
 
+  const activeStyle = droppableOptions.onActiveChange ? styles.slotActive : {};
+
   return (
-    <View
-      ref={viewRef}
-      {...viewProps}
-      style={[style, isActive && styles.slotActive]}
-    >
+    <View ref={viewRef} {...viewProps} style={[style, isActive && activeStyle]}>
       {children}
     </View>
   );
 };
 
-// 3. Example Usage
+// Example of a custom animation function
+const customAnimation: UseDraggableOptions<any>["animationFunction"] = (
+  toValue
+) => {
+  "worklet";
+  return withTiming(toValue, {
+    duration: 300,
+    easing: Easing.out(Easing.cubic),
+  });
+};
+
+interface DraggableItemData {
+  id: string;
+  label: string;
+  backgroundColor: string;
+}
+
 export default function CustomDndExample() {
-  const boundsViewRef = useRef<View>(null); // Ref for the bounding view
+  const boundsViewRef = useRef<View>(null);
+  const commonCardStyle = styles.cardContent;
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <DropProvider>
-        <View style={styles.container}>
-          <MyDroppable<{
-            id: number;
-            message: string;
-          }>
-            style={styles.customSlot1}
-            onDrop={(data) =>
-              alert(`Dropped on Custom Zone 1: ${data.message}`)
-            }
-            onActiveChange={(active) => {
-              console.log("Custom Zone 1 active (from example usage):", active);
-            }}
-          >
-            <Text>Custom Drop Zone 1</Text>
-          </MyDroppable>
+        <ScrollView
+          style={styles.scrollViewBase}
+          contentContainerStyle={styles.scrollContentContainer}
+        >
+          <Text style={styles.header}>Drag & Drop Playground</Text>
 
-          <MyDroppable<{
-            id: number;
-            message: string;
-          }>
-            style={styles.customSlot2}
-            onDrop={(data) =>
-              alert(`Dropped on Custom Zone 2: ${data.message}`)
-            }
-          >
-            <Text>Custom Drop Zone 2 (active style, no log)</Text>
-          </MyDroppable>
-
-          <MyDraggable<{
-            id: number;
-            message: string;
-          }>
-            data={{ id: 1, message: "Hello from Draggable 1" }}
-            initialStyle={styles.customCard1}
-            onDragStart={() => console.log("Drag Start: Card 1")}
-            onDragEnd={() => console.log("Drag End: Card 1")}
-            onDragging={({ x, y, tx, ty, itemData }) => {
-              console.log(
-                `Dragging Card 1 (ID: ${itemData.id}): Position (x: ${x.toFixed(
-                  2
-                )}, y: ${y.toFixed(2)}), Translation (tx: ${tx.toFixed(
-                  2
-                )}, ty: ${ty.toFixed(2)})`
-              );
-            }}
-          >
-            <View style={styles.cardContent}>
-              <Text>Drag Me (1)</Text>
+          {/* Section 1: Free Draggables & Multiple Drop Zones */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Free Movement & Drop Zones</Text>
+            <View style={styles.dropZoneArea}>
+              <MyDroppable<DraggableItemData>
+                style={[styles.dropZone, styles.dropZone1]}
+                onDrop={(data) =>
+                  Alert.alert("Drop!", `"${data.label}" dropped on Zone Alpha`)
+                }
+                onActiveChange={(active) =>
+                  console.log(`Zone Alpha active: ${active}`)
+                }
+              >
+                <Text style={styles.dropZoneText}>Drop Zone Alpha</Text>
+              </MyDroppable>
+              <MyDroppable<DraggableItemData>
+                style={[styles.dropZone, styles.dropZone2]}
+                onDrop={(data) =>
+                  Alert.alert("Drop!", `"${data.label}" dropped on Zone Beta`)
+                }
+              >
+                <Text style={styles.dropZoneText}>Drop Zone Beta</Text>
+              </MyDroppable>
             </View>
-          </MyDraggable>
 
-          <MyDraggable<{
-            id: number;
-            message: string;
-          }>
-            data={{ id: 2, message: "Greetings from Draggable 2" }}
-            initialStyle={styles.customCard2}
-          >
-            <View style={styles.cardContent}>
-              <Text>Drag Me (2)</Text>
+            <View style={styles.draggableItemsArea}>
+              <MyDraggable<DraggableItemData>
+                data={{
+                  id: "D1",
+                  label: "Draggable 1 (Basic)",
+                  backgroundColor: "#a2d2ff",
+                }}
+                initialStyle={[
+                  styles.draggable,
+                  { top: 0, left: 0, backgroundColor: "#a2d2ff" },
+                ]}
+                onDragStart={(item) => console.log(`Drag Start: ${item.label}`)}
+                onDragEnd={(item) => console.log(`Drag End: ${item.label}`)}
+                onDragging={({ tx, ty, itemData }) =>
+                  console.log(
+                    `Dragging ${itemData.label}: tx=${tx.toFixed(
+                      0
+                    )}, ty=${ty.toFixed(0)}`
+                  )
+                }
+              >
+                <View style={commonCardStyle}>
+                  <Text>Item 1</Text>
+                  <Text style={styles.cardSubText}>(Basic Drag)</Text>
+                </View>
+              </MyDraggable>
+
+              <MyDraggable<DraggableItemData>
+                data={{
+                  id: "D2",
+                  label: "Draggable 2 (Custom Anim)",
+                  backgroundColor: "#bde0fe",
+                }}
+                initialStyle={[
+                  styles.draggable,
+                  { top: 80, left: 50, backgroundColor: "#bde0fe" },
+                ]}
+                animationFunction={customAnimation}
+              >
+                <View style={commonCardStyle}>
+                  <Text>Item 2</Text>
+                  <Text style={styles.cardSubText}>(Custom Anim)</Text>
+                </View>
+              </MyDraggable>
             </View>
-          </MyDraggable>
-
-          <MyDraggable<{
-            id: number;
-            message: string;
-          }>
-            data={{ id: 3, message: "Draggable 3 with Custom Animation" }}
-            initialStyle={styles.customCard3}
-            onDragStart={() => console.log("Drag Start: Card 3 (Custom Anim)")}
-            onDragEnd={() => console.log("Drag End: Card 3 (Custom Anim)")}
-            animationFunction={customAnimation}
-          >
-            <View style={styles.cardContent}>
-              <Text>Drag Me (3)</Text>
-              <Text style={{ fontSize: 10 }}>(Custom Anim)</Text>
-            </View>
-          </MyDraggable>
-
-          {/* Draggable with Bounds Example */}
-          <View
-            ref={boundsViewRef}
-            style={styles.boundsContainer} // Style for the bounding box
-          >
-            <MyDraggable<{ id: number; message: string }>
-              data={{ id: 4, message: "Bounded Draggable" }}
-              initialStyle={styles.customCard4}
-              onDragStart={() => console.log("Drag Start: Bounded Card")}
-              onDragEnd={() => console.log("Drag End: Bounded Card")}
-              onDragging={({ tx, ty }) =>
-                console.log(
-                  `Bounded Card: tx=${tx.toFixed(2)}, ty=${ty.toFixed(2)}`
-                )
-              }
-              dragBoundsRef={boundsViewRef} // Pass the ref here
-            >
-              <View style={styles.cardContent}>
-                <Text>Drag Me</Text>
-                <Text style={{ fontSize: 10 }}>(Bounded)</Text>
-              </View>
-            </MyDraggable>
           </View>
-        </View>
+
+          {/* Section 2: Bounded Dragging */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Bounded Dragging Area</Text>
+            <View ref={boundsViewRef} style={styles.boundsContainer}>
+              <MyDraggable<DraggableItemData>
+                data={{
+                  id: "D3",
+                  label: "Draggable 3 (Bounded)",
+                  backgroundColor: "#ffafcc",
+                }}
+                dragBoundsRef={boundsViewRef}
+                initialStyle={{ backgroundColor: "#ffafcc" }}
+              >
+                <View style={commonCardStyle}>
+                  <Text>Item 3</Text>
+                  <Text style={styles.cardSubText}>(Bounded)</Text>
+                </View>
+              </MyDraggable>
+            </View>
+          </View>
+
+          {/* Section 3: Disabled Elements */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Disabled Elements</Text>
+            <View style={styles.disabledItemsArea}>
+              <MyDraggable<DraggableItemData>
+                data={{
+                  id: "D4",
+                  label: "Draggable 4 (Disabled)",
+                  backgroundColor: "#cccccc",
+                }}
+                dragDisabled={true}
+                initialStyle={{ backgroundColor: "#cccccc" }}
+              >
+                <View style={commonCardStyle}>
+                  <Text>Item 4</Text>
+                  <Text style={styles.cardSubText}>(Drag Disabled)</Text>
+                </View>
+              </MyDraggable>
+              <MyDroppable<DraggableItemData>
+                style={[styles.dropZone, styles.dropZoneDisabled]}
+                onDrop={() =>
+                  Alert.alert("Error", "Should not drop on disabled zone!")
+                }
+                dropDisabled={true}
+              >
+                <Text style={styles.dropZoneText}>Drop Zone Gamma</Text>
+                <Text style={styles.cardSubText}>(Drop Disabled)</Text>
+              </MyDroppable>
+            </View>
+          </View>
+        </ScrollView>
       </DropProvider>
     </GestureHandlerRootView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  scrollViewBase: {
     flex: 1,
-    paddingTop: 50,
-    backgroundColor: "#f0f0f0",
-    position: "relative", // Needed for absolute positioning of bounds container if desired
+    backgroundColor: "#f7f7f7",
   },
-  customSlot1: {
-    position: "absolute",
-    top: 100,
-    left: 30,
-    width: 200,
+  scrollContentContainer: {
+    paddingTop: 40,
+    paddingHorizontal: 10,
+  },
+  header: {
+    fontSize: 24,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginBottom: 15,
+    color: "#333",
+  },
+  section: {
+    marginBottom: 20,
+    padding: 10,
+    backgroundColor: "#ffffff",
+    borderRadius: 8,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+    marginBottom: 10,
+    color: "#555",
+  },
+  dropZoneArea: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    minHeight: 100,
+    marginBottom: 15,
+    paddingVertical: 10,
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: "#eee",
+  },
+  dropZone: {
+    width: 130,
     height: 80,
     borderWidth: 2,
-    borderColor: "blue",
     borderStyle: "dashed",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "lightblue",
+    borderRadius: 8,
+    padding: 5,
   },
-  customSlot2: {
-    position: "absolute",
-    top: 250,
-    left: 150,
-    width: 180,
-    height: 100,
-    borderWidth: 2,
-    borderColor: "purple",
-    borderStyle: "dotted",
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#e6e6fa",
+  dropZone1: {
+    borderColor: "#007bff",
+    backgroundColor: "rgba(0, 123, 255, 0.1)",
+  },
+  dropZone2: {
+    borderColor: "#28a745",
+    backgroundColor: "rgba(40, 167, 69, 0.1)",
+  },
+  dropZoneText: {
+    textAlign: "center",
+    fontSize: 13,
+    fontWeight: "500",
   },
   slotActive: {
-    backgroundColor: "#add8e6",
-    borderColor: "darkblue",
+    backgroundColor: "rgba(0, 123, 255, 0.2)",
+    borderColor: "#0056b3",
   },
-  customCard1: {
+  draggableItemsArea: {
+    minHeight: 150,
+    position: "relative",
+  },
+  draggable: {
     position: "absolute",
-    top: 400,
-    left: 50,
-  },
-  customCard2: {
-    position: "absolute",
-    top: 500,
-    left: 150,
-  },
-  customCard3: {
-    position: "absolute",
-    top: 450,
-    left: 250,
-  },
-  customCard4: {
-    // Initial position within its bounds container, or absolute if you prefer
-    // For this example, let it be positioned by its parent flex layout initially
-  },
-  boundsContainer: {
-    position: "absolute", // Example positioning
-    top: 200,
-    left: 30,
-    width: 300,
-    height: 400,
-    borderColor: "red",
-    borderWidth: 2,
-    flexDirection: "column",
-    backgroundColor: "rgba(255,0,0,0.1)",
-    justifyContent: "center", // Optional: if you want to center the draggable initially
-    alignItems: "center", // Optional: if you want to center the draggable initially
   },
   cardContent: {
-    width: 120,
-    height: 60,
-    backgroundColor: "lightgreen",
-    padding: 10,
-    borderRadius: 5,
+    width: 110,
+    height: 65,
+    padding: 8,
+    borderRadius: 8,
     justifyContent: "center",
     alignItems: "center",
     borderWidth: 1,
-    borderColor: "darkgreen",
+    borderColor: "rgba(0,0,0,0.2)",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 3,
+    elevation: 2,
+  },
+  cardSubText: {
+    fontSize: 10,
+    color: "#333",
+    marginTop: 2,
+  },
+  boundsContainer: {
+    minHeight: 150,
+    borderWidth: 2,
+    borderColor: "#dc3545",
+    backgroundColor: "rgba(220, 53, 69, 0.05)",
+    borderRadius: 8,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 10,
+  },
+  disabledItemsArea: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
+    paddingVertical: 10,
+  },
+  dropZoneDisabled: {
+    borderColor: "#6c757d",
+    backgroundColor: "rgba(108, 117, 125, 0.1)",
   },
 });

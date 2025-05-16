@@ -27,6 +27,7 @@ export interface UseDroppableOptions<TData = unknown> {
   dropAlignment?: DropAlignment;
   dropOffset?: DropOffset;
   activeStyle?: StyleProp<ViewStyle>;
+  droppableId?: string;
 }
 
 export interface UseDroppableReturn {
@@ -49,8 +50,10 @@ export const useDroppable = <TData = unknown>(
     dropAlignment,
     dropOffset,
     activeStyle,
+    droppableId,
   } = options;
   const id = useRef(_getUniqueDroppableId()).current;
+  const stringId = useRef(droppableId || `droppable-${id}`).current;
   const instanceId = useRef(
     `droppable-${id}-${Math.random().toString(36).substr(2, 9)}`
   ).current;
@@ -114,6 +117,14 @@ export const useDroppable = <TData = unknown>(
     onActiveChange?.(isActive);
   }, [isActive, onActiveChange]);
 
+  useEffect(() => {
+    console.log(
+      `Droppable ${id} using string ID: ${stringId}, provided ID: ${
+        droppableId || "none"
+      }`
+    );
+  }, [id, stringId, droppableId]);
+
   const updateDroppablePosition = useCallback(() => {
     if (!viewRef.current) return;
 
@@ -121,6 +132,7 @@ export const useDroppable = <TData = unknown>(
       if (width > 0 && height > 0) {
         // Ensure valid dimensions before registering
         register(id, {
+          id: droppableId || `droppable-${id}`,
           x: pageX,
           y: pageY,
           width,
@@ -134,7 +146,7 @@ export const useDroppable = <TData = unknown>(
         // console.warn(`Droppable ${id} measured with zero dimensions.`);
       }
     });
-  }, [id, onDrop, register, viewRef, dropAlignment, dropOffset]);
+  }, [id, droppableId, onDrop, register, viewRef, dropAlignment, dropOffset]);
 
   const handleLayoutHandler = useCallback(
     (_event: LayoutChangeEvent) => {

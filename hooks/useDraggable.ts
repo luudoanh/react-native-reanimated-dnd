@@ -44,6 +44,7 @@ export type CollisionAlgorithm = "center" | "intersect" | "contain";
 
 export interface UseDraggableOptions<TData = unknown> {
   data: TData;
+  draggableId?: string;
   dragDisabled?: boolean;
   onDragStart?: (data: TData) => void;
   onDragEnd?: (data: TData) => void;
@@ -76,6 +77,7 @@ export const useDraggable = <TData = unknown>(
 ): UseDraggableReturn => {
   const {
     data,
+    draggableId,
     dragDisabled = false,
     onDragStart,
     onDragEnd,
@@ -106,8 +108,8 @@ export const useDraggable = <TData = unknown>(
   const itemW = useSharedValue(0);
   const itemH = useSharedValue(0);
   const isOriginSet = useRef(false);
-  const instanceId = useRef(
-    `draggable-${Math.random().toString(36).substr(2, 9)}`
+  const internalDraggableId = useRef(
+    draggableId || `draggable-${Math.random().toString(36).substr(2, 9)}`
   ).current;
 
   const boundsX = useSharedValue(0);
@@ -122,6 +124,8 @@ export const useDraggable = <TData = unknown>(
     activeHoverSlotId,
     registerPositionUpdateListener,
     unregisterPositionUpdateListener,
+    registerDroppedItem,
+    unregisterDroppedItem,
   } = useContext(SlotsContext) as SlotsContextValue<TData>;
 
   useEffect(() => {
@@ -206,12 +210,12 @@ export const useDraggable = <TData = unknown>(
       updateDraggablePosition();
       updateBounds();
     };
-    registerPositionUpdateListener(instanceId, handlePositionUpdate);
+    registerPositionUpdateListener(internalDraggableId, handlePositionUpdate);
     return () => {
-      unregisterPositionUpdateListener(instanceId);
+      unregisterPositionUpdateListener(internalDraggableId);
     };
   }, [
-    instanceId,
+    internalDraggableId,
     registerPositionUpdateListener,
     unregisterPositionUpdateListener,
     updateDraggablePosition,
@@ -324,6 +328,15 @@ export const useDraggable = <TData = unknown>(
         if (hitSlotData.onDrop) {
           runOnJS(hitSlotData.onDrop)(draggableData);
         }
+
+        // Use the string ID from the DropSlot instead of the numeric ID
+        // Register this draggable as dropped on this droppable
+        runOnJS(registerDroppedItem)(
+          internalDraggableId,
+          hitSlotData.id,
+          draggableData
+        );
+
         // Update state to DROPPED when successfully dropped
         runOnJS(setState)(DraggableState.DROPPED);
 
@@ -382,6 +395,9 @@ export const useDraggable = <TData = unknown>(
         finalTyValue = 0;
         // When not dropped in a valid slot, we'll transition back to IDLE
         runOnJS(setState)(DraggableState.IDLE);
+
+        // Unregister from droppable map if was previously dropped
+        runOnJS(unregisterDroppedItem)(internalDraggableId);
       }
       runOnUI(animateDragEndPosition)(finalTxValue, finalTyValue);
     },
@@ -391,6 +407,9 @@ export const useDraggable = <TData = unknown>(
       collisionAlgorithm,
       performCollisionCheck,
       setState,
+      internalDraggableId,
+      registerDroppedItem,
+      unregisterDroppedItem,
     ]
   );
 
@@ -560,10 +579,20 @@ export const useDraggable = <TData = unknown>(
       if (result.isZero && previous && !previous.isZero) {
         // Use runOnJS to call setState from the UI thread
         runOnJS(setState)(DraggableState.IDLE);
+        // When returning to origin position, we know we're no longer dropped
+        runOnJS(unregisterDroppedItem)(internalDraggableId);
       }
     },
-    [setState] // Dependencies
+    [setState, unregisterDroppedItem, internalDraggableId]
   );
+
+  // Clean up on unmount
+  useEffect(() => {
+    return () => {
+      // Clean up any registered drops when unmounting
+      unregisterDroppedItem(internalDraggableId);
+    };
+  }, [internalDraggableId, unregisterDroppedItem]);
 
   return {
     animatedViewProps: {

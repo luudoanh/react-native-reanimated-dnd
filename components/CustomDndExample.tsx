@@ -1,4 +1,4 @@
-import React, { useRef, useCallback, useState } from "react";
+import React, { useRef, useCallback, useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -26,7 +26,11 @@ import {
   UseDroppableOptions,
   UseDroppableReturn,
 } from "../hooks/useDroppable";
-import { DropProvider, DropProviderRef } from "../context/DropContext";
+import {
+  DropProvider,
+  DropProviderRef,
+  DroppedItemsMap,
+} from "../context/DropContext";
 import { Droppable } from "../components/Droppable";
 import { Draggable } from "../components/Draggable";
 
@@ -64,16 +68,21 @@ const MyDraggable = <TData extends object>({
 interface MyDroppableProps<TData> extends UseDroppableOptions<TData> {
   children: React.ReactNode;
   style?: StyleProp<ViewStyle>;
+  droppableId?: string;
 }
 
 const MyDroppable = <TData extends object>({
   children,
   style,
+  droppableId,
   ...droppableOptions
 }: MyDroppableProps<TData>) => {
   const viewRef = useRef<View>(null);
   const { viewProps, isActive }: UseDroppableReturn = useDroppable<TData>(
-    droppableOptions,
+    {
+      ...droppableOptions,
+      droppableId,
+    },
     viewRef
   );
 
@@ -120,6 +129,21 @@ export default function CustomDndExample() {
   const [dragState, setDragState] = useState<DraggableState>(
     DraggableState.IDLE
   );
+  // New state to track the current dropped items map
+  const [droppedItemsMap, setDroppedItemsMap] = useState<DroppedItemsMap>({});
+
+  // Replace the interval with a callback
+  const handleDroppedItemsUpdate = useCallback((items: DroppedItemsMap) => {
+    setDroppedItemsMap(items);
+    console.log("Dropped items updated:", items);
+  }, []);
+
+  // ... existing log effect can stay ...
+  useEffect(() => {
+    if (Object.keys(droppedItemsMap).length > 0) {
+      console.log("Current dropped items map:", droppedItemsMap);
+    }
+  }, [droppedItemsMap]);
 
   const handleScrollEnd = useCallback(() => {
     let localScrollTimeout: NodeJS.Timeout | null = null;
@@ -162,6 +186,7 @@ export default function CustomDndExample() {
       <DropProvider
         ref={dropProviderRef}
         onLayoutUpdateComplete={handleLayoutUpdateComplete}
+        onDroppedItemsUpdate={handleDroppedItemsUpdate}
       >
         <ScrollView
           style={styles.scrollViewBase}
@@ -171,6 +196,117 @@ export default function CustomDndExample() {
           scrollEventThrottle={16}
         >
           <Text style={styles.header}>Drag & Drop Playground</Text>
+
+          {/* Add new section for Dropped Items Map tracking */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Dropped Items Map Demo</Text>
+            <Text style={styles.sectionDescription}>
+              This example demonstrates tracking which draggables are currently
+              dropped on which droppables.
+            </Text>
+
+            <View style={styles.dropZoneArea}>
+              <Droppable<DraggableItemData>
+                droppableId="drop-zone-1"
+                style={[styles.dropZone, styles.dropZoneBlue]}
+                onDrop={(data) => {
+                  Alert.alert(
+                    "Item Dropped",
+                    `Item "${data.label}" dropped on Zone 1`
+                  );
+                }}
+              >
+                <Text style={styles.dropZoneText}>Zone 1</Text>
+                <Text style={styles.dZoneSubText}>(ID: drop-zone-1)</Text>
+              </Droppable>
+
+              <Droppable<DraggableItemData>
+                droppableId="drop-zone-2"
+                style={[styles.dropZone, styles.dropZoneGreen]}
+                onDrop={(data) => {
+                  Alert.alert(
+                    "Item Dropped",
+                    `Item "${data.label}" dropped on Zone 2`
+                  );
+                }}
+              >
+                <Text style={styles.dropZoneText}>Zone 2</Text>
+                <Text style={styles.dZoneSubText}>(ID: drop-zone-2)</Text>
+              </Droppable>
+            </View>
+
+            <View style={styles.draggableItemsArea}>
+              <Draggable<DraggableItemData>
+                key="map-item-1"
+                draggableId="map-item-1"
+                data={{
+                  id: "map-item-1",
+                  label: "Item Alpha",
+                  backgroundColor: "#f94144",
+                }}
+                style={[
+                  styles.draggable,
+                  {
+                    top: 0,
+                    left: 20,
+                    backgroundColor: "#f94144",
+                    borderRadius: 12,
+                  },
+                ]}
+              >
+                <View style={commonCardStyle}>
+                  <Text style={styles.cardLabel}>Item Alpha</Text>
+                  <Text style={styles.cardHint}>ID: map-item-1</Text>
+                </View>
+              </Draggable>
+
+              <Draggable<DraggableItemData>
+                key="map-item-2"
+                draggableId="map-item-2"
+                data={{
+                  id: "map-item-2",
+                  label: "Item Beta",
+                  backgroundColor: "#f3722c",
+                }}
+                style={[
+                  styles.draggable,
+                  {
+                    top: 0,
+                    left: 160,
+                    backgroundColor: "#f3722c",
+                    borderRadius: 12,
+                  },
+                ]}
+              >
+                <View style={commonCardStyle}>
+                  <Text style={styles.cardLabel}>Item Beta</Text>
+                  <Text style={styles.cardHint}>ID: map-item-2</Text>
+                </View>
+              </Draggable>
+            </View>
+
+            {/* Add section to display the current mapping */}
+            <View style={styles.mappingContainer}>
+              <Text style={styles.mappingTitle}>Current Dropped Items:</Text>
+              {Object.keys(droppedItemsMap).length === 0 ? (
+                <Text style={styles.mappingEmpty}>
+                  No items currently dropped
+                </Text>
+              ) : (
+                Object.entries(droppedItemsMap).map(([draggableId, info]) => (
+                  <View key={draggableId} style={styles.mappingItem}>
+                    <Text style={styles.mappingText}>
+                      <Text style={styles.mappingLabel}>{draggableId}</Text> is
+                      dropped on zone{" "}
+                      <Text style={styles.mappingValue}>
+                        {info.droppableId}
+                      </Text>
+                    </Text>
+                  </View>
+                ))
+              )}
+            </View>
+          </View>
 
           {/* New Section for Drag State Demo */}
           <View style={styles.section}>
@@ -183,6 +319,7 @@ export default function CustomDndExample() {
 
             <View style={styles.dropZoneArea}>
               <Droppable<DraggableItemData>
+                droppableId="state-demo-drop-zone"
                 style={[styles.dropZone, styles.dropZoneBlue]}
                 onDrop={(data) => {
                   Alert.alert(
@@ -278,6 +415,7 @@ export default function CustomDndExample() {
               ]}
             >
               <MyDroppable<DraggableItemData>
+                droppableId="narrow-zone"
                 style={[
                   styles.dropZone,
                   styles.dropZoneBlue,
@@ -296,6 +434,7 @@ export default function CustomDndExample() {
                 </Text>
               </MyDroppable>
               <MyDroppable<DraggableItemData>
+                droppableId="contain-zone"
                 style={[
                   styles.dropZone,
                   styles.dropZoneGreen,
@@ -403,6 +542,7 @@ export default function CustomDndExample() {
             <Text style={styles.sectionTitle}>Basic Drag & Drop</Text>
             <View style={styles.dropZoneArea}>
               <MyDroppable<DraggableItemData>
+                droppableId="zone-alpha"
                 style={[styles.dropZone, styles.dropZoneBlue]}
                 onDrop={(data) =>
                   Alert.alert("Drop!", `"${data.label}" dropped on Zone Alpha`)
@@ -412,6 +552,7 @@ export default function CustomDndExample() {
                 <Text style={styles.dZoneSubText}>(Align: Center)</Text>
               </MyDroppable>
               <MyDroppable<DraggableItemData>
+                droppableId="zone-beta"
                 style={[styles.dropZone, styles.dropZoneGreen]}
                 onDrop={(data) =>
                   Alert.alert("Drop!", `"${data.label}" dropped on Zone Beta`)
@@ -478,6 +619,7 @@ export default function CustomDndExample() {
               <View style={styles.dropZoneColumn}>
                 <Text style={styles.customStyleLabel}>Pulse Effect</Text>
                 <Droppable<DraggableItemData>
+                  droppableId="pulse-zone"
                   style={[styles.dropZone, styles.customDropZone]}
                   onDrop={(data: DraggableItemData) =>
                     Alert.alert("Dropped!", `${data.label} on pulse zone`)
@@ -491,6 +633,7 @@ export default function CustomDndExample() {
               <View style={styles.dropZoneColumn}>
                 <Text style={styles.customStyleLabel}>Glow Effect</Text>
                 <Droppable<DraggableItemData>
+                  droppableId="glow-zone"
                   style={[styles.dropZone, styles.customDropZone]}
                   onDrop={(data: DraggableItemData) =>
                     Alert.alert("Dropped!", `${data.label} on glow zone`)
@@ -527,6 +670,7 @@ export default function CustomDndExample() {
             <Text style={styles.sectionTitle}>Bounded Dragging</Text>
             <View ref={boundsViewRef} style={styles.boundsContainer}>
               <MyDroppable<DraggableItemData>
+                droppableId="bounded-zone"
                 style={[styles.innerDropZone, styles.dropZoneBlue]}
                 onDrop={(data) =>
                   Alert.alert(
@@ -566,6 +710,7 @@ export default function CustomDndExample() {
             <Text style={styles.sectionTitle}>X-Axis Constrained Dragging</Text>
             <View style={styles.axisConstraintContainer}>
               <MyDroppable<DraggableItemData>
+                droppableId="x-axis-left"
                 style={[
                   styles.xAxisDropZone,
                   styles.dropZoneBlue,
@@ -579,6 +724,7 @@ export default function CustomDndExample() {
               </MyDroppable>
 
               <MyDroppable<DraggableItemData>
+                droppableId="x-axis-right"
                 style={[
                   styles.xAxisDropZone,
                   styles.dropZoneGreen,
@@ -621,6 +767,7 @@ export default function CustomDndExample() {
             <Text style={styles.sectionTitle}>Y-Axis Constrained Dragging</Text>
             <View style={styles.yAxisConstraintContainer}>
               <MyDroppable<DraggableItemData>
+                droppableId="y-axis-top"
                 style={[styles.yAxisDropZone, styles.dropZoneBlue, { top: 10 }]}
                 onDrop={(data) =>
                   Alert.alert("Drop!", `"${data.label}" dropped on top zone`)
@@ -630,6 +777,7 @@ export default function CustomDndExample() {
               </MyDroppable>
 
               <MyDroppable<DraggableItemData>
+                droppableId="y-axis-bottom"
                 style={[
                   styles.yAxisDropZone,
                   styles.dropZoneGreen,
@@ -672,6 +820,7 @@ export default function CustomDndExample() {
             <Text style={styles.sectionTitle}>Bounded Y-Axis Dragging</Text>
             <View ref={boundsViewRef2} style={styles.verticalBoundsContainer}>
               <MyDroppable<DraggableItemData>
+                droppableId="bounded-y-axis-target"
                 style={[styles.yAxisBoundedDropZone, styles.dropZoneBlue]}
                 onDrop={(data) =>
                   Alert.alert(
@@ -971,5 +1120,40 @@ const styles = StyleSheet.create({
   stateText: {
     fontSize: 14,
     color: "#e6edf3",
+  },
+  mappingContainer: {
+    marginTop: 24,
+    padding: 16,
+    backgroundColor: "rgba(255, 255, 255, 0.05)",
+    borderRadius: 12,
+  },
+  mappingTitle: {
+    fontSize: 16,
+    fontWeight: "600",
+    marginBottom: 12,
+    color: "#e6edf3",
+  },
+  mappingItem: {
+    padding: 10,
+    marginVertical: 4,
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
+    borderRadius: 8,
+  },
+  mappingText: {
+    fontSize: 14,
+    color: "#e6edf3",
+  },
+  mappingEmpty: {
+    fontSize: 14,
+    color: "#a3b3bc",
+    fontStyle: "italic",
+  },
+  mappingLabel: {
+    fontWeight: "600",
+    color: "#58a6ff",
+  },
+  mappingValue: {
+    fontWeight: "600",
+    color: "#3fb950",
   },
 });

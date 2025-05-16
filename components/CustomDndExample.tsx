@@ -94,6 +94,8 @@ const MyDroppable = <TData extends object>({
 
 // 3. Example Usage
 export default function CustomDndExample() {
+  const boundsViewRef = useRef<View>(null); // Ref for the bounding view
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <DropProvider>
@@ -175,6 +177,30 @@ export default function CustomDndExample() {
               <Text style={{ fontSize: 10 }}>(Custom Anim)</Text>
             </View>
           </MyDraggable>
+
+          {/* Draggable with Bounds Example */}
+          <View
+            ref={boundsViewRef}
+            style={styles.boundsContainer} // Style for the bounding box
+          >
+            <MyDraggable<{ id: number; message: string }>
+              data={{ id: 4, message: "Bounded Draggable" }}
+              initialStyle={styles.customCard4}
+              onDragStart={() => console.log("Drag Start: Bounded Card")}
+              onDragEnd={() => console.log("Drag End: Bounded Card")}
+              onDragging={({ tx, ty }) =>
+                console.log(
+                  `Bounded Card: tx=${tx.toFixed(2)}, ty=${ty.toFixed(2)}`
+                )
+              }
+              dragBoundsRef={boundsViewRef} // Pass the ref here
+            >
+              <View style={styles.cardContent}>
+                <Text>Drag Me</Text>
+                <Text style={{ fontSize: 10 }}>(Bounded)</Text>
+              </View>
+            </MyDraggable>
+          </View>
         </View>
       </DropProvider>
     </GestureHandlerRootView>
@@ -186,6 +212,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 50,
     backgroundColor: "#f0f0f0",
+    position: "relative", // Needed for absolute positioning of bounds container if desired
   },
   customSlot1: {
     position: "absolute",
@@ -231,6 +258,23 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 450,
     left: 250,
+  },
+  customCard4: {
+    // Initial position within its bounds container, or absolute if you prefer
+    // For this example, let it be positioned by its parent flex layout initially
+  },
+  boundsContainer: {
+    position: "absolute", // Example positioning
+    top: 200,
+    left: 30,
+    width: 300,
+    height: 400,
+    borderColor: "red",
+    borderWidth: 2,
+    flexDirection: "column",
+    backgroundColor: "rgba(255,0,0,0.1)",
+    justifyContent: "center", // Optional: if you want to center the draggable initially
+    alignItems: "center", // Optional: if you want to center the draggable initially
   },
   cardContent: {
     width: 120,

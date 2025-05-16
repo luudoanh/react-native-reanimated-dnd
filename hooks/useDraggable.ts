@@ -1,6 +1,6 @@
 // hooks/useDraggable.ts
 import React, { useRef, useCallback, useContext, useEffect } from "react";
-import { LayoutChangeEvent, ViewStyle } from "react-native";
+import { LayoutChangeEvent, ViewStyle, View } from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -37,6 +37,7 @@ export interface UseDraggableOptions<TData = unknown> {
     itemData: TData;
   }) => void;
   animationFunction?: AnimationFunction; // New option for custom animation
+  dragBoundsRef?: React.RefObject<Animated.View | View>; // New option for bounds
 }
 
 export interface UseDraggableReturn {
@@ -58,6 +59,7 @@ export const useDraggable = <TData = unknown>(
     onDragEnd,
     onDragging,
     animationFunction, // Captured from options
+    dragBoundsRef, // Captured from options
   } = options;
 
   const tx = useSharedValue(0);
@@ -72,9 +74,66 @@ export const useDraggable = <TData = unknown>(
   const itemH = useSharedValue(0);
   const isOriginSet = useRef(false);
 
+  // Shared values for bounds
+  const boundsX = useSharedValue(0);
+  const boundsY = useSharedValue(0);
+  const boundsWidth = useSharedValue(0);
+  const boundsHeight = useSharedValue(0);
+  const boundsAreSet = useSharedValue(false);
+
   useEffect(() => {
     dragDisabledShared.value = dragDisabled;
   }, [dragDisabled, dragDisabledShared]);
+
+  // Effect to measure bounds
+  useEffect(() => {
+    const view = dragBoundsRef?.current;
+    if (view) {
+      view.measure(
+        (_xInWindow, _yInWindow, widthMeasure, heightMeasure, pageX, pageY) => {
+          if (
+            typeof pageX === "number" &&
+            typeof pageY === "number" &&
+            widthMeasure > 0 &&
+            heightMeasure > 0
+          ) {
+            runOnUI(() => {
+              "worklet";
+              boundsX.value = pageX;
+              boundsY.value = pageY;
+              boundsWidth.value = widthMeasure;
+              boundsHeight.value = heightMeasure;
+              boundsAreSet.value = true;
+            })();
+          } else {
+            runOnUI(() => {
+              "worklet";
+              boundsAreSet.value = false;
+            })();
+            console.warn(
+              "useDraggable: dragBoundsRef measurement failed or returned invalid dimensions."
+            );
+          }
+        }
+      );
+    } else {
+      runOnUI(() => {
+        "worklet";
+        boundsAreSet.value = false; // Reset if no ref
+      })();
+    }
+    // This effect relies on dragBoundsRef.current.
+    // It will run when dragBoundsRef object itself changes.
+    // If dragBoundsRef.current becomes available or changes layout without the ref object changing,
+    // this effect won't automatically re-run to update bounds.
+  }, [
+    dragBoundsRef,
+    boundsX,
+    boundsY,
+    boundsWidth,
+    boundsHeight,
+    boundsAreSet,
+  ]);
 
   const handleLayoutHandler = useCallback(
     (event: LayoutChangeEvent) => {
@@ -229,8 +288,30 @@ export const useDraggable = <TData = unknown>(
         .onUpdate((event: PanGestureHandlerEventPayload) => {
           "worklet";
           if (dragDisabledShared.value) return;
-          tx.value = offsetX.value + event.translationX;
-          ty.value = offsetY.value + event.translationY;
+
+          let newTx = offsetX.value + event.translationX;
+          let newTy = offsetY.value + event.translationY;
+
+          if (boundsAreSet.value) {
+            const currentItemW = itemW.value;
+            const currentItemH = itemH.value;
+
+            // Calculate min/max translation allowed for the draggable's top-left corner
+            // based on its own origin (originX, originY) and the bounds
+            const minTx = boundsX.value - originX.value;
+            const maxTx =
+              boundsX.value + boundsWidth.value - originX.value - currentItemW;
+            const minTy = boundsY.value - originY.value;
+            const maxTy =
+              boundsY.value + boundsHeight.value - originY.value - currentItemH;
+
+            newTx = Math.max(minTx, Math.min(newTx, maxTx));
+            newTy = Math.max(minTy, Math.min(newTy, maxTy));
+          }
+
+          tx.value = newTx;
+          ty.value = newTy;
+
           if (onDragging) {
             runOnJS(onDragging)({
               x: originX.value,
@@ -283,6 +364,11 @@ export const useDraggable = <TData = unknown>(
       setActiveHoverSlot,
       animationFunction, // Keep animationFunction here, as it affects animateDragEndPosition, which in turn affects processDropAndAnimate
       onDragging,
+      boundsAreSet,
+      boundsX,
+      boundsY,
+      boundsWidth,
+      boundsHeight,
     ]
   );
 

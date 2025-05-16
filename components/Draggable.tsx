@@ -28,33 +28,34 @@ export const Draggable = <TData = unknown,>({
   onDragging,
   dragBoundsRef,
   dragAxis, // Added dragAxis here
+  activeStyle, // Add activeStyle prop
   // Component-specific props
   style: componentStyle, // Rename to avoid conflict with hook's returned style
   children,
 }: DraggableProps<TData>) => {
   const animatedViewRef = useRef<Animated.View>(null);
 
-  const { animatedViewProps, gesture }: UseDraggableReturn =
-    useDraggable<TData>(
-      {
-        data,
-        dragDisabled,
-        onDragStart,
-        onDragEnd,
-        animationFunction,
-        onDragging,
-        dragBoundsRef,
-        dragAxis, // Pass dragAxis to the hook
-      },
-      animatedViewRef
-    );
+  const { animatedViewProps, gesture } = useDraggable<TData>(
+    {
+      data,
+      dragDisabled,
+      onDragStart,
+      onDragEnd,
+      animationFunction,
+      onDragging,
+      dragBoundsRef,
+      dragAxis,
+      activeStyle,
+    },
+    animatedViewRef
+  );
 
   return (
     <GestureDetector gesture={gesture}>
       <Animated.View
         ref={animatedViewRef}
-        {...animatedViewProps} // Spread the animated view props
-        style={[componentStyle, animatedViewProps.style]} // Combine static and animated styles
+        {...animatedViewProps}
+        style={[componentStyle, animatedViewProps.style]}
       >
         {children}
       </Animated.View>

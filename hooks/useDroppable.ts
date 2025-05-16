@@ -1,5 +1,17 @@
-import React, { useRef, useEffect, useContext, useCallback } from "react";
-import { View, LayoutChangeEvent } from "react-native";
+import React, {
+  useRef,
+  useEffect,
+  useContext,
+  useCallback,
+  useMemo,
+} from "react";
+import {
+  View,
+  LayoutChangeEvent,
+  StyleProp,
+  ViewStyle,
+  StyleSheet,
+} from "react-native";
 import {
   SlotsContext,
   SlotsContextValue,
@@ -14,21 +26,30 @@ export interface UseDroppableOptions<TData = unknown> {
   onActiveChange?: (isActive: boolean) => void;
   dropAlignment?: DropAlignment;
   dropOffset?: DropOffset;
+  activeStyle?: StyleProp<ViewStyle>;
 }
 
 export interface UseDroppableReturn {
   viewProps: {
     onLayout: (event: LayoutChangeEvent) => void;
+    style?: StyleProp<ViewStyle>; // Style to apply when active
   };
   isActive: boolean;
+  activeStyle?: StyleProp<ViewStyle>;
 }
 
 export const useDroppable = <TData = unknown>(
   options: UseDroppableOptions<TData>,
   viewRef: React.RefObject<View>
 ): UseDroppableReturn => {
-  const { onDrop, dropDisabled, onActiveChange, dropAlignment, dropOffset } =
-    options;
+  const {
+    onDrop,
+    dropDisabled,
+    onActiveChange,
+    dropAlignment,
+    dropOffset,
+    activeStyle,
+  } = options;
   const id = useRef(_getUniqueDroppableId()).current;
   const instanceId = useRef(
     `droppable-${id}-${Math.random().toString(36).substr(2, 9)}`
@@ -44,6 +65,50 @@ export const useDroppable = <TData = unknown>(
   } = useContext(SlotsContext) as SlotsContextValue<TData>;
 
   const isActive = contextActiveHoverSlotId === id;
+
+  // Process active style to separate transforms from other styles
+  const { processedActiveStyle, activeTransforms } = useMemo(() => {
+    if (!isActive || !activeStyle) {
+      return { processedActiveStyle: null, activeTransforms: [] };
+    }
+
+    const flattenedStyle = StyleSheet.flatten(activeStyle);
+    let processedStyle = { ...flattenedStyle };
+    let transforms: any[] = [];
+
+    // Extract and process transforms if present
+    if (flattenedStyle.transform) {
+      if (Array.isArray(flattenedStyle.transform)) {
+        transforms = [...flattenedStyle.transform];
+      }
+
+      // Remove transform from the main style to avoid conflicts
+      delete processedStyle.transform;
+    }
+
+    return {
+      processedActiveStyle: processedStyle,
+      activeTransforms: transforms,
+    };
+  }, [isActive, activeStyle]);
+
+  // Create the final style with transforms properly handled
+  const combinedActiveStyle = useMemo(() => {
+    if (!isActive || !activeStyle) {
+      return undefined;
+    }
+
+    // If there are no transforms, just return the processed style
+    if (activeTransforms.length === 0) {
+      return processedActiveStyle;
+    }
+
+    // Add transforms to the style
+    return {
+      ...processedActiveStyle,
+      transform: activeTransforms,
+    };
+  }, [isActive, activeStyle, processedActiveStyle, activeTransforms]);
 
   useEffect(() => {
     onActiveChange?.(isActive);
@@ -116,7 +181,9 @@ export const useDroppable = <TData = unknown>(
   return {
     viewProps: {
       onLayout: handleLayoutHandler,
+      style: combinedActiveStyle,
     },
     isActive,
+    activeStyle,
   };
 };

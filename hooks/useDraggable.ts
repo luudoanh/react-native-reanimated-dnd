@@ -1,6 +1,19 @@
 // hooks/useDraggable.ts
-import React, { useRef, useCallback, useContext, useEffect } from "react";
-import { LayoutChangeEvent, ViewStyle, View } from "react-native";
+import React, {
+  useRef,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import {
+  LayoutChangeEvent,
+  ViewStyle,
+  View,
+  StyleProp,
+  StyleSheet,
+} from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -41,6 +54,7 @@ export interface UseDraggableOptions<TData = unknown> {
   animationFunction?: AnimationFunction; // New option for custom animation
   dragBoundsRef?: React.RefObject<Animated.View | View>; // New option for bounds
   dragAxis?: "x" | "y" | "both"; // New option for drag axis constraint
+  activeStyle?: StyleProp<ViewStyle>; // New option for styling while dragging
 }
 
 export interface UseDraggableReturn {
@@ -49,6 +63,8 @@ export interface UseDraggableReturn {
     onLayout: (event: LayoutChangeEvent) => void;
   };
   gesture: GestureType;
+  isDragging: boolean; // New property indicating if the item is being dragged
+  activeStyle?: StyleProp<ViewStyle>; // Pass through the active style
 }
 
 export const useDraggable = <TData = unknown>(
@@ -64,6 +80,7 @@ export const useDraggable = <TData = unknown>(
     animationFunction, // Captured from options
     dragBoundsRef, // Captured from options
     dragAxis = "both", // Default to "both" if not provided
+    activeStyle, // New prop
   } = options;
 
   const tx = useSharedValue(0);
@@ -89,6 +106,12 @@ export const useDraggable = <TData = unknown>(
   const boundsHeight = useSharedValue(0);
   const boundsAreSet = useSharedValue(false);
 
+  // Track if the component is currently being dragged
+  const [isDragging, setIsDragging] = useState(false);
+
+  // Shared value for active style state
+  const isActive = useSharedValue(false);
+
   const {
     getSlots,
     setActiveHoverSlot,
@@ -104,6 +127,36 @@ export const useDraggable = <TData = unknown>(
   useEffect(() => {
     dragAxisShared.value = dragAxis;
   }, [dragAxis, dragAxisShared]);
+
+  // Process active style to separate transforms from other styles
+  const { processedActiveStyle, activeTransforms } = useMemo(() => {
+    if (!activeStyle) {
+      return { processedActiveStyle: null, activeTransforms: [] };
+    }
+
+    const flattenedStyle = StyleSheet.flatten(activeStyle);
+    let processedStyle = { ...flattenedStyle };
+    let transforms: any[] = [];
+
+    // Extract and process transforms if present
+    if (flattenedStyle.transform) {
+      if (Array.isArray(flattenedStyle.transform)) {
+        // Extract transforms that don't conflict with translations
+        transforms = flattenedStyle.transform.filter((t) => {
+          const transformType = Object.keys(t)[0];
+          return transformType && !transformType.startsWith("translate");
+        });
+      }
+
+      // Remove transform from the main style to avoid conflicts
+      delete processedStyle.transform;
+    }
+
+    return {
+      processedActiveStyle: processedStyle,
+      activeTransforms: transforms,
+    };
+  }, [activeStyle]);
 
   // Function to update draggable position
   const updateDraggablePosition = useCallback(() => {
@@ -403,6 +456,8 @@ export const useDraggable = <TData = unknown>(
           if (dragDisabledShared.value) return;
           offsetX.value = tx.value;
           offsetY.value = ty.value;
+          isActive.value = true;
+          runOnJS(setIsDragging)(true);
           if (onDragStart) runOnJS(onDragStart)(data);
         })
         .onUpdate((event: PanGestureHandlerEventPayload) => {
@@ -463,6 +518,8 @@ export const useDraggable = <TData = unknown>(
         .onEnd(() => {
           "worklet";
           if (dragDisabledShared.value) return;
+          isActive.value = false;
+          runOnJS(setIsDragging)(false);
           if (onDragEnd) runOnJS(onDragEnd)(data);
           runOnJS(processDropAndAnimate)(
             tx.value, // Pass current translation values
@@ -479,7 +536,7 @@ export const useDraggable = <TData = unknown>(
       dragDisabledShared,
       offsetX,
       offsetY,
-      tx, // tx, ty are captured by animateDragEndPosition, which is part of processDropAndAnimate's closure indirectly
+      tx,
       ty,
       originX,
       originY,
@@ -488,26 +545,41 @@ export const useDraggable = <TData = unknown>(
       onDragStart,
       onDragEnd,
       data,
-      processDropAndAnimate, // This now depends on animateDragEndPosition, which depends on animationFunction
+      processDropAndAnimate,
       updateHoverState,
       setActiveHoverSlot,
-      animationFunction, // Keep animationFunction here, as it affects animateDragEndPosition, which in turn affects processDropAndAnimate
+      animationFunction,
       onDragging,
       boundsAreSet,
       boundsX,
       boundsY,
       boundsWidth,
       boundsHeight,
-      dragAxisShared, // Add dragAxisShared to dependencies
+      dragAxisShared,
+      setIsDragging,
+      isActive,
     ]
   );
 
-  const animatedStyleProp = useAnimatedStyle(
-    () => ({
-      transform: [{ translateX: tx.value }, { translateY: ty.value }],
-    }),
-    [tx, ty]
-  );
+  // Create the basic animated style with translations and active styles
+  const animatedStyleProp = useAnimatedStyle(() => {
+    // Start with the basic translation transforms
+    const transformStyles = [
+      { translateX: tx.value },
+      { translateY: ty.value },
+    ];
+
+    // If dragging and active transforms exist, add them
+    if (isActive.value && activeTransforms.length > 0) {
+      transformStyles.push(...activeTransforms);
+    }
+
+    // Build the full style with active styles when dragging
+    return {
+      ...(isActive.value ? processedActiveStyle : {}),
+      transform: transformStyles,
+    };
+  }, [tx, ty, isActive, processedActiveStyle, activeTransforms]);
 
   return {
     animatedViewProps: {
@@ -515,5 +587,7 @@ export const useDraggable = <TData = unknown>(
       onLayout: handleLayoutHandler,
     },
     gesture,
+    isDragging,
+    activeStyle,
   };
 };

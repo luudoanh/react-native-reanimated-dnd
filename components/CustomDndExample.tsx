@@ -29,6 +29,8 @@ import {
   DropOffset,
   DropProviderRef,
 } from "../context/DropContext";
+import { Droppable } from "../components/Droppable";
+import { Draggable } from "../components/Draggable";
 
 // 1. Custom Draggable Component using the hook (restored)
 interface MyDraggableProps<TData> extends UseDraggableOptions<TData> {
@@ -42,15 +44,29 @@ const MyDraggable = <TData extends object>({
   ...draggableOptions
 }: MyDraggableProps<TData>) => {
   const animatedViewRef = useRef<Animated.View>(null);
-  const { animatedViewProps, gesture }: UseDraggableReturn =
-    useDraggable<TData>(draggableOptions, animatedViewRef);
+  const {
+    animatedViewProps,
+    gesture,
+    isDragging,
+    activeStyle,
+  }: UseDraggableReturn = useDraggable<TData>(
+    draggableOptions,
+    animatedViewRef
+  );
+
+  // Apply active style when dragging
+  const combinedStyle = [
+    initialStyle,
+    animatedViewProps.style,
+    isDragging && activeStyle,
+  ];
 
   return (
     <GestureDetector gesture={gesture}>
       <Animated.View
         ref={animatedViewRef}
         {...animatedViewProps}
-        style={[initialStyle, animatedViewProps.style]}
+        style={combinedStyle}
       >
         {children}
       </Animated.View>
@@ -126,6 +142,50 @@ export default function CustomDndExample() {
     // console.log('DropProvider: Position recalculation completed.');
   }, []);
 
+  // Custom active styles for different drop zones
+  const pulseActiveStyle: StyleProp<ViewStyle> = {
+    borderColor: "#ff6b6b",
+    borderWidth: 3,
+    transform: [{ scale: 1.05 }],
+    shadowColor: "#ff6b6b",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.5,
+    shadowRadius: 10,
+    elevation: 8,
+  };
+
+  const glowActiveStyle: StyleProp<ViewStyle> = {
+    borderColor: "#4cc9f0",
+    backgroundColor: "rgba(76, 201, 240, 0.2)",
+    shadowColor: "#4cc9f0",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.7,
+    shadowRadius: 12,
+    elevation: 10,
+  };
+
+  // Custom active styles for draggables
+  const draggablePulseStyle: StyleProp<ViewStyle> = {
+    borderColor: "#ff6b6b",
+    borderWidth: 3,
+    transform: [{ scale: 1.1 }],
+    shadowColor: "#ff6b6b",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.8,
+    shadowRadius: 10,
+    elevation: 8,
+  };
+
+  const draggableGlowStyle: StyleProp<ViewStyle> = {
+    borderColor: "#4cc9f0",
+    backgroundColor: "rgba(76, 201, 240, 0.3)",
+    shadowColor: "#4cc9f0",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.9,
+    shadowRadius: 15,
+    elevation: 10,
+  };
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <DropProvider
@@ -140,6 +200,101 @@ export default function CustomDndExample() {
           scrollEventThrottle={16}
         >
           <Text style={styles.header}>Drag & Drop Playground</Text>
+
+          {/* Add new section for draggable active styles */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Draggable Active Styles</Text>
+            <Text style={styles.sectionDescription}>
+              These items show different active styles when being dragged
+            </Text>
+
+            <View style={styles.draggableItemsArea}>
+              <Draggable<DraggableItemData>
+                data={{
+                  id: "D-AS1",
+                  label: "Pulse Effect Draggable",
+                  backgroundColor: "#ffd6ff",
+                }}
+                style={[
+                  styles.draggable,
+                  { top: 0, left: 30, backgroundColor: "#ffd6ff" },
+                ]}
+                activeStyle={draggablePulseStyle}
+              >
+                <View style={commonCardStyle}>
+                  <Text style={styles.cardLabel}>Pulse Effect</Text>
+                  <Text style={styles.cardHint}>Try me!</Text>
+                </View>
+              </Draggable>
+
+              <Draggable<DraggableItemData>
+                data={{
+                  id: "D-AS2",
+                  label: "Glow Effect Draggable",
+                  backgroundColor: "#c8b6ff",
+                }}
+                style={[
+                  styles.draggable,
+                  { top: 0, left: 170, backgroundColor: "#c8b6ff" },
+                ]}
+                activeStyle={draggableGlowStyle}
+              >
+                <View style={commonCardStyle}>
+                  <Text style={styles.cardLabel}>Glow Effect</Text>
+                  <Text style={styles.cardHint}>Try me!</Text>
+                </View>
+              </Draggable>
+
+              {/* Using MyDraggable with activeStyle */}
+              <MyDraggable<DraggableItemData>
+                data={{
+                  id: "D-AS3",
+                  label: "Custom Component with Active Style",
+                  backgroundColor: "#b8e0d2",
+                }}
+                initialStyle={[
+                  styles.draggable,
+                  { top: 100, left: 30, backgroundColor: "#b8e0d2" },
+                ]}
+                activeStyle={{
+                  borderWidth: 2,
+                  borderColor: "#006d77",
+                  shadowColor: "#006d77",
+                  shadowOpacity: 0.7,
+                  shadowRadius: 8,
+                  shadowOffset: { width: 0, height: 0 },
+                  elevation: 8,
+                }}
+              >
+                <View style={commonCardStyle}>
+                  <Text style={styles.cardLabel}>Custom Comp</Text>
+                  <Text style={styles.cardHint}>With Active Style</Text>
+                </View>
+              </MyDraggable>
+
+              {/* Another example with different style */}
+              <MyDraggable<DraggableItemData>
+                data={{
+                  id: "D-AS4",
+                  label: "Zoom Effect",
+                  backgroundColor: "#eac4d5",
+                }}
+                initialStyle={[
+                  styles.draggable,
+                  { top: 100, left: 170, backgroundColor: "#eac4d5" },
+                ]}
+                activeStyle={{
+                  transform: [{ scale: 1.2 }],
+                  zIndex: 10,
+                }}
+              >
+                <View style={commonCardStyle}>
+                  <Text style={styles.cardLabel}>Zoom</Text>
+                  <Text style={styles.cardHint}>Scale up</Text>
+                </View>
+              </MyDraggable>
+            </View>
+          </View>
 
           {/* Section 1: Free Draggables & Multiple Drop Zones */}
           <View style={styles.section}>
@@ -197,6 +352,56 @@ export default function CustomDndExample() {
               >
                 <View style={commonCardStyle}>
                   <Text style={styles.cardLabel}>Custom Anim</Text>
+                </View>
+              </MyDraggable>
+            </View>
+          </View>
+
+          {/* Section with custom activeStyle prop examples */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Custom Active Styles</Text>
+            <View style={styles.dropZoneArea}>
+              <View style={styles.dropZoneColumn}>
+                <Text style={styles.customStyleLabel}>Pulse Effect</Text>
+                <Droppable<DraggableItemData>
+                  style={[styles.dropZone, styles.customDropZone]}
+                  onDrop={(data: DraggableItemData) =>
+                    Alert.alert("Dropped!", `${data.label} on pulse zone`)
+                  }
+                  activeStyle={pulseActiveStyle}
+                >
+                  <Text>Pulse Zone</Text>
+                </Droppable>
+              </View>
+
+              <View style={styles.dropZoneColumn}>
+                <Text style={styles.customStyleLabel}>Glow Effect</Text>
+                <Droppable<DraggableItemData>
+                  style={[styles.dropZone, styles.customDropZone]}
+                  onDrop={(data: DraggableItemData) =>
+                    Alert.alert("Dropped!", `${data.label} on glow zone`)
+                  }
+                  activeStyle={glowActiveStyle}
+                >
+                  <Text>Glow Zone</Text>
+                </Droppable>
+              </View>
+            </View>
+
+            <View style={styles.draggableItemsArea}>
+              <MyDraggable<DraggableItemData>
+                data={{
+                  id: "D10",
+                  label: "Drop me on the custom zones",
+                  backgroundColor: "#c1a1d3",
+                }}
+                initialStyle={[
+                  styles.draggable,
+                  { top: 0, left: 100, backgroundColor: "#c1a1d3" },
+                ]}
+              >
+                <View style={commonCardStyle}>
+                  <Text style={styles.cardLabel}>Try Me</Text>
                 </View>
               </MyDraggable>
             </View>
@@ -419,6 +624,22 @@ const styles = StyleSheet.create({
     minHeight: 90,
     marginBottom: 24,
   },
+  dropZoneColumn: {
+    alignItems: "center",
+    width: "45%",
+  },
+  customStyleLabel: {
+    fontSize: 12,
+    fontWeight: "500",
+    marginBottom: 8,
+    color: "#666",
+  },
+  customDropZone: {
+    borderColor: "#adb5bd",
+    backgroundColor: "rgba(173, 181, 189, 0.08)",
+    height: 100,
+    width: "100%",
+  },
   dropZone: {
     width: "45%",
     height: 90,
@@ -546,5 +767,10 @@ const styles = StyleSheet.create({
   },
   cardCentered: {
     alignSelf: "center",
+  },
+  sectionDescription: {
+    fontSize: 14,
+    color: "#6c757d",
+    marginBottom: 16,
   },
 });

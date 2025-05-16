@@ -11,7 +11,6 @@
 - [x] Dragging Event (`onDragging` with position/translation updates)
 - [x] Drag Bounds (`dragBoundsRef` to confine dragging to a view)
 - [x] Drop Alignment & Offset (gravity options like 'top-left', 'center', and `dropOffset` for fine-tuning)
-- [ ] **Drag Handles:** Allow specifying a child element as the drag initiator.
 - [ ] **Drag Axis Constraints:** Restrict dragging to X-axis, Y-axis, or both.
 - [ ] **Customizable Drop Zone Active Styles (via prop):** Allow passing `activeStyle` to `Droppable`/`useDroppable`.
 
@@ -34,6 +33,7 @@
 - [ ] **External Control over Drag Position:** Programmatic positioning.
 - [ ] **Multiple Draggables Selection & Dragging:** Complex but powerful.
 - [ ] **Throttling/Debouncing `onDragging`:** For performance-sensitive callbacks.
+- [ ] **Drag Handles:** Allow specifying a child element as the drag initiator.
 
 ## Developer Experience & Documentation
 

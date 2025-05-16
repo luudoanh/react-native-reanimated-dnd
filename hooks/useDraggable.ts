@@ -19,6 +19,7 @@ import {
   SlotsContextValue,
   DropAlignment,
   DropOffset,
+  DropSlot,
 } from "../context/DropContext";
 
 // Type for the custom animation function
@@ -39,6 +40,7 @@ export interface UseDraggableOptions<TData = unknown> {
   }) => void;
   animationFunction?: AnimationFunction; // New option for custom animation
   dragBoundsRef?: React.RefObject<Animated.View | View>; // New option for bounds
+  dragAxis?: "x" | "y" | "both"; // New option for drag axis constraint
 }
 
 export interface UseDraggableReturn {
@@ -61,6 +63,7 @@ export const useDraggable = <TData = unknown>(
     onDragging,
     animationFunction, // Captured from options
     dragBoundsRef, // Captured from options
+    dragAxis = "both", // Default to "both" if not provided
   } = options;
 
   const tx = useSharedValue(0);
@@ -68,12 +71,16 @@ export const useDraggable = <TData = unknown>(
   const offsetX = useSharedValue(0);
   const offsetY = useSharedValue(0);
   const dragDisabledShared = useSharedValue(dragDisabled);
+  const dragAxisShared = useSharedValue(dragAxis); // Shared value for dragAxis
 
   const originX = useSharedValue(0);
   const originY = useSharedValue(0);
   const itemW = useSharedValue(0);
   const itemH = useSharedValue(0);
   const isOriginSet = useRef(false);
+  const instanceId = useRef(
+    `draggable-${Math.random().toString(36).substr(2, 9)}`
+  ).current;
 
   // Shared values for bounds
   const boundsX = useSharedValue(0);
@@ -82,51 +89,107 @@ export const useDraggable = <TData = unknown>(
   const boundsHeight = useSharedValue(0);
   const boundsAreSet = useSharedValue(false);
 
+  const {
+    getSlots,
+    setActiveHoverSlot,
+    activeHoverSlotId,
+    registerPositionUpdateListener,
+    unregisterPositionUpdateListener,
+  } = useContext(SlotsContext) as SlotsContextValue<TData>;
+
   useEffect(() => {
     dragDisabledShared.value = dragDisabled;
   }, [dragDisabled, dragDisabledShared]);
 
-  // Effect to measure bounds
   useEffect(() => {
-    const view = dragBoundsRef?.current;
-    if (view) {
-      view.measure(
-        (_xInWindow, _yInWindow, widthMeasure, heightMeasure, pageX, pageY) => {
-          if (
-            typeof pageX === "number" &&
-            typeof pageY === "number" &&
-            widthMeasure > 0 &&
-            heightMeasure > 0
-          ) {
-            runOnUI(() => {
-              "worklet";
-              boundsX.value = pageX;
-              boundsY.value = pageY;
-              boundsWidth.value = widthMeasure;
-              boundsHeight.value = heightMeasure;
-              boundsAreSet.value = true;
-            })();
-          } else {
-            runOnUI(() => {
-              "worklet";
-              boundsAreSet.value = false;
-            })();
-            console.warn(
-              "useDraggable: dragBoundsRef measurement failed or returned invalid dimensions."
-            );
-          }
+    dragAxisShared.value = dragAxis;
+  }, [dragAxis, dragAxisShared]);
+
+  // Function to update draggable position
+  const updateDraggablePosition = useCallback(() => {
+    if (!animatedViewRef.current) return;
+
+    // Capture current translations. These are needed to adjust the new origin.
+    // Accessing .value here is fine as this whole callback chain is on the JS thread.
+    const currentTx = tx.value;
+    const currentTy = ty.value;
+
+    animatedViewRef.current.measure(
+      (
+        _x: number, // x relative to parent
+        _y: number, // y relative to parent
+        widthMeasure: number,
+        heightMeasure: number,
+        pageX: number, // x relative to screen/window
+        pageY: number // y relative to screen/window
+      ) => {
+        // pageX and pageY are the current absolute screen coordinates
+        // of the draggable's top-left corner.
+
+        // The new "natural" origin of the draggable (its position if tx/ty were 0)
+        // is its current screen position minus its current translation.
+        const newOriginX = pageX - currentTx;
+        const newOriginY = pageY - currentTy;
+
+        originX.value = newOriginX;
+        originY.value = newOriginY;
+
+        itemW.value = widthMeasure;
+        itemH.value = heightMeasure;
+
+        // isOriginSet is mostly for the initial setup, but keeping it true
+        // indicates that origin calculations have been performed.
+        if (!isOriginSet.current) {
+          isOriginSet.current = true;
         }
-      );
+      }
+    );
+  }, [animatedViewRef, originX, originY, itemW, itemH, tx, ty]); // Added tx, ty to dependencies
+
+  // Update bounds when their ref changes or when position update is requested
+  const updateBounds = useCallback(() => {
+    const currentBoundsView = dragBoundsRef?.current;
+
+    if (currentBoundsView) {
+      currentBoundsView.measure((_x, _y, width, height, pageX, pageY) => {
+        if (
+          typeof pageX === "number" &&
+          typeof pageY === "number" &&
+          width > 0 &&
+          height > 0
+        ) {
+          runOnUI(() => {
+            "worklet";
+            boundsX.value = pageX;
+            boundsY.value = pageY;
+            boundsWidth.value = width;
+            boundsHeight.value = height;
+            // If boundsAreSet was false, and we get a successful measurement, set it to true.
+            // If it was already true, it remains true.
+            if (!boundsAreSet.value) {
+              boundsAreSet.value = true;
+            }
+          })();
+        } else {
+          console.warn(
+            "useDraggable: dragBoundsRef measurement failed or returned invalid dimensions. Bounds may be stale or item unbounded."
+          );
+          // Do not change boundsAreSet.value here if a dragBoundsRef exists but measure failed.
+          // If it was true, it stays true (using stale values).
+          // If it was false (e.g., first attempt failed), it stays false, and item is unbounded.
+        }
+      });
     } else {
+      // No dragBoundsRef provided
       runOnUI(() => {
         "worklet";
-        boundsAreSet.value = false; // Reset if no ref
+        // If boundsAreSet was true (e.g. ref was removed), set it to false.
+        // If it was already false, it remains false.
+        if (boundsAreSet.value) {
+          boundsAreSet.value = false;
+        }
       })();
     }
-    // This effect relies on dragBoundsRef.current.
-    // It will run when dragBoundsRef object itself changes.
-    // If dragBoundsRef.current becomes available or changes layout without the ref object changing,
-    // this effect won't automatically re-run to update bounds.
   }, [
     dragBoundsRef,
     boundsX,
@@ -136,33 +199,40 @@ export const useDraggable = <TData = unknown>(
     boundsAreSet,
   ]);
 
+  // Register for position updates
+  useEffect(() => {
+    // Function that will be called when position update is requested
+    const handlePositionUpdate = () => {
+      updateDraggablePosition();
+      updateBounds();
+    };
+
+    // Register the position update listener
+    registerPositionUpdateListener(instanceId, handlePositionUpdate);
+
+    // Clean up on unmount
+    return () => {
+      unregisterPositionUpdateListener(instanceId);
+    };
+  }, [
+    instanceId,
+    registerPositionUpdateListener,
+    unregisterPositionUpdateListener,
+    updateDraggablePosition,
+    updateBounds,
+  ]);
+
+  // Effect to measure bounds
+  useEffect(() => {
+    updateBounds();
+  }, [updateBounds]);
+
   const handleLayoutHandler = useCallback(
     (event: LayoutChangeEvent) => {
-      animatedViewRef.current?.measure(
-        (
-          _x: number,
-          _y: number,
-          widthMeasure: number,
-          heightMeasure: number,
-          pageX: number,
-          pageY: number
-        ) => {
-          if (!isOriginSet.current) {
-            originX.value = pageX;
-            originY.value = pageY;
-            isOriginSet.current = true;
-          }
-          itemW.value = widthMeasure;
-          itemH.value = heightMeasure;
-        }
-      );
+      updateDraggablePosition();
     },
-    [animatedViewRef, originX, originY, itemW, itemH, isOriginSet]
+    [updateDraggablePosition]
   );
-
-  const { getSlots, setActiveHoverSlot, activeHoverSlotId } = useContext(
-    SlotsContext
-  ) as SlotsContextValue<TData>;
 
   // New worklet for animating drag end position, captures animationFunction
   const animateDragEndPosition = useCallback(
@@ -196,7 +266,7 @@ export const useDraggable = <TData = unknown>(
       const currentDraggableCenterY =
         currentOriginY + currentTyVal + halfHeight;
 
-      let hitSlotData: any = null; // Assume DropSlot structure with new fields
+      let hitSlotData: DropSlot<TData> | null = null;
       let hitSlotId: number | null = null;
 
       for (const key in slots) {
@@ -359,8 +429,18 @@ export const useDraggable = <TData = unknown>(
             newTy = Math.max(minTy, Math.min(newTy, maxTy));
           }
 
-          tx.value = newTx;
-          ty.value = newTy;
+          // Apply axis constraints
+          if (dragAxisShared.value === "x") {
+            tx.value = newTx;
+            // ty.value remains unchanged from offsetX/Y or its previous bounded value if bounds were applied before axis constraint
+          } else if (dragAxisShared.value === "y") {
+            ty.value = newTy;
+            // tx.value remains unchanged
+          } else {
+            // "both" or undefined
+            tx.value = newTx;
+            ty.value = newTy;
+          }
 
           if (onDragging) {
             runOnJS(onDragging)({
@@ -418,6 +498,7 @@ export const useDraggable = <TData = unknown>(
       boundsY,
       boundsWidth,
       boundsHeight,
+      dragAxisShared, // Add dragAxisShared to dependencies
     ]
   );
 

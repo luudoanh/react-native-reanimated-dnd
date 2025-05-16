@@ -1,6 +1,6 @@
 // Node Modules
 import React, { useRef } from "react";
-import { ViewStyle, StyleProp, View } from "react-native";
+import { ViewStyle, StyleProp } from "react-native";
 import Animated from "react-native-reanimated";
 import { GestureDetector } from "react-native-gesture-handler";
 import {
@@ -19,7 +19,7 @@ interface DraggableProps<TData = unknown> extends UseDraggableOptions<TData> {
 }
 
 export const Draggable = <TData = unknown,>({
-  // Destructure options for the hook
+  // Options for useDraggable hook
   data,
   dragDisabled,
   onDragStart,
@@ -27,6 +27,7 @@ export const Draggable = <TData = unknown,>({
   animationFunction,
   onDragging,
   dragBoundsRef,
+  dragAxis, // Added dragAxis here
   // Component-specific props
   style: componentStyle, // Rename to avoid conflict with hook's returned style
   children,
@@ -43,6 +44,7 @@ export const Draggable = <TData = unknown,>({
         animationFunction,
         onDragging,
         dragBoundsRef,
+        dragAxis, // Pass dragAxis to the hook
       },
       animatedViewRef
     );

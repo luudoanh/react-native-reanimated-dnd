@@ -17,6 +17,7 @@ import {
   useDraggable,
   UseDraggableOptions,
   UseDraggableReturn,
+  CollisionAlgorithm,
 } from "../hooks/useDraggable";
 import {
   useDroppable,
@@ -104,6 +105,7 @@ interface DraggableItemData {
   id: string;
   label: string;
   backgroundColor: string;
+  collisionText?: string;
 }
 
 export default function CustomDndExample() {
@@ -162,6 +164,140 @@ export default function CustomDndExample() {
           scrollEventThrottle={16}
         >
           <Text style={styles.header}>Drag & Drop Playground</Text>
+
+          {/* Section for Collision Detection Algorithm Demo */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Collision Detection Demo</Text>
+            <Text style={styles.sectionDescription}>
+              Try dragging the items over the drop zones. Note how 'center',
+              'intersect' (default), and 'contain' behave differently.
+            </Text>
+            <View
+              style={[
+                styles.dropZoneArea,
+                { minHeight: 150, justifyContent: "space-between" },
+              ]}
+            >
+              <MyDroppable<DraggableItemData>
+                style={[
+                  styles.dropZone,
+                  styles.dropZoneBlue,
+                  { width: "30%", height: 120 },
+                ]} // Narrow zone
+                onDrop={(data) =>
+                  Alert.alert(
+                    "Drop!",
+                    `Item "${data.label}" with ${data.collisionText} dropped on Narrow Zone!`
+                  )
+                }
+              >
+                <Text style={styles.dropZoneText}>Narrow Zone</Text>
+                <Text style={styles.dZoneSubText}>
+                  (Good for Center/Intersect Demo)
+                </Text>
+              </MyDroppable>
+              <MyDroppable<DraggableItemData>
+                style={[
+                  styles.dropZone,
+                  styles.dropZoneGreen,
+                  { width: "45%", height: 150 },
+                ]} // Wider, taller zone
+                onDrop={(data) =>
+                  Alert.alert(
+                    "Drop!",
+                    `Item "${data.label}" with ${data.collisionText} dropped on Contain Zone!`
+                  )
+                }
+              >
+                <Text style={styles.dropZoneText}>Contain Zone</Text>
+                <Text style={styles.dZoneSubText}>(Good for Contain Demo)</Text>
+              </MyDroppable>
+            </View>
+
+            <View style={[styles.draggableItemsArea, { minHeight: 240 }]}>
+              {/* Draggable with 'center' collision */}
+              <MyDraggable<DraggableItemData>
+                key="D-Collision-Center"
+                data={{
+                  id: "D-Col-Center",
+                  label: "Center Collision Draggable",
+                  backgroundColor: "#ffca3a",
+                  collisionText: "'center' collision",
+                }}
+                collisionAlgorithm="center"
+                initialStyle={[
+                  styles.draggable,
+                  {
+                    top: 0,
+                    left: "5%",
+                    width: "90%", // Wide item
+                    backgroundColor: "#ffca3a",
+                    borderRadius: 12,
+                    zIndex: 20,
+                  },
+                ]}
+              >
+                <View style={[commonCardStyle, { width: "100%" }]}>
+                  <Text style={styles.cardLabel}>Center</Text>
+                  <Text style={styles.cardHint}>(Wide)</Text>
+                </View>
+              </MyDraggable>
+
+              {/* Draggable with default 'intersect' collision */}
+              <MyDraggable<DraggableItemData>
+                key="D-Collision-Intersect"
+                data={{
+                  id: "D-Col-Intersect",
+                  label: "Intersect Collision Draggable (Default)",
+                  backgroundColor: "#8ac926",
+                  collisionText: "'intersect' collision (default)",
+                }}
+                initialStyle={[
+                  styles.draggable,
+                  {
+                    top: 80,
+                    left: "5%",
+                    width: "90%", // Wide item
+                    backgroundColor: "#8ac926",
+                    borderRadius: 12,
+                    zIndex: 10,
+                  },
+                ]}
+              >
+                <View style={[commonCardStyle, { width: "100%" }]}>
+                  <Text style={styles.cardLabel}>Intersect</Text>
+                  <Text style={styles.cardHint}>(Default, Wide)</Text>
+                </View>
+              </MyDraggable>
+
+              {/* Draggable with 'contain' collision */}
+              <MyDraggable<DraggableItemData>
+                key="D-Collision-Contain"
+                data={{
+                  id: "D-Col-Contain",
+                  label: "Contain Collision Draggable",
+                  backgroundColor: "#1982c4",
+                  collisionText: "'contain' collision",
+                }}
+                collisionAlgorithm="contain"
+                initialStyle={[
+                  styles.draggable,
+                  {
+                    top: 160,
+                    left: "30%", // Center it a bit more for the contain zone
+                    width: "40%", // Smaller item, good for demonstrating contain
+                    backgroundColor: "#1982c4",
+                    borderRadius: 12,
+                  },
+                ]}
+              >
+                <View style={[commonCardStyle, { width: "100%" }]}>
+                  <Text style={styles.cardLabel}>Contain</Text>
+                  <Text style={styles.cardHint}>(Smaller)</Text>
+                </View>
+              </MyDraggable>
+            </View>
+          </View>
 
           {/* Section 1: Free Draggables & Multiple Drop Zones */}
           <View style={styles.section}>

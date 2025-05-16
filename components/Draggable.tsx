@@ -7,10 +7,11 @@ import {
   useDraggable,
   UseDraggableOptions,
   AnimationFunction,
+  CollisionAlgorithm,
 } from "../hooks/useDraggable"; // Adjust path as needed
 
 // Re-export UseDraggableOptions if it's meant to be part of the public API of Draggable component
-export { UseDraggableOptions, AnimationFunction };
+export { UseDraggableOptions, AnimationFunction, CollisionAlgorithm };
 
 interface DraggableProps<TData = unknown> extends UseDraggableOptions<TData> {
   style?: StyleProp<ViewStyle>;
@@ -28,7 +29,7 @@ export const Draggable = <TData = unknown,>({
 
   // Pass the collected useDraggableHookOptions object directly to the hook
   const { animatedViewProps, gesture } = useDraggable<TData>(
-    useDraggableHookOptions, // This object no longer contains activeStyle
+    useDraggableHookOptions, // Pass through all options, including collisionAlgorithm
     animatedViewRef
   );
 

@@ -25,6 +25,9 @@ import {
 // Type for the custom animation function
 export type AnimationFunction = (toValue: number) => number;
 
+// New type for collision algorithm
+export type CollisionAlgorithm = "center" | "intersect" | "contain";
+
 export interface UseDraggableOptions<TData = unknown> {
   data: TData;
   dragDisabled?: boolean;
@@ -40,6 +43,7 @@ export interface UseDraggableOptions<TData = unknown> {
   animationFunction?: AnimationFunction;
   dragBoundsRef?: React.RefObject<Animated.View | View>;
   dragAxis?: "x" | "y" | "both";
+  collisionAlgorithm?: CollisionAlgorithm;
 }
 
 export interface UseDraggableReturn {
@@ -63,6 +67,7 @@ export const useDraggable = <TData = unknown>(
     animationFunction,
     dragBoundsRef,
     dragAxis = "both",
+    collisionAlgorithm = "intersect",
   } = options;
 
   const tx = useSharedValue(0);
@@ -214,6 +219,43 @@ export const useDraggable = <TData = unknown>(
     [animationFunction, tx, ty]
   );
 
+  const performCollisionCheck = useCallback(
+    (
+      draggableX: number,
+      draggableY: number,
+      draggableW: number,
+      draggableH: number,
+      slot: DropSlot<TData>,
+      algo: CollisionAlgorithm
+    ): boolean => {
+      if (algo === "intersect") {
+        return (
+          draggableX < slot.x + slot.width &&
+          draggableX + draggableW > slot.x &&
+          draggableY < slot.y + slot.height &&
+          draggableY + draggableH > slot.y
+        );
+      } else if (algo === "contain") {
+        return (
+          draggableX >= slot.x &&
+          draggableX + draggableW <= slot.x + slot.width &&
+          draggableY >= slot.y &&
+          draggableY + draggableH <= slot.y + slot.height
+        );
+      } else {
+        const draggableCenterX = draggableX + draggableW / 2;
+        const draggableCenterY = draggableY + draggableH / 2;
+        return (
+          draggableCenterX >= slot.x &&
+          draggableCenterX <= slot.x + slot.width &&
+          draggableCenterY >= slot.y &&
+          draggableCenterY <= slot.y + slot.height
+        );
+      }
+    },
+    []
+  );
+
   const processDropAndAnimate = useCallback(
     (
       currentTxVal: number,
@@ -225,11 +267,8 @@ export const useDraggable = <TData = unknown>(
       currentItemH: number
     ) => {
       const slots = getSlots();
-      const halfWidth = currentItemW / 2;
-      const halfHeight = currentItemH / 2;
-      const currentDraggableCenterX = currentOriginX + currentTxVal + halfWidth;
-      const currentDraggableCenterY =
-        currentOriginY + currentTyVal + halfHeight;
+      const currentDraggableX = currentOriginX + currentTxVal;
+      const currentDraggableY = currentOriginY + currentTyVal;
 
       let hitSlotData: DropSlot<TData> | null = null;
       let hitSlotId: number | null = null;
@@ -237,12 +276,17 @@ export const useDraggable = <TData = unknown>(
       for (const key in slots) {
         const slotId = parseInt(key, 10);
         const s = slots[slotId];
-        if (
-          currentDraggableCenterX >= s.x &&
-          currentDraggableCenterX <= s.x + s.width &&
-          currentDraggableCenterY >= s.y &&
-          currentDraggableCenterY <= s.y + s.height
-        ) {
+
+        const isCollision = performCollisionCheck(
+          currentDraggableX,
+          currentDraggableY,
+          currentItemW,
+          currentItemH,
+          s,
+          collisionAlgorithm
+        );
+
+        if (isCollision) {
           hitSlotData = s;
           hitSlotId = slotId;
           break;
@@ -311,7 +355,12 @@ export const useDraggable = <TData = unknown>(
       }
       runOnUI(animateDragEndPosition)(finalTxValue, finalTyValue);
     },
-    [getSlots, animateDragEndPosition]
+    [
+      getSlots,
+      animateDragEndPosition,
+      collisionAlgorithm,
+      performCollisionCheck,
+    ]
   );
 
   const updateHoverState = useCallback(
@@ -324,20 +373,24 @@ export const useDraggable = <TData = unknown>(
       currentItemH: number
     ) => {
       const slots = getSlots();
-      const halfWidth = currentItemW / 2;
-      const halfHeight = currentItemH / 2;
-      const centerX = currentOriginX + currentTxVal + halfWidth;
-      const centerY = currentOriginY + currentTyVal + halfHeight;
+      const currentDraggableX = currentOriginX + currentTxVal;
+      const currentDraggableY = currentOriginY + currentTyVal;
+
       let newHoveredSlotId: number | null = null;
       for (const key in slots) {
         const slotId = parseInt(key, 10);
         const s = slots[slotId];
-        if (
-          centerX >= s.x &&
-          centerX <= s.x + s.width &&
-          centerY >= s.y &&
-          centerY <= s.y + s.height
-        ) {
+
+        const isCollision = performCollisionCheck(
+          currentDraggableX,
+          currentDraggableY,
+          currentItemW,
+          currentItemH,
+          s,
+          collisionAlgorithm
+        );
+
+        if (isCollision) {
           newHoveredSlotId = slotId;
           break;
         }
@@ -346,7 +399,13 @@ export const useDraggable = <TData = unknown>(
         setActiveHoverSlot(newHoveredSlotId);
       }
     },
-    [getSlots, setActiveHoverSlot, activeHoverSlotId]
+    [
+      getSlots,
+      setActiveHoverSlot,
+      activeHoverSlotId,
+      collisionAlgorithm,
+      performCollisionCheck,
+    ]
   );
 
   const gesture = React.useMemo<GestureType>(

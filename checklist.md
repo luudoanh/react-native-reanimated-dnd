@@ -22,7 +22,8 @@
 - [x] Disabled Droppables (`dropDisabled` prop)
 - [x] **`onHoverEnter` / `onHoverLeave` for Drop Zones:** More granular hover events.
 - [x] **Dynamic Disabling/Enabling of Drop Zones:** Based on app state or drag data.
-- [ ] **Collision Detection Algorithm Options:** E.g., 'center' vs. 'intersect'.
+- [x] **Collision Detection Algorithm Options:** Added "center", "intersect" and "contain"
+
 - [ ] **Drag Preview / Clone:** Render a custom preview while dragging.
 
 ### Low Priority

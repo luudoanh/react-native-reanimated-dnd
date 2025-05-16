@@ -24,11 +24,9 @@
 - [x] **Dynamic Disabling/Enabling of Drop Zones:** Based on app state or drag data.
 - [x] **Collision Detection Algorithm Options:** Added "center", "intersect" and "contain"
 
-- [ ] **Drag Preview / Clone:** Render a custom preview while dragging.
-
 ### Low Priority
 
-- [ ] **Conditional Dragging:** `dragDisabled` as a function.
+- [x] **Conditional Dragging:** `dragDisabled` as a function.
 - [ ] **Snap-to-Grid / Snap Lines:** For precise placement.
 - [ ] **`onOutOfBounds` Event for Draggables:** Event when bounded drag is clamped.
 - [ ] **External Control over Drag Position:** Programmatic positioning.

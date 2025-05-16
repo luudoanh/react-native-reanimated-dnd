@@ -60,6 +60,8 @@ export interface UseDraggableOptions<TData = unknown> {
   dragBoundsRef?: React.RefObject<Animated.View | View>;
   dragAxis?: "x" | "y" | "both";
   collisionAlgorithm?: CollisionAlgorithm;
+  children?: React.ReactNode;
+  handleComponent?: React.ComponentType<any>;
 }
 
 export interface UseDraggableReturn {
@@ -69,6 +71,8 @@ export interface UseDraggableReturn {
   };
   gesture: GestureType;
   state: DraggableState;
+  animatedViewRef?: React.RefObject<Animated.View>;
+  hasHandle: boolean;
 }
 
 export const useDraggable = <TData = unknown>(
@@ -87,10 +91,42 @@ export const useDraggable = <TData = unknown>(
     dragBoundsRef,
     dragAxis = "both",
     collisionAlgorithm = "intersect",
+    children,
+    handleComponent,
   } = options;
 
   // Add state management
   const [state, setState] = useState<DraggableState>(DraggableState.IDLE);
+  const [hasHandle, setHasHandle] = useState(false);
+
+  // Check if any child is a Handle component
+  useEffect(() => {
+    if (!children || !handleComponent) {
+      setHasHandle(false);
+      return;
+    }
+
+    // Check if children contain a Handle component
+    const checkForHandle = (child: React.ReactNode): boolean => {
+      if (React.isValidElement(child)) {
+        if (child.type === handleComponent) {
+          return true;
+        }
+
+        // Check children recursively
+        if (child.props && child.props.children) {
+          if (
+            React.Children.toArray(child.props.children).some(checkForHandle)
+          ) {
+            return true;
+          }
+        }
+      }
+      return false;
+    };
+
+    setHasHandle(React.Children.toArray(children).some(checkForHandle));
+  }, [children, handleComponent]);
 
   useEffect(() => {
     onStateChange?.(state);
@@ -603,5 +639,7 @@ export const useDraggable = <TData = unknown>(
     },
     gesture,
     state,
+    animatedViewRef: animatedViewRef,
+    hasHandle,
   };
 };

@@ -1,4 +1,11 @@
-import React, { useRef, useCallback, useState, useEffect } from "react";
+import React, {
+  useRef,
+  useCallback,
+  useState,
+  useEffect,
+  createContext,
+  useContext,
+} from "react";
 import {
   View,
   Text,
@@ -33,6 +40,8 @@ import {
 } from "../context/DropContext";
 import { Droppable } from "../components/Droppable";
 import { Draggable } from "../components/Draggable";
+import { BasicDraggable } from "./BasicDraggable";
+import { CustomDraggable } from "./CustomDraggable";
 
 // 1. Custom Draggable Component using the hook (restored and modified)
 interface MyDraggableProps<TData> extends UseDraggableOptions<TData> {
@@ -40,29 +49,82 @@ interface MyDraggableProps<TData> extends UseDraggableOptions<TData> {
   initialStyle?: StyleProp<ViewStyle>;
 }
 
-const MyDraggable = <TData extends object>({
+// Create a context for MyDraggable
+interface MyDraggableContextValue {
+  gesture: any;
+}
+
+const MyDraggableContext = createContext<MyDraggableContextValue | null>(null);
+
+// Handle component for MyDraggable
+interface MyHandleProps {
+  children: React.ReactNode;
+  style?: StyleProp<ViewStyle>;
+}
+
+const MyHandle = ({ children, style }: MyHandleProps) => {
+  const draggableContext = useContext(MyDraggableContext);
+
+  if (!draggableContext) {
+    console.warn(
+      "MyDraggable.Handle must be used within a MyDraggable component"
+    );
+    return <>{children}</>;
+  }
+
+  return (
+    <GestureDetector gesture={draggableContext.gesture}>
+      <Animated.View style={style}>{children}</Animated.View>
+    </GestureDetector>
+  );
+};
+
+const MyDraggableComponent = <TData extends object>({
   children,
   initialStyle,
   ...draggableOptions
 }: MyDraggableProps<TData>) => {
   const animatedViewRef = useRef<Animated.View>(null);
-  const { animatedViewProps, gesture }: UseDraggableReturn =
-    useDraggable<TData>(draggableOptions, animatedViewRef);
+  const { animatedViewProps, gesture, hasHandle } = useDraggable<TData>(
+    {
+      ...draggableOptions,
+      children,
+      handleComponent: MyHandle,
+    },
+    animatedViewRef
+  );
 
   const combinedStyle = [initialStyle, animatedViewProps.style];
 
-  return (
-    <GestureDetector gesture={gesture}>
-      <Animated.View
-        ref={animatedViewRef}
-        {...animatedViewProps}
-        style={combinedStyle}
-      >
+  // Create simplified context value
+  const contextValue: MyDraggableContextValue = {
+    gesture,
+  };
+
+  // Render with context
+  const content = (
+    <Animated.View
+      ref={animatedViewRef}
+      {...animatedViewProps}
+      style={combinedStyle}
+    >
+      <MyDraggableContext.Provider value={contextValue}>
         {children}
-      </Animated.View>
-    </GestureDetector>
+      </MyDraggableContext.Provider>
+    </Animated.View>
   );
+
+  // If a handle is found, let the handle control the dragging
+  // Otherwise, the entire component is draggable
+  if (hasHandle) {
+    return content;
+  } else {
+    return <GestureDetector gesture={gesture}>{content}</GestureDetector>;
+  }
 };
+
+// Attach Handle as a static property
+const MyDraggable = Object.assign(MyDraggableComponent, { Handle: MyHandle });
 
 // 2. Custom Droppable Component using the hook (restored)
 interface MyDroppableProps<TData> extends UseDroppableOptions<TData> {
@@ -345,7 +407,6 @@ export default function CustomDndExample() {
                   },
                 ]}
                 onStateChange={(state) => {
-                  console.log("Drag state changed:", state);
                   setDragState(state);
                 }}
               >
@@ -446,7 +507,7 @@ export default function CustomDndExample() {
 
             <View style={[styles.draggableItemsArea, { minHeight: 240 }]}>
               {/* Draggable with 'center' collision */}
-              <MyDraggable<DraggableItemData>
+              <CustomDraggable<DraggableItemData>
                 key="D-Collision-Center"
                 data={{
                   id: "D-Col-Center",
@@ -471,10 +532,10 @@ export default function CustomDndExample() {
                   <Text style={styles.cardLabel}>Center</Text>
                   <Text style={styles.cardHint}>(Wide)</Text>
                 </View>
-              </MyDraggable>
+              </CustomDraggable>
 
               {/* Draggable with default 'intersect' collision */}
-              <MyDraggable<DraggableItemData>
+              <CustomDraggable<DraggableItemData>
                 key="D-Collision-Intersect"
                 data={{
                   id: "D-Col-Intersect",
@@ -498,10 +559,10 @@ export default function CustomDndExample() {
                   <Text style={styles.cardLabel}>Intersect</Text>
                   <Text style={styles.cardHint}>(Default, Wide)</Text>
                 </View>
-              </MyDraggable>
+              </CustomDraggable>
 
               {/* Draggable with 'contain' collision */}
-              <MyDraggable<DraggableItemData>
+              <CustomDraggable<DraggableItemData>
                 key="D-Collision-Contain"
                 data={{
                   id: "D-Col-Contain",
@@ -514,8 +575,8 @@ export default function CustomDndExample() {
                   styles.draggable,
                   {
                     top: 160,
-                    left: "30%", // Center it a bit more for the contain zone
-                    width: "40%", // Smaller item, good for demonstrating contain
+                    left: "25%",
+                    width: 180,
                     backgroundColor: "#1982c4",
                     borderRadius: 12,
                   },
@@ -525,7 +586,7 @@ export default function CustomDndExample() {
                   <Text style={styles.cardLabel}>Contain</Text>
                   <Text style={styles.cardHint}>(Smaller)</Text>
                 </View>
-              </MyDraggable>
+              </CustomDraggable>
             </View>
           </View>
 
@@ -557,7 +618,7 @@ export default function CustomDndExample() {
             </View>
 
             <View style={styles.draggableItemsArea}>
-              <MyDraggable<DraggableItemData>
+              <CustomDraggable<DraggableItemData>
                 key="D1"
                 data={{
                   id: "D1",
@@ -577,9 +638,9 @@ export default function CustomDndExample() {
                 <View style={commonCardStyle}>
                   <Text style={styles.cardLabel}>Basic</Text>
                 </View>
-              </MyDraggable>
+              </CustomDraggable>
 
-              <MyDraggable<DraggableItemData>
+              <CustomDraggable<DraggableItemData>
                 key="D2"
                 data={{
                   id: "D2",
@@ -600,7 +661,7 @@ export default function CustomDndExample() {
                 <View style={commonCardStyle}>
                   <Text style={styles.cardLabel}>Custom Anim</Text>
                 </View>
-              </MyDraggable>
+              </CustomDraggable>
             </View>
           </View>
 
@@ -638,7 +699,7 @@ export default function CustomDndExample() {
             </View>
 
             <View style={styles.draggableItemsArea}>
-              <MyDraggable<DraggableItemData>
+              <CustomDraggable<DraggableItemData>
                 key="D10"
                 data={{
                   id: "D10",
@@ -653,7 +714,7 @@ export default function CustomDndExample() {
                 <View style={commonCardStyle}>
                   <Text style={styles.cardLabel}>Try Me</Text>
                 </View>
-              </MyDraggable>
+              </CustomDraggable>
             </View>
           </View>
 
@@ -674,7 +735,7 @@ export default function CustomDndExample() {
                 <Text style={styles.dropZoneText}>Drop Here</Text>
               </MyDroppable>
 
-              <MyDraggable<DraggableItemData>
+              <CustomDraggable<DraggableItemData>
                 key="D3"
                 data={{
                   id: "D3",
@@ -693,7 +754,7 @@ export default function CustomDndExample() {
                 <View style={commonCardStyle}>
                   <Text style={styles.cardLabel}>Bounded</Text>
                 </View>
-              </MyDraggable>
+              </CustomDraggable>
             </View>
           </View>
 
@@ -729,7 +790,7 @@ export default function CustomDndExample() {
                 <Text style={styles.dropZoneText}>Right</Text>
               </MyDroppable>
 
-              <MyDraggable<DraggableItemData>
+              <CustomDraggable<DraggableItemData>
                 key="D5"
                 data={{
                   id: "D5",
@@ -750,7 +811,7 @@ export default function CustomDndExample() {
                   <Text style={styles.cardLabel}>X-Axis Only</Text>
                   <Text style={styles.cardHint}>←→</Text>
                 </View>
-              </MyDraggable>
+              </CustomDraggable>
             </View>
           </View>
 
@@ -782,7 +843,7 @@ export default function CustomDndExample() {
                 <Text style={styles.dropZoneText}>Bottom</Text>
               </MyDroppable>
 
-              <MyDraggable<DraggableItemData>
+              <CustomDraggable<DraggableItemData>
                 key="D6"
                 data={{
                   id: "D6",
@@ -803,7 +864,7 @@ export default function CustomDndExample() {
                   <Text style={styles.cardLabel}>Y-Axis Only</Text>
                   <Text style={styles.cardHint}>↑↓</Text>
                 </View>
-              </MyDraggable>
+              </CustomDraggable>
             </View>
           </View>
 
@@ -825,7 +886,7 @@ export default function CustomDndExample() {
                 <Text style={styles.dropZoneText}>Target</Text>
               </MyDroppable>
 
-              <MyDraggable<DraggableItemData>
+              <CustomDraggable<DraggableItemData>
                 key="D7"
                 data={{
                   id: "D7",
@@ -847,7 +908,7 @@ export default function CustomDndExample() {
                   <Text style={styles.cardLabel}>Bounded Y</Text>
                   <Text style={styles.cardHint}>↕</Text>
                 </View>
-              </MyDraggable>
+              </CustomDraggable>
             </View>
           </View>
 
@@ -939,7 +1000,7 @@ export default function CustomDndExample() {
             <View style={[styles.draggableItemsArea, { minHeight: 200 }]}>
               {/* Create 5 draggable items to test capacity */}
               {Array.from({ length: 5 }).map((_, index) => (
-                <Draggable<DraggableItemData>
+                <CustomDraggable<DraggableItemData>
                   key={`capacity-demo-item-${index}`}
                   draggableId={`capacity-demo-item-${index}`}
                   data={{
@@ -947,7 +1008,7 @@ export default function CustomDndExample() {
                     label: `Item ${index + 1}`,
                     backgroundColor: `hsl(${index * 40}, 80%, 60%)`,
                   }}
-                  style={[
+                  initialStyle={[
                     {
                       backgroundColor: `hsl(${index * 40}, 80%, 60%)`,
                       borderRadius: 12,
@@ -960,7 +1021,7 @@ export default function CustomDndExample() {
                   <View style={commonCardStyle}>
                     <Text style={styles.cardLabel}>{`Item ${index + 1}`}</Text>
                   </View>
-                </Draggable>
+                </CustomDraggable>
               ))}
             </View>
 
@@ -985,6 +1046,278 @@ export default function CustomDndExample() {
                   </Text>
                 </View>
               ))}
+            </View>
+          </View>
+
+          {/* Drag Handle Demo Section */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Drag Handle Demo</Text>
+            <Text style={styles.sectionDescription}>
+              This example demonstrates using drag handles for more precise
+              control.
+            </Text>
+
+            <View style={styles.dropZoneArea}>
+              <Droppable<DraggableItemData>
+                droppableId="handle-drop-zone"
+                style={[styles.dropZone, styles.dropZoneBlue, { height: 150 }]}
+                onDrop={(data) => {
+                  Alert.alert(
+                    "Item Dropped",
+                    `Item "${data.label}" dropped in handle demo zone`
+                  );
+                }}
+              >
+                <Text style={styles.dropZoneText}>Drop Target</Text>
+                <Text style={styles.dZoneSubText}>(For handle examples)</Text>
+              </Droppable>
+            </View>
+
+            <View
+              style={[
+                styles.draggableItemsArea,
+                { minHeight: 260, marginTop: 30 },
+              ]}
+            >
+              {/* Example 1: Entire item is a drag handle */}
+              <CustomDraggable<DraggableItemData>
+                key="handle-demo-item-1"
+                draggableId="handle-demo-item-1"
+                data={{
+                  id: "handle-demo-item-1",
+                  label: "Full Handle Item",
+                  backgroundColor: "#2a9d8f",
+                }}
+                initialStyle={[
+                  styles.draggable,
+                  {
+                    top: 0,
+                    left: 40,
+                    backgroundColor: "#2a9d8f",
+                    borderRadius: 12,
+                  },
+                ]}
+              >
+                <CustomDraggable.Handle>
+                  <View style={commonCardStyle}>
+                    <Text style={styles.cardLabel}>Fully Draggable</Text>
+                    <Text style={styles.cardHint}>Drag from anywhere</Text>
+                  </View>
+                </CustomDraggable.Handle>
+              </CustomDraggable>
+
+              {/* Example 2: Drag handle as part of the UI */}
+              <CustomDraggable<DraggableItemData>
+                key="handle-demo-item-2"
+                draggableId="handle-demo-item-2"
+                data={{
+                  id: "handle-demo-item-2",
+                  label: "Handle-Only Item",
+                  backgroundColor: "#e9c46a",
+                }}
+                initialStyle={[
+                  styles.draggable,
+                  {
+                    top: 120,
+                    left: 40,
+                    backgroundColor: "#e9c46a",
+                    borderRadius: 12,
+                    width: 200,
+                    padding: 0,
+                  },
+                ]}
+              >
+                <View style={[commonCardStyle, { width: "100%" }]}>
+                  <Text style={styles.cardLabel}>Handle-Only Draggable</Text>
+                  <Text style={styles.cardHint}>
+                    Drag from the handle below
+                  </Text>
+
+                  {/* The handle is only part of the draggable */}
+                  <CustomDraggable.Handle>
+                    <View style={styles.dragHandle}>
+                      <Text style={styles.handleText}>⬌ DRAG HERE ⬌</Text>
+                    </View>
+                  </CustomDraggable.Handle>
+                </View>
+              </CustomDraggable>
+
+              {/* Example 3: Real-world Card with Header as Handle */}
+              <CustomDraggable<DraggableItemData>
+                key="handle-demo-item-3"
+                draggableId="handle-demo-item-3"
+                data={{
+                  id: "handle-demo-item-3",
+                  label: "Card with Header Handle",
+                  backgroundColor: "#606c38",
+                }}
+                initialStyle={[
+                  styles.draggable,
+                  {
+                    top: 0,
+                    right: 40,
+                    backgroundColor: "#ffffff",
+                    borderRadius: 12,
+                    width: 200,
+                    overflow: "hidden",
+                    shadowColor: "#000",
+                    shadowOffset: { width: 0, height: 2 },
+                    shadowOpacity: 0.1,
+                    shadowRadius: 8,
+                    elevation: 3,
+                  },
+                ]}
+              >
+                {/* Card with header as drag handle */}
+                <View style={styles.cardWithHeader}>
+                  <CustomDraggable.Handle>
+                    <View style={styles.cardHeader}>
+                      <Text style={styles.cardHeaderText}>Drag Card</Text>
+                      <Text style={styles.cardHeaderIcon}>⬌</Text>
+                    </View>
+                  </CustomDraggable.Handle>
+
+                  <View style={styles.cardBody}>
+                    <Text style={styles.cardBodyTitle}>Card Content</Text>
+                    <Text style={styles.cardBodyText}>
+                      This area is not draggable. Only the header can be used to
+                      drag this card.
+                    </Text>
+                  </View>
+                </View>
+              </CustomDraggable>
+            </View>
+          </View>
+
+          {/* After the existing drag handle demo section, add a new section */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>
+              Custom Draggable with Handle
+            </Text>
+            <Text style={styles.sectionDescription}>
+              This example demonstrates using drag handles with the custom
+              draggable component.
+            </Text>
+
+            <View style={styles.dropZoneArea}>
+              <MyDroppable<DraggableItemData>
+                droppableId="my-handle-drop-zone"
+                style={[styles.dropZone, styles.dropZoneGreen, { height: 120 }]}
+                onDrop={(data) => {
+                  Alert.alert(
+                    "Item Dropped",
+                    `Item "${data.label}" dropped in CustomDraggable handle demo zone`
+                  );
+                }}
+              >
+                <Text style={styles.dropZoneText}>Custom Drop Zone</Text>
+                <Text style={styles.dZoneSubText}>
+                  (For CustomDraggable.Handle)
+                </Text>
+              </MyDroppable>
+            </View>
+
+            <View
+              style={[
+                styles.draggableItemsArea,
+                { minHeight: 240, marginTop: 30 },
+              ]}
+            >
+              {/* Example using CustomDraggable with handle */}
+              <CustomDraggable<DraggableItemData>
+                key="my-handle-demo"
+                data={{
+                  id: "my-handle-demo",
+                  label: "CustomDraggable Handle Demo",
+                  backgroundColor: "#4361ee",
+                }}
+                initialStyle={[
+                  styles.draggable,
+                  {
+                    top: 0,
+                    left: "25%",
+                    backgroundColor: "#4361ee",
+                    borderRadius: 12,
+                    width: 180,
+                  },
+                ]}
+              >
+                <View style={[commonCardStyle, { width: "100%" }]}>
+                  <Text style={styles.cardLabel}>Custom Draggable</Text>
+                  <Text style={styles.cardHint}>Non-draggable content</Text>
+
+                  <CustomDraggable.Handle>
+                    <View
+                      style={[
+                        styles.dragHandle,
+                        { backgroundColor: "#3a0ca3" },
+                      ]}
+                    >
+                      <Text style={styles.handleText}>CUSTOM HANDLE</Text>
+                    </View>
+                  </CustomDraggable.Handle>
+                </View>
+              </CustomDraggable>
+            </View>
+          </View>
+
+          {/* Add a section for the BasicDraggable */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Minimal BasicDraggable Demo</Text>
+            <Text style={styles.sectionDescription}>
+              This example demonstrates the minimal implementation of a
+              draggable component.
+            </Text>
+
+            <View style={styles.dropZoneArea}>
+              <MyDroppable<DraggableItemData>
+                droppableId="basic-drop-zone"
+                style={[styles.dropZone, styles.dropZoneBlue, { height: 120 }]}
+                onDrop={(data) => {
+                  Alert.alert(
+                    "Item Dropped",
+                    `Item "${data.label}" dropped in basic demo zone`
+                  );
+                }}
+              >
+                <Text style={styles.dropZoneText}>Drop Zone</Text>
+                <Text style={styles.dZoneSubText}>
+                  (For BasicDraggable demo)
+                </Text>
+              </MyDroppable>
+            </View>
+
+            <View
+              style={[
+                styles.draggableItemsArea,
+                { minHeight: 120, marginTop: 30 },
+              ]}
+            >
+              {/* Example using BasicDraggable */}
+              <BasicDraggable<DraggableItemData>
+                key="basic-draggable-demo"
+                data={{
+                  id: "basic-draggable-demo",
+                  label: "Basic Draggable Demo",
+                  backgroundColor: "#f72585",
+                }}
+                style={[
+                  styles.draggable,
+                  {
+                    top: 0,
+                    left: "25%",
+                    backgroundColor: "#f72585",
+                    borderRadius: 12,
+                    padding: 16,
+                    width: 180,
+                  },
+                ]}
+              >
+                <View style={[commonCardStyle, { width: "100%" }]}>
+                  <Text style={styles.cardLabel}>Minimal Draggable</Text>
+                  <Text style={styles.cardHint}>Simple implementation</Text>
+                </View>
+              </BasicDraggable>
             </View>
           </View>
         </ScrollView>
@@ -1286,5 +1619,58 @@ const styles = StyleSheet.create({
   mappingValue: {
     fontWeight: "600",
     color: "#3fb950",
+  },
+  dragHandle: {
+    backgroundColor: "rgba(0, 0, 0, 0.2)",
+    padding: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 10,
+    borderRadius: 6,
+    width: "100%",
+  },
+  handleText: {
+    color: "#ffffff",
+    fontWeight: "700",
+    fontSize: 14,
+  },
+  cardWithHeader: {
+    flexDirection: "column",
+    borderRadius: 12,
+    backgroundColor: "#ffffff",
+    overflow: "hidden",
+    width: "100%",
+  },
+  cardHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: 12,
+    backgroundColor: "#606c38",
+    width: "100%",
+  },
+  cardHeaderText: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#ffffff",
+  },
+  cardHeaderIcon: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#ffffff",
+  },
+  cardBody: {
+    padding: 12,
+  },
+  cardBodyTitle: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#333",
+    marginBottom: 6,
+  },
+  cardBodyText: {
+    fontSize: 12,
+    color: "#666",
+    lineHeight: 16,
   },
 });

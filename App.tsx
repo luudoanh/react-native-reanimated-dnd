@@ -6,9 +6,11 @@ import React from "react";
 // import { Draggable } from "./components/Draggable"; // No longer directly used
 // import { GestureHandlerRootView } from "react-native-gesture-handler"; // Handled within CustomDndExample
 import CustomDndExample from "./components/CustomDndExample";
+import MusicExample from "./music_example/MusicExample";
+import { SortableExample } from "./components";
 
 export default function App() {
-  return <CustomDndExample />;
+  return <SortableExample />;
 }
 
 // Styles are no longer needed here as they are in CustomDndExample.tsx

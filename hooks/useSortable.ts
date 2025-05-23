@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { StyleProp, ViewStyle } from "react-native";
+import React from "react";
 import Animated, {
   runOnJS,
   runOnUI,
@@ -35,12 +36,15 @@ export interface UseSortableOptions<T> {
     overItemId: string | null,
     yPosition: number
   ) => void;
+  children?: React.ReactNode;
+  handleComponent?: React.ComponentType<any>;
 }
 
 export interface UseSortableReturn {
   animatedStyle: StyleProp<ViewStyle>;
   panGestureHandler: any;
   isMoving: boolean;
+  hasHandle: boolean;
 }
 
 export function useSortable<T>(
@@ -58,9 +62,12 @@ export function useSortable<T>(
     onDragStart,
     onDrop,
     onDragging,
+    children,
+    handleComponent,
   } = options;
 
   const [isMoving, setIsMoving] = useState(false);
+  const [hasHandle, setHasHandle] = useState(false);
   const movingSV = useSharedValue(false);
   const currentOverItemId = useSharedValue<string | null>(null);
   const onDraggingLastCallTimestamp = useSharedValue(0);
@@ -86,6 +93,32 @@ export function useSortable<T>(
   const upperBound = useDerivedValue(
     () => lowerBound.value + calculatedContainerHeight
   );
+
+  useEffect(() => {
+    if (!children || !handleComponent) {
+      setHasHandle(false);
+      return;
+    }
+
+    const checkForHandle = (child: React.ReactNode): boolean => {
+      if (React.isValidElement(child)) {
+        if (child.type === handleComponent) {
+          return true;
+        }
+
+        if (child.props && child.props.children) {
+          if (
+            React.Children.toArray(child.props.children).some(checkForHandle)
+          ) {
+            return true;
+          }
+        }
+      }
+      return false;
+    };
+
+    setHasHandle(React.Children.toArray(children).some(checkForHandle));
+  }, [children, handleComponent]);
 
   useAnimatedReaction(
     () => positionY.value,
@@ -279,5 +312,6 @@ export function useSortable<T>(
     animatedStyle,
     panGestureHandler,
     isMoving,
+    hasHandle,
   };
 }

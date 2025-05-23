@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import {
   View,
   Text,
@@ -6,6 +6,7 @@ import {
   Dimensions,
   Image,
   SafeAreaView,
+  TouchableOpacity,
 } from "react-native";
 import { Sortable } from "./Sortable";
 import { SortableItem } from "./SortableItem";
@@ -242,69 +243,108 @@ const ITEM_HEIGHT = 70;
 const windowHeight = Dimensions.get("window").height;
 
 export function SortableExample() {
-  // Render each sortable item
-  const renderItem = useCallback((props: SortableRenderItemProps<Item>) => {
-    const {
-      item,
-      id,
-      positions,
-      lowerBound,
-      autoScrollDirection,
-      itemsCount,
-      itemHeight,
-    } = props;
+  const [isDragHandleMode, setIsDragHandleMode] = useState(true);
 
-    return (
-      <SortableItem
-        key={id}
-        id={id}
-        data={item}
-        positions={positions}
-        lowerBound={lowerBound}
-        autoScrollDirection={autoScrollDirection}
-        itemsCount={itemsCount}
-        itemHeight={itemHeight}
-        containerHeight={windowHeight * 0.8}
-        style={styles.itemContainer}
-        onMove={(currentId, from, to) => {
-          console.log(`Item ${currentId} moved from ${from} to ${to}`);
-        }}
-        onDragStart={(currentId, position) => {
-          console.log(`Item ${currentId} dragged from ${position}`);
-        }}
-        onDrop={(currentId, position) => {
-          console.log(`Item ${currentId} dropped at ${position}`);
-        }}
-        onDragging={(currentId, overItemId, yPosition) => {
-          console.log(
-            `Item ${currentId} dragging over ${overItemId} at ${yPosition}`
-          );
-        }}
-      >
-        <View style={styles.itemContent}>
-          <Image
-            source={{ uri: item.cover_image_url }}
-            style={styles.coverImage}
-          />
-          <View style={styles.textContainer}>
-            <Text style={styles.songName} numberOfLines={1}>
-              {item.name}
-            </Text>
-            <Text style={styles.artistName} numberOfLines={1}>
-              {item.artist}
-            </Text>
+  // Render each sortable item
+  const renderItem = useCallback(
+    (props: SortableRenderItemProps<Item>) => {
+      const {
+        item,
+        id,
+        positions,
+        lowerBound,
+        autoScrollDirection,
+        itemsCount,
+        itemHeight,
+      } = props;
+
+      return (
+        <SortableItem
+          key={id}
+          id={id}
+          data={item}
+          positions={positions}
+          lowerBound={lowerBound}
+          autoScrollDirection={autoScrollDirection}
+          itemsCount={itemsCount}
+          itemHeight={itemHeight}
+          containerHeight={windowHeight * 0.8}
+          style={styles.itemContainer}
+          onMove={(currentId, from, to) => {
+            console.log(`Item ${currentId} moved from ${from} to ${to}`);
+          }}
+          onDragStart={(currentId, position) => {
+            console.log(`Item ${currentId} dragged from ${position}`);
+          }}
+          onDrop={(currentId, position) => {
+            console.log(`Item ${currentId} dropped at ${position}`);
+          }}
+          onDragging={(currentId, overItemId, yPosition) => {
+            console.log(
+              `Item ${currentId} dragging over ${overItemId} at ${yPosition}`
+            );
+          }}
+        >
+          <View style={styles.itemContent}>
+            <Image
+              source={{ uri: item.cover_image_url }}
+              style={styles.coverImage}
+            />
+            <View style={styles.textContainer}>
+              <Text style={styles.songName} numberOfLines={1}>
+                {item.name}
+              </Text>
+              <Text style={styles.artistName} numberOfLines={1}>
+                {item.artist}
+              </Text>
+            </View>
+            <Text style={styles.durationText}>{item.duration}</Text>
+            {isDragHandleMode && (
+              <SortableItem.Handle style={styles.dragHandle}>
+                <View style={styles.dragIconContainer}>
+                  <View style={styles.dragColumn}>
+                    <View style={styles.dragDot} />
+                    <View style={styles.dragDot} />
+                    <View style={styles.dragDot} />
+                  </View>
+                  <View style={styles.dragColumn}>
+                    <View style={styles.dragDot} />
+                    <View style={styles.dragDot} />
+                    <View style={styles.dragDot} />
+                  </View>
+                </View>
+              </SortableItem.Handle>
+            )}
           </View>
-          <Text style={styles.durationText}>{item.duration}</Text>
-        </View>
-      </SortableItem>
-    );
-  }, []);
+        </SortableItem>
+      );
+    },
+    [isDragHandleMode]
+  );
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
-        <Text style={styles.header}>My Music Queue</Text>
-        <View style={styles.redAccent} />
+        <View style={styles.headerContent}>
+          <View>
+            <Text style={styles.header}>My Music Queue</Text>
+            <View style={styles.redAccent} />
+          </View>
+          <TouchableOpacity
+            style={styles.toggleButton}
+            onPress={() => setIsDragHandleMode(!isDragHandleMode)}
+          >
+            <Text style={styles.toggleText}>
+              {isDragHandleMode ? "Handle" : "Full"}
+            </Text>
+            <View
+              style={[
+                styles.toggleIndicator,
+                { backgroundColor: isDragHandleMode ? "#FF3B30" : "#8E8E93" },
+              ]}
+            />
+          </TouchableOpacity>
+        </View>
       </View>
       <View style={styles.listContainer}>
         <Sortable
@@ -330,6 +370,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 10,
     paddingBottom: 16,
+  },
+  headerContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   header: {
     fontSize: 28,
@@ -394,8 +439,54 @@ const styles = StyleSheet.create({
   durationText: {
     fontSize: 15,
     color: "#FF3B30",
-    marginLeft: 12,
     fontWeight: "500",
     fontVariant: ["tabular-nums"],
+    marginRight: 8,
+  },
+  dragHandle: {
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    backgroundColor: "#1C1C1E",
+    justifyContent: "center",
+    alignItems: "center",
+    marginLeft: 8,
+  },
+  dragIconContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 4,
+  },
+  dragColumn: {
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 3,
+  },
+  dragDot: {
+    width: 3,
+    height: 3,
+    borderRadius: 1.5,
+    backgroundColor: "#8E8E93",
+  },
+  toggleButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 8,
+    borderWidth: 1,
+    borderColor: "#8E8E93",
+    borderRadius: 8,
+  },
+  toggleText: {
+    fontSize: 15,
+    fontWeight: "500",
+    color: "#FFFFFF",
+    marginRight: 8,
+  },
+  toggleIndicator: {
+    width: 20,
+    height: 4,
+    borderRadius: 2,
   },
 });

@@ -242,7 +242,11 @@ const MOCK_DATA: Item[] = MUSIC_DATA_RAW.map((item) => ({
 const ITEM_HEIGHT = 70;
 const windowHeight = Dimensions.get("window").height;
 
-export function SortableExample() {
+interface SortableExampleProps {
+  onBack?: () => void;
+}
+
+export function SortableExample({ onBack }: SortableExampleProps = {}) {
   const [isDragHandleMode, setIsDragHandleMode] = useState(true);
 
   // Render each sortable item
@@ -326,9 +330,21 @@ export function SortableExample() {
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
         <View style={styles.headerContent}>
-          <View>
-            <Text style={styles.header}>My Music Queue</Text>
-            <View style={styles.redAccent} />
+          <View style={styles.headerLeft}>
+            {onBack && (
+              <TouchableOpacity
+                style={styles.backButton}
+                onPress={onBack}
+                activeOpacity={0.7}
+              >
+                <Text style={styles.backIcon}>‹</Text>
+                <Text style={styles.backText}>Back</Text>
+              </TouchableOpacity>
+            )}
+            <View>
+              <Text style={styles.header}>My Music Queue</Text>
+              <View style={styles.redAccent} />
+            </View>
           </View>
           <TouchableOpacity
             style={styles.toggleButton}
@@ -376,8 +392,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
   },
+  headerLeft: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
   header: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: "700",
     textAlign: "left",
     color: "#FFFFFF",
@@ -488,5 +508,23 @@ const styles = StyleSheet.create({
     width: 20,
     height: 4,
     borderRadius: 2,
+  },
+  backButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 8,
+    paddingRight: 16,
+    marginRight: 16,
+  },
+  backIcon: {
+    fontSize: 28,
+    color: "#FF3B30",
+    fontWeight: "300",
+    marginRight: 4,
+  },
+  backText: {
+    fontSize: 17,
+    color: "#FF3B30",
+    fontWeight: "400",
   },
 });

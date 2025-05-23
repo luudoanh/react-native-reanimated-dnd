@@ -1,16 +1,14 @@
 // App.tsx
 import React from "react";
-// import { View, Text, StyleSheet } from "react-native"; // No longer directly used
-// import { DropProvider } from "./context/DropContext"; // Handled within CustomDndExample
-// import { Droppable } from "./components/Droppable"; // No longer directly used
-// import { Draggable } from "./components/Draggable"; // No longer directly used
-// import { GestureHandlerRootView } from "react-native-gesture-handler"; // Handled within CustomDndExample
-import CustomDndExample from "./components/CustomDndExample";
-import MusicExample from "./music_example/MusicExample";
-import { SortableExample } from "./components";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { AppNavigator } from "./navigation/AppNavigator";
 
 export default function App() {
-  return <SortableExample />;
+  return (
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <AppNavigator />
+    </GestureHandlerRootView>
+  );
 }
 
 // Styles are no longer needed here as they are in CustomDndExample.tsx

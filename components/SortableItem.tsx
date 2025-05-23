@@ -78,6 +78,7 @@ export function SortableItem<T>({
     panGestureHandler,
   };
 
+  // Always provide the context to avoid issues when toggling handle modes
   const content = (
     <Animated.View style={combinedAnimatedStyle}>
       <SortableContext.Provider value={contextValue}>
@@ -92,15 +93,13 @@ export function SortableItem<T>({
     return content;
   } else {
     return (
-      <Animated.View style={combinedAnimatedStyle}>
-        <PanGestureHandler
-          onGestureEvent={panGestureHandler}
-          activateAfterLongPress={200}
-          shouldCancelWhenOutside={false}
-        >
-          <Animated.View style={style}>{children}</Animated.View>
-        </PanGestureHandler>
-      </Animated.View>
+      <PanGestureHandler
+        onGestureEvent={panGestureHandler}
+        activateAfterLongPress={200}
+        shouldCancelWhenOutside={false}
+      >
+        {content}
+      </PanGestureHandler>
     );
   }
 }

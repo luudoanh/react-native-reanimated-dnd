@@ -22,13 +22,16 @@ interface CustomDraggableContextValue {
 const CustomDraggableContext =
   createContext<CustomDraggableContextValue | null>(null);
 
-// Handle component for CustomDraggable
-interface HandleProps {
+// Handle component for CustomDraggable - completely isolated
+interface CustomDraggableHandleProps {
   children: React.ReactNode;
   style?: StyleProp<ViewStyle>;
 }
 
-const Handle = ({ children, style }: HandleProps) => {
+const CustomDraggableHandle = ({
+  children,
+  style,
+}: CustomDraggableHandleProps) => {
   const draggableContext = useContext(CustomDraggableContext);
 
   if (!draggableContext) {
@@ -45,6 +48,9 @@ const Handle = ({ children, style }: HandleProps) => {
   );
 };
 
+// Set display name to help with debugging
+CustomDraggableHandle.displayName = "CustomDraggableHandle";
+
 const CustomDraggableComponent = <TData = unknown,>({
   children,
   initialStyle,
@@ -55,7 +61,7 @@ const CustomDraggableComponent = <TData = unknown,>({
     {
       ...draggableOptions,
       children,
-      handleComponent: Handle,
+      handleComponent: CustomDraggableHandle,
     },
     animatedViewRef
   );
@@ -91,5 +97,5 @@ const CustomDraggableComponent = <TData = unknown,>({
 
 // Attach Handle as a static property
 export const CustomDraggable = Object.assign(CustomDraggableComponent, {
-  Handle,
+  Handle: CustomDraggableHandle,
 });

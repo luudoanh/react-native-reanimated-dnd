@@ -330,36 +330,35 @@ export function SortableExample({ onBack }: SortableExampleProps = {}) {
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
         <View style={styles.headerContent}>
-          <View style={styles.headerLeft}>
-            {onBack && (
-              <TouchableOpacity
-                style={styles.backButton}
-                onPress={onBack}
-                activeOpacity={0.7}
-              >
-                <Text style={styles.backIcon}>‹</Text>
-                <Text style={styles.backText}>Back</Text>
-              </TouchableOpacity>
-            )}
-            <View>
-              <Text style={styles.header}>My Music Queue</Text>
-              <View style={styles.redAccent} />
-            </View>
-          </View>
           <TouchableOpacity
-            style={styles.toggleButton}
-            onPress={() => setIsDragHandleMode(!isDragHandleMode)}
+            style={styles.backButton}
+            onPress={onBack}
+            activeOpacity={0.7}
           >
-            <Text style={styles.toggleText}>
-              {isDragHandleMode ? "Handle" : "Full"}
-            </Text>
-            <View
-              style={[
-                styles.toggleIndicator,
-                { backgroundColor: isDragHandleMode ? "#FF3B30" : "#8E8E93" },
-              ]}
-            />
+            <Text style={styles.backIcon}>‹</Text>
+            <Text style={styles.backText}>Back</Text>
           </TouchableOpacity>
+
+          <View style={styles.titleContainer}>
+            <Text style={styles.header}>Playing Now</Text>
+          </View>
+
+          <View style={styles.toggleButtonContainer}>
+            <TouchableOpacity
+              style={styles.toggleButton}
+              onPress={() => setIsDragHandleMode(!isDragHandleMode)}
+            >
+              <Text style={styles.toggleText}>
+                {isDragHandleMode ? "Handle" : "Full"}
+              </Text>
+              <View
+                style={[
+                  styles.toggleIndicator,
+                  { backgroundColor: isDragHandleMode ? "#FF3B30" : "#8E8E93" },
+                ]}
+              />
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
       <View style={styles.listContainer}>
@@ -384,30 +383,45 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0.5,
     borderBottomColor: "#2C2C2E",
     paddingHorizontal: 16,
-    paddingTop: 10,
-    paddingBottom: 16,
+    paddingTop: 6,
+    paddingBottom: 6,
   },
   headerContent: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
   },
-  headerLeft: {
+  backButton: {
     flexDirection: "row",
     alignItems: "center",
+    paddingVertical: 8,
+    paddingRight: 16,
+    flex: 1,
+  },
+  backIcon: {
+    fontSize: 28,
+    color: "#FF3B30",
+    fontWeight: "300",
+    marginRight: 4,
+  },
+  backText: {
+    fontSize: 17,
+    color: "#FF3B30",
+    fontWeight: "400",
+  },
+  titleContainer: {
+    alignItems: "center",
+    flex: 2,
   },
   header: {
-    fontSize: 24,
+    fontSize: 16,
     fontWeight: "700",
-    textAlign: "left",
+    textAlign: "center",
     color: "#FFFFFF",
-    marginBottom: 4,
   },
-  redAccent: {
-    width: 40,
-    height: 3,
-    backgroundColor: "#FF3B30",
-    borderRadius: 1.5,
+  toggleButtonContainer: {
+    flex: 1,
+    alignItems: "flex-end",
   },
   listContainer: {
     flex: 1,
@@ -493,38 +507,22 @@ const styles = StyleSheet.create({
   toggleButton: {
     flexDirection: "row",
     alignItems: "center",
-    padding: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
     borderWidth: 1,
-    borderColor: "#8E8E93",
-    borderRadius: 8,
+    borderColor: "#3A3A3C",
+    borderRadius: 6,
+    backgroundColor: "#1C1C1E",
   },
   toggleText: {
-    fontSize: 15,
-    fontWeight: "500",
+    fontSize: 14,
+    fontWeight: "600",
     color: "#FFFFFF",
     marginRight: 8,
   },
   toggleIndicator: {
-    width: 20,
-    height: 4,
-    borderRadius: 2,
-  },
-  backButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 8,
-    paddingRight: 16,
-    marginRight: 16,
-  },
-  backIcon: {
-    fontSize: 28,
-    color: "#FF3B30",
-    fontWeight: "300",
-    marginRight: 4,
-  },
-  backText: {
-    fontSize: 17,
-    color: "#FF3B30",
-    fontWeight: "400",
+    width: 16,
+    height: 3,
+    borderRadius: 1.5,
   },
 });

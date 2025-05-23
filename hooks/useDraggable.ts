@@ -109,6 +109,7 @@ export const useDraggable = <TData = unknown>(
     // Check if children contain a Handle component
     const checkForHandle = (child: React.ReactNode): boolean => {
       if (React.isValidElement(child)) {
+        // Check for direct component type match
         if (child.type === handleComponent) {
           return true;
         }

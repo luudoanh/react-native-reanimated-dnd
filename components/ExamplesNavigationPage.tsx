@@ -6,7 +6,18 @@ import {
   SafeAreaView,
   TouchableOpacity,
   ScrollView,
+  ActivityIndicator,
 } from "react-native";
+import {
+  useFonts,
+  MajorMonoDisplay_400Regular,
+} from "@expo-google-fonts/major-mono-display";
+import {
+  KumbhSans_400Regular,
+  KumbhSans_500Medium,
+  KumbhSans_600SemiBold,
+  KumbhSans_700Bold,
+} from "@expo-google-fonts/kumbh-sans";
 
 interface Example {
   id: string;
@@ -139,10 +150,26 @@ interface ExamplesNavigationPageProps {
 export function ExamplesNavigationPage({
   onNavigateToExample,
 }: ExamplesNavigationPageProps) {
+  let [fontsLoaded] = useFonts({
+    MajorMonoDisplay_400Regular,
+    KumbhSans_400Regular,
+    KumbhSans_500Medium,
+    KumbhSans_600SemiBold,
+    KumbhSans_700Bold,
+  });
+
+  if (!fontsLoaded) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator />
+      </View>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
-        <Text style={styles.header}>Drag & Drop Examples</Text>
+        <Text style={styles.header}>React reanimated DND</Text>
         <View style={styles.redAccent} />
       </View>
 
@@ -191,13 +218,14 @@ const styles = StyleSheet.create({
   },
   header: {
     fontSize: 28,
-    fontWeight: "700",
+    fontFamily: "MajorMonoDisplay_400Regular",
     textAlign: "left",
     color: "#FFFFFF",
     marginBottom: 4,
+    lineHeight: 32,
   },
   redAccent: {
-    width: 40,
+    width: 60,
     height: 3,
     backgroundColor: "#FF3B30",
     borderRadius: 1.5,
@@ -236,17 +264,19 @@ const styles = StyleSheet.create({
   },
   exampleTitle: {
     fontSize: 17,
-    fontWeight: "600",
+    fontFamily: "KumbhSans_600SemiBold",
     color: "#FFFFFF",
     marginBottom: 4,
   },
   exampleDescription: {
     fontSize: 15,
+    fontFamily: "KumbhSans_400Regular",
     color: "#8E8E93",
     lineHeight: 20,
   },
   chevron: {
     fontSize: 20,
+    fontFamily: "KumbhSans_400Regular",
     color: "#8E8E93",
     fontWeight: "300",
   },

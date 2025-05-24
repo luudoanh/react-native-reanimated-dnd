@@ -9,18 +9,14 @@ import {
   TouchableOpacity,
   Modal,
 } from "react-native";
-import {
-  withTiming,
-  withSpring,
-  withDecay,
-  Easing,
-} from "react-native-reanimated";
+import { withTiming, withSpring, Easing } from "react-native-reanimated";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { DropProvider, DropProviderRef } from "../../context/DropContext";
 import { Droppable } from "../Droppable";
 import { CustomDraggable } from "../CustomDraggable";
 import { UseDraggableOptions } from "../../hooks/useDraggable";
 import { ExampleHeader } from "../ExampleHeader";
+import { Draggable } from "../Draggable";
 
 interface DraggableItemData {
   id: string;
@@ -32,18 +28,11 @@ interface AnimationExampleProps {
   onBack: () => void;
 }
 
-type AnimationType =
-  | "spring"
-  | "timing"
-  | "decay"
-  | "bounce"
-  | "elastic"
-  | "custom";
+type AnimationType = "spring" | "timing" | "bounce" | "elastic" | "custom";
 
 const animationTypes: { label: string; value: AnimationType }[] = [
   { label: "Spring (Default)", value: "spring" },
   { label: "Timing", value: "timing" },
-  { label: "Decay", value: "decay" },
   { label: "Bounce", value: "bounce" },
   { label: "Elastic", value: "elastic" },
   { label: "Custom Cubic", value: "custom" },
@@ -115,13 +104,6 @@ export function AnimationExample({ onBack }: AnimationExampleProps) {
             return withTiming(toValue, {
               duration: selectedDuration,
               easing: selectedEasing,
-            });
-
-          case "decay":
-            return withDecay({
-              velocity: 0,
-              clamp: [toValue - 50, toValue + 50],
-              deceleration: 0.998,
             });
 
           case "bounce":
@@ -260,7 +242,7 @@ export function AnimationExample({ onBack }: AnimationExampleProps) {
               </View>
 
               <View style={styles.draggableItemsArea}>
-                <CustomDraggable<DraggableItemData>
+                <Draggable<DraggableItemData>
                   key={`animation-item-1-${selectedAnimation}-${selectedDuration}-${selectedEasingKey}`}
                   data={{
                     id: "animation-item-1",
@@ -268,11 +250,8 @@ export function AnimationExample({ onBack }: AnimationExampleProps) {
                     backgroundColor: "#ff9f43",
                   }}
                   animationFunction={animationFunction}
-                  initialStyle={[
-                    styles.draggable,
+                  style={[
                     {
-                      top: 0,
-                      left: 20,
                       backgroundColor: "#ff9f43",
                       borderRadius: 12,
                     },
@@ -282,31 +261,7 @@ export function AnimationExample({ onBack }: AnimationExampleProps) {
                     <Text style={styles.cardLabel}>Test 1</Text>
                     <Text style={styles.cardHint}>Custom anim</Text>
                   </View>
-                </CustomDraggable>
-
-                <CustomDraggable<DraggableItemData>
-                  key={`animation-item-2-${selectedAnimation}-${selectedDuration}-${selectedEasingKey}`}
-                  data={{
-                    id: "animation-item-2",
-                    label: "Animation Test 2",
-                    backgroundColor: "#10ac84",
-                  }}
-                  animationFunction={animationFunction}
-                  initialStyle={[
-                    styles.draggable,
-                    {
-                      top: 0,
-                      left: 160,
-                      backgroundColor: "#10ac84",
-                      borderRadius: 12,
-                    },
-                  ]}
-                >
-                  <View style={styles.cardContent}>
-                    <Text style={styles.cardLabel}>Test 2</Text>
-                    <Text style={styles.cardHint}>Same anim</Text>
-                  </View>
-                </CustomDraggable>
+                </Draggable>
               </View>
 
               <View style={styles.infoContainer}>
@@ -331,17 +286,6 @@ export function AnimationExample({ onBack }: AnimationExampleProps) {
                   <Text style={styles.infoText}>
                     Timing: Linear progression with customizable duration and
                     easing
-                  </Text>
-                </View>
-                <View style={styles.infoItem}>
-                  <View
-                    style={[
-                      styles.infoIndicator,
-                      { backgroundColor: "#FF3B30" },
-                    ]}
-                  />
-                  <Text style={styles.infoText}>
-                    Decay: Gradually slows down like real-world physics
                   </Text>
                 </View>
               </View>
@@ -572,10 +516,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
   },
-  draggable: {
-    position: "absolute",
-  },
+
   cardContent: {
     width: 120,
     height: 72,

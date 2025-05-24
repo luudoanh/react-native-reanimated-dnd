@@ -78,6 +78,19 @@ export interface SlotsContextValue<TData = unknown> {
 
   // Add new method to check if a droppable has available capacity
   hasAvailableCapacity: (droppableId: string) => boolean;
+
+  // Add onDragging callback
+  onDragging?: (payload: {
+    x: number;
+    y: number;
+    tx: number;
+    ty: number;
+    itemData: any;
+  }) => void;
+
+  // Add onDragStart and onDragEnd callbacks
+  onDragStart?: (data: any) => void;
+  onDragEnd?: (data: any) => void;
 }
 
 // Default context value using 'any' for broad compatibility
@@ -169,6 +182,19 @@ const defaultSlotsContextValue: SlotsContextValue<any> = {
     }
     return false;
   },
+  onDragging: (payload: {
+    x: number;
+    y: number;
+    tx: number;
+    ty: number;
+    itemData: any;
+  }) => {
+    if (process.env.NODE_ENV !== "production") {
+      console.warn("SlotsContext: onDragging called without a Provider.");
+    }
+  },
+  onDragStart: undefined,
+  onDragEnd: undefined,
 };
 
 // Create the context
@@ -181,6 +207,15 @@ interface DropProviderProps {
   children: ReactNode;
   onLayoutUpdateComplete?: () => void;
   onDroppedItemsUpdate?: (droppedItems: DroppedItemsMap) => void;
+  onDragging?: (payload: {
+    x: number;
+    y: number;
+    tx: number;
+    ty: number;
+    itemData: any;
+  }) => void;
+  onDragStart?: (data: any) => void;
+  onDragEnd?: (data: any) => void;
 }
 
 // Type for the imperative handle exposed by DropProvider
@@ -196,6 +231,9 @@ export const DropProvider = forwardRef<DropProviderRef, DropProviderProps>(
       children,
       onLayoutUpdateComplete,
       onDroppedItemsUpdate,
+      onDragging,
+      onDragStart,
+      onDragEnd,
     }: DropProviderProps,
     ref: React.ForwardedRef<DropProviderRef>
   ): React.ReactElement => {
@@ -295,6 +333,17 @@ export const DropProvider = forwardRef<DropProviderRef, DropProviderProps>(
       [droppedItems]
     );
 
+    // Create a wrapper for onDragStart that also triggers position update
+    const handleDragStart = useCallback(
+      (data: any) => {
+        if (onDragStart) {
+          onDragStart(data);
+        }
+        internalRequestPositionUpdate();
+      },
+      [onDragStart, internalRequestPositionUpdate]
+    );
+
     // Update the context value with the new method
     const contextValue = useMemo<SlotsContextValue<any>>(
       () => ({
@@ -318,6 +367,9 @@ export const DropProvider = forwardRef<DropProviderRef, DropProviderProps>(
         unregisterDroppedItem,
         getDroppedItems,
         hasAvailableCapacity,
+        onDragging,
+        onDragStart: handleDragStart,
+        onDragEnd,
       }),
       [
         activeHoverSlotId,
@@ -328,6 +380,9 @@ export const DropProvider = forwardRef<DropProviderRef, DropProviderProps>(
         unregisterDroppedItem,
         getDroppedItems,
         hasAvailableCapacity,
+        onDragging,
+        handleDragStart,
+        onDragEnd,
       ]
     );
 

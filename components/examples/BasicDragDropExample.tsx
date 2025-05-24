@@ -40,13 +40,6 @@ export function BasicDragDropExample({ onBack }: BasicDragDropExampleProps) {
     // console.log('DropProvider: Position recalculation completed.');
   }, []);
 
-  const handleContainerLayout = useCallback(() => {
-    // Request position update when container layout changes
-    setTimeout(() => {
-      dropProviderRef.current?.requestPositionUpdate();
-    }, 500);
-  }, []);
-
   return (
     <GestureHandlerRootView style={styles.container}>
       <SafeAreaView style={styles.container}>
@@ -62,7 +55,6 @@ export function BasicDragDropExample({ onBack }: BasicDragDropExampleProps) {
             onScrollEndDrag={handleScrollEnd}
             onMomentumScrollEnd={handleScrollEnd}
             scrollEventThrottle={16}
-            onLayout={handleContainerLayout}
           >
             <View style={styles.section}>
               <Text style={styles.sectionDescription}>
@@ -82,17 +74,6 @@ export function BasicDragDropExample({ onBack }: BasicDragDropExampleProps) {
                   }
                 >
                   <Text style={styles.dropZoneText}>Zone Alpha</Text>
-                  <Text style={styles.dZoneSubText}>(Basic Drop Zone)</Text>
-                </Droppable>
-
-                <Droppable<DraggableItemData>
-                  droppableId="zone-beta"
-                  style={[styles.dropZone, styles.dropZoneGreen]}
-                  onDrop={(data) =>
-                    Alert.alert("Drop!", `"${data.label}" dropped on Zone Beta`)
-                  }
-                >
-                  <Text style={styles.dropZoneText}>Zone Beta</Text>
                   <Text style={styles.dZoneSubText}>(Basic Drop Zone)</Text>
                 </Droppable>
               </View>

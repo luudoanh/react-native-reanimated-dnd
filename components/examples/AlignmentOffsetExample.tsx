@@ -81,13 +81,6 @@ export function AlignmentOffsetExample({
     // console.log('DropProvider: Position recalculation completed.');
   }, []);
 
-  const handleContainerLayout = useCallback(() => {
-    // Request position update when container layout changes
-    setTimeout(() => {
-      dropProviderRef.current?.requestPositionUpdate();
-    }, 500);
-  }, []);
-
   const selectedAlignmentLabel =
     alignmentOptions.find((option) => option.value === selectedAlignment)
       ?.label || "Center";
@@ -114,7 +107,6 @@ export function AlignmentOffsetExample({
             onScrollEndDrag={handleScrollEnd}
             onMomentumScrollEnd={handleScrollEnd}
             scrollEventThrottle={16}
-            onLayout={handleContainerLayout}
           >
             <View style={styles.section}>
               <Text style={styles.sectionDescription}>
@@ -148,10 +140,7 @@ export function AlignmentOffsetExample({
                 </TouchableOpacity>
               </View>
 
-              <View
-                style={styles.dropZoneArea}
-                onLayout={handleContainerLayout}
-              >
+              <View style={styles.dropZoneArea}>
                 <Droppable<DraggableItemData>
                   droppableId="alignment-demo-zone"
                   style={[styles.dropZone, styles.dropZoneBlue]}
@@ -174,10 +163,7 @@ export function AlignmentOffsetExample({
                 </Droppable>
               </View>
 
-              <View
-                style={styles.draggableItemsArea}
-                onLayout={handleContainerLayout}
-              >
+              <View style={styles.draggableItemsArea}>
                 <CustomDraggable<DraggableItemData>
                   key={`alignment-item-1-${selectedAlignment}-${selectedOffset.x}-${selectedOffset.y}`}
                   data={{

@@ -12,6 +12,12 @@ import {
   ViewStyle,
   StyleSheet,
 } from "react-native";
+import Animated, {
+  useAnimatedRef,
+  measure,
+  runOnUI,
+  runOnJS,
+} from "react-native-reanimated";
 import {
   SlotsContext,
   SlotsContextValue,
@@ -38,11 +44,11 @@ export interface UseDroppableReturn {
   };
   isActive: boolean;
   activeStyle?: StyleProp<ViewStyle>;
+  animatedViewRef: ReturnType<typeof useAnimatedRef<Animated.View>>;
 }
 
 export const useDroppable = <TData = unknown>(
-  options: UseDroppableOptions<TData>,
-  viewRef: React.RefObject<View>
+  options: UseDroppableOptions<TData>
 ): UseDroppableReturn => {
   const {
     onDrop,
@@ -54,6 +60,10 @@ export const useDroppable = <TData = unknown>(
     droppableId,
     capacity,
   } = options;
+
+  // Create animated ref first
+  const animatedViewRef = useAnimatedRef<Animated.View>();
+
   const id = useRef(_getUniqueDroppableId()).current;
   const stringId = useRef(droppableId || `droppable-${id}`).current;
   const instanceId = useRef(
@@ -128,33 +138,34 @@ export const useDroppable = <TData = unknown>(
   }, [id, stringId, droppableId]);
 
   const updateDroppablePosition = useCallback(() => {
-    if (!viewRef.current) return;
+    runOnUI(() => {
+      "worklet";
+      const measurement = measure(animatedViewRef);
+      if (measurement === null) {
+        return;
+      }
 
-    viewRef.current.measure((_frameX, _frameY, width, height, pageX, pageY) => {
-      if (width > 0 && height > 0) {
+      if (measurement.width > 0 && measurement.height > 0) {
         // Ensure valid dimensions before registering
-        register(id, {
+        runOnJS(register)(id, {
           id: droppableId || `droppable-${id}`,
-          x: pageX,
-          y: pageY,
-          width,
-          height,
+          x: measurement.pageX,
+          y: measurement.pageY,
+          width: measurement.width,
+          height: measurement.height,
           onDrop,
           dropAlignment: dropAlignment || "center",
           dropOffset: dropOffset || { x: 0, y: 0 },
           capacity,
         });
-      } else {
-        // Optionally, unregister or handle invalid measurement if needed
-        // console.warn(`Droppable ${id} measured with zero dimensions.`);
       }
-    });
+    })();
   }, [
     id,
     droppableId,
     onDrop,
     register,
-    viewRef,
+    animatedViewRef,
     dropAlignment,
     dropOffset,
     capacity,
@@ -209,5 +220,6 @@ export const useDroppable = <TData = unknown>(
     },
     isActive,
     activeStyle,
+    animatedViewRef,
   };
 };

@@ -42,13 +42,6 @@ export function ActiveStylesExample({ onBack }: ActiveStylesExampleProps) {
     // console.log('DropProvider: Position recalculation completed.');
   }, []);
 
-  const handleContainerLayout = useCallback(() => {
-    // Request position update when container layout changes
-    setTimeout(() => {
-      dropProviderRef.current?.requestPositionUpdate();
-    }, 500);
-  }, []);
-
   // Custom active styles for different drop zones
   const pulseActiveStyle: StyleProp<ViewStyle> = {
     borderColor: "#ff6b6b",
@@ -86,7 +79,6 @@ export function ActiveStylesExample({ onBack }: ActiveStylesExampleProps) {
             onScrollEndDrag={handleScrollEnd}
             onMomentumScrollEnd={handleScrollEnd}
             scrollEventThrottle={16}
-            onLayout={handleContainerLayout}
           >
             <View style={styles.section}>
               <Text style={styles.sectionDescription}>

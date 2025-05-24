@@ -61,18 +61,14 @@ const DraggableComponent = <TData = unknown,>({
   // Collect all other props (which are now the modified UseDraggableOptions)
   ...useDraggableHookOptions
 }: DraggableProps<TData>) => {
-  const animatedViewRef = useRef<Animated.View>(null);
-
   // Pass the collected useDraggableHookOptions object directly to the hook
   // Also pass children and Handle component reference for handle detection
-  const { animatedViewProps, gesture, state, hasHandle } = useDraggable<TData>(
-    {
+  const { animatedViewProps, gesture, state, hasHandle, animatedViewRef } =
+    useDraggable<TData>({
       ...useDraggableHookOptions,
       children,
       handleComponent: Handle,
-    },
-    animatedViewRef
-  );
+    });
 
   // Create the context value
   const contextValue: DraggableContextValue = {
@@ -86,6 +82,7 @@ const DraggableComponent = <TData = unknown,>({
       ref={animatedViewRef}
       {...animatedViewProps}
       style={[componentStyle, animatedViewProps.style]}
+      collapsable={false}
     >
       <DraggableContext.Provider value={contextValue}>
         {children}

@@ -93,13 +93,6 @@ export function AnimationExample({ onBack }: AnimationExampleProps) {
     // console.log('DropProvider: Position recalculation completed.');
   }, []);
 
-  const handleContainerLayout = useCallback(() => {
-    // Request position update when container layout changes
-    setTimeout(() => {
-      dropProviderRef.current?.requestPositionUpdate();
-    }, 500);
-  }, []);
-
   // Create animation function based on selected options
   const createAnimationFunction =
     useCallback((): UseDraggableOptions<any>["animationFunction"] => {
@@ -184,7 +177,6 @@ export function AnimationExample({ onBack }: AnimationExampleProps) {
             onScrollEndDrag={handleScrollEnd}
             onMomentumScrollEnd={handleScrollEnd}
             scrollEventThrottle={16}
-            onLayout={handleContainerLayout}
           >
             <View style={styles.section}>
               <Text style={styles.sectionDescription}>
@@ -241,10 +233,7 @@ export function AnimationExample({ onBack }: AnimationExampleProps) {
                 </View>
               )}
 
-              <View
-                style={styles.dropZoneArea}
-                onLayout={handleContainerLayout}
-              >
+              <View style={styles.dropZoneArea}>
                 <Droppable<DraggableItemData>
                   droppableId="animation-demo-zone"
                   style={[styles.dropZone, styles.dropZoneBlue]}
@@ -270,10 +259,7 @@ export function AnimationExample({ onBack }: AnimationExampleProps) {
                 </Droppable>
               </View>
 
-              <View
-                style={styles.draggableItemsArea}
-                onLayout={handleContainerLayout}
-              >
+              <View style={styles.draggableItemsArea}>
                 <CustomDraggable<DraggableItemData>
                   key={`animation-item-1-${selectedAnimation}-${selectedDuration}-${selectedEasingKey}`}
                   data={{

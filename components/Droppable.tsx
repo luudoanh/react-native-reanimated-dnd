@@ -1,6 +1,7 @@
 // Node Modules
-import React, { useRef } from "react";
-import { View, StyleProp, ViewStyle } from "react-native";
+import React from "react";
+import { StyleProp, ViewStyle } from "react-native";
+import Animated from "react-native-reanimated";
 import { useDroppable, UseDroppableOptions } from "../hooks/useDroppable";
 
 let _nextDroppableId = 1;
@@ -29,26 +30,26 @@ export const Droppable = <TData = unknown,>({
   droppableId,
   capacity,
 }: DroppableProps<TData>): React.ReactElement => {
-  const viewRef = useRef<View>(null);
-
-  const { viewProps } = useDroppable<TData>(
-    {
-      onDrop,
-      dropDisabled,
-      onActiveChange,
-      dropAlignment,
-      dropOffset,
-      activeStyle,
-      droppableId,
-      capacity,
-    },
-    viewRef
-  );
+  const { viewProps, animatedViewRef } = useDroppable<TData>({
+    onDrop,
+    dropDisabled,
+    onActiveChange,
+    dropAlignment,
+    dropOffset,
+    activeStyle,
+    droppableId,
+    capacity,
+  });
 
   // The style is now fully handled in the hook and returned via viewProps.style
   return (
-    <View ref={viewRef} {...viewProps} style={[style, viewProps.style]}>
+    <Animated.View
+      ref={animatedViewRef}
+      {...viewProps}
+      style={[style, viewProps.style]}
+      collapsable={false}
+    >
       {children}
-    </View>
+    </Animated.View>
   );
 };

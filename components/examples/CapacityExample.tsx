@@ -49,13 +49,6 @@ export function CapacityExample({ onBack }: CapacityExampleProps) {
     // console.log('DropProvider: Position recalculation completed.');
   }, []);
 
-  const handleContainerLayout = useCallback(() => {
-    // Request position update when container layout changes
-    setTimeout(() => {
-      dropProviderRef.current?.requestPositionUpdate();
-    }, 500);
-  }, []);
-
   return (
     <GestureHandlerRootView style={styles.container}>
       <SafeAreaView style={styles.container}>
@@ -72,7 +65,6 @@ export function CapacityExample({ onBack }: CapacityExampleProps) {
             onScrollEndDrag={handleScrollEnd}
             onMomentumScrollEnd={handleScrollEnd}
             scrollEventThrottle={16}
-            onLayout={handleContainerLayout}
           >
             <View style={styles.section}>
               <Text style={styles.sectionDescription}>

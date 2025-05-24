@@ -56,15 +56,12 @@ const CustomDraggableComponent = <TData = unknown,>({
   initialStyle,
   ...draggableOptions
 }: CustomDraggableProps<TData>) => {
-  const animatedViewRef = useRef<Animated.View>(null);
-  const { animatedViewProps, gesture, hasHandle } = useDraggable<TData>(
-    {
+  const { animatedViewProps, gesture, hasHandle, animatedViewRef } =
+    useDraggable<TData>({
       ...draggableOptions,
       children,
       handleComponent: CustomDraggableHandle,
-    },
-    animatedViewRef
-  );
+    });
 
   const combinedStyle = [initialStyle, animatedViewProps.style];
 
@@ -79,6 +76,7 @@ const CustomDraggableComponent = <TData = unknown,>({
       ref={animatedViewRef}
       {...animatedViewProps}
       style={combinedStyle}
+      collapsable={false}
     >
       <CustomDraggableContext.Provider value={contextValue}>
         {children}

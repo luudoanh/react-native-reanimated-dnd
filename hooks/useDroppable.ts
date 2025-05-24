@@ -6,7 +6,6 @@ import React, {
   useMemo,
 } from "react";
 import {
-  View,
   LayoutChangeEvent,
   StyleProp,
   ViewStyle,
@@ -23,30 +22,139 @@ import {
   SlotsContextValue,
   DropAlignment,
   DropOffset,
-} from "../context/DropContext";
-import { _getUniqueDroppableId } from "../components/Droppable";
+} from "@/context/DropContext";
+import { _getUniqueDroppableId } from "@/components/Droppable";
+import { UseDroppableOptions, UseDroppableReturn } from "@/types/droppable";
 
-export interface UseDroppableOptions<TData = unknown> {
-  onDrop: (data: TData) => void;
-  dropDisabled?: boolean;
-  onActiveChange?: (isActive: boolean) => void;
-  dropAlignment?: DropAlignment;
-  dropOffset?: DropOffset;
-  activeStyle?: StyleProp<ViewStyle>;
-  droppableId?: string;
-  capacity?: number;
-}
-
-export interface UseDroppableReturn {
-  viewProps: {
-    onLayout: (event: LayoutChangeEvent) => void;
-    style?: StyleProp<ViewStyle>; // Style to apply when active
-  };
-  isActive: boolean;
-  activeStyle?: StyleProp<ViewStyle>;
-  animatedViewRef: ReturnType<typeof useAnimatedRef<Animated.View>>;
-}
-
+/**
+ * A hook for creating drop zones that can receive draggable items.
+ *
+ * This hook handles the registration of drop zones, collision detection with draggable items,
+ * visual feedback during hover states, and proper positioning of dropped items within the zone.
+ * It integrates seamlessly with the drag-and-drop context to provide a complete solution.
+ *
+ * @template TData - The type of data that can be dropped on this droppable
+ * @param options - Configuration options for the droppable behavior
+ * @returns Object containing view props, active state, and internal references
+ *
+ * @example
+ * Basic drop zone:
+ * ```typescript
+ * import { useDroppable } from './hooks/useDroppable';
+ *
+ * function BasicDropZone() {
+ *   const { viewProps, isActive } = useDroppable({
+ *     onDrop: (data) => {
+ *       console.log('Item dropped:', data);
+ *       // Handle the dropped item
+ *     }
+ *   });
+ *
+ *   return (
+ *     <Animated.View
+ *       {...viewProps}
+ *       style={[
+ *         styles.dropZone,
+ *         viewProps.style, // Important: include the active style
+ *         isActive && styles.highlighted
+ *       ]}
+ *     >
+ *       <Text>Drop items here</Text>
+ *     </Animated.View>
+ *   );
+ * }
+ * ```
+ *
+ * @example
+ * Drop zone with custom alignment and capacity:
+ * ```typescript
+ * function TaskColumn() {
+ *   const [tasks, setTasks] = useState<Task[]>([]);
+ *
+ *   const { viewProps, isActive } = useDroppable({
+ *     droppableId: 'in-progress-column',
+ *     onDrop: (task: Task) => {
+ *       setTasks(prev => [...prev, task]);
+ *       updateTaskStatus(task.id, 'in-progress');
+ *     },
+ *     dropAlignment: 'top-center',
+ *     dropOffset: { x: 0, y: 10 },
+ *     capacity: 10, // Max 10 tasks in this column
+ *     activeStyle: {
+ *       backgroundColor: 'rgba(59, 130, 246, 0.1)',
+ *       borderColor: '#3b82f6',
+ *       borderWidth: 2,
+ *       borderStyle: 'dashed'
+ *     }
+ *   });
+ *
+ *   return (
+ *     <Animated.View {...viewProps} style={[styles.column, viewProps.style]}>
+ *       <Text style={styles.columnTitle}>In Progress ({tasks.length}/10)</Text>
+ *       {tasks.map(task => (
+ *         <TaskCard key={task.id} task={task} />
+ *       ))}
+ *       {isActive && (
+ *         <Text style={styles.dropHint}>Release to add task</Text>
+ *       )}
+ *     </Animated.View>
+ *   );
+ * }
+ * ```
+ *
+ * @example
+ * Conditional drop zone with validation:
+ * ```typescript
+ * function RestrictedDropZone() {
+ *   const [canAcceptItems, setCanAcceptItems] = useState(true);
+ *
+ *   const { viewProps, isActive } = useDroppable({
+ *     onDrop: (data: FileData) => {
+ *       if (data.type === 'image' && data.size < 5000000) {
+ *         uploadFile(data);
+ *       } else {
+ *         showError('Only images under 5MB allowed');
+ *       }
+ *     },
+ *     dropDisabled: !canAcceptItems,
+ *     onActiveChange: (active) => {
+ *       if (active) {
+ *         setHoverFeedback('Drop your image here');
+ *       } else {
+ *         setHoverFeedback('');
+ *       }
+ *     },
+ *     activeStyle: {
+ *       backgroundColor: canAcceptItems ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)',
+ *       borderColor: canAcceptItems ? '#22c55e' : '#ef4444'
+ *     }
+ *   });
+ *
+ *   return (
+ *     <Animated.View
+ *       {...viewProps}
+ *       style={[
+ *         styles.uploadZone,
+ *         viewProps.style,
+ *         !canAcceptItems && styles.disabled
+ *       ]}
+ *     >
+ *       <Text>
+ *         {canAcceptItems ? 'Drop images here' : 'Upload disabled'}
+ *       </Text>
+ *       {isActive && <Text>Release to upload</Text>}
+ *     </Animated.View>
+ *   );
+ * }
+ * ```
+ *
+ * @see {@link DropAlignment} for alignment options
+ * @see {@link DropOffset} for offset configuration
+ * @see {@link UseDroppableOptions} for configuration options
+ * @see {@link UseDroppableReturn} for return value details
+ * @see {@link DropProvider} for drag-and-drop context setup
+ * @see {@link Draggable} for draggable components
+ */
 export const useDroppable = <TData = unknown>(
   options: UseDroppableOptions<TData>
 ): UseDroppableReturn => {

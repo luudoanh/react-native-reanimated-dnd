@@ -10,11 +10,11 @@ import {
   SafeAreaView,
 } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { DropProvider, DropProviderRef } from "../../context/DropContext";
-import { Droppable } from "../Droppable";
-import { Draggable, DraggableState } from "../Draggable";
-import { ExampleHeader } from "../ExampleHeader";
-import { Footer } from "../Footer";
+import { DropProvider, DropProviderRef } from "@/context/DropContext";
+import { Droppable } from "@/components/Droppable";
+import { Draggable, DraggableState } from "@/components/Draggable";
+import { ExampleHeader } from "@/components/ExampleHeader";
+import { Footer } from "@/components/Footer";
 
 interface DraggableItemData {
   id: string;

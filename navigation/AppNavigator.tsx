@@ -4,8 +4,8 @@ import {
   createStackNavigator,
   StackScreenProps,
 } from "@react-navigation/stack";
-import { ExamplesNavigationPage } from "../components/ExamplesNavigationPage";
-import { SortableExample } from "../components/SortableExample";
+import { ExamplesNavigationPage } from "@/components/ExamplesNavigationPage";
+import { SortableExample } from "@/components/SortableExample";
 import {
   DroppedItemsMapExample,
   DragStateExample,
@@ -21,8 +21,7 @@ import {
   BoundedYAxisExample,
   CapacityExample,
   CustomDraggableExample,
-  BasicMinimalExample,
-} from "../components/examples";
+} from "@/components/examples";
 
 export type RootStackParamList = {
   Home: undefined;
@@ -41,7 +40,6 @@ export type RootStackParamList = {
   BoundedYAxisExample: undefined;
   CapacityExample: undefined;
   CustomDraggableExample: undefined;
-  BasicMinimalExample: undefined;
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -149,12 +147,6 @@ function CustomDraggableExampleScreen({
   return <CustomDraggableExample onBack={() => navigation.goBack()} />;
 }
 
-function BasicMinimalExampleScreen({
-  navigation,
-}: StackScreenProps<RootStackParamList, "BasicMinimalExample">) {
-  return <BasicMinimalExample onBack={() => navigation.goBack()} />;
-}
-
 export function AppNavigator() {
   return (
     <NavigationContainer>
@@ -227,10 +219,6 @@ export function AppNavigator() {
         <Stack.Screen
           name="CustomDraggableExample"
           component={CustomDraggableExampleScreen}
-        />
-        <Stack.Screen
-          name="BasicMinimalExample"
-          component={BasicMinimalExampleScreen}
         />
       </Stack.Navigator>
     </NavigationContainer>

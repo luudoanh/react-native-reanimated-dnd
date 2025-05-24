@@ -10,11 +10,11 @@ import {
   ViewStyle,
 } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { DropProvider, DropProviderRef } from "../../context/DropContext";
-import { Droppable } from "../Droppable";
-import { CustomDraggable } from "../CustomDraggable";
-import { ExampleHeader } from "../ExampleHeader";
-import { Footer } from "../Footer";
+import { DropProvider, DropProviderRef } from "@/context/DropContext";
+import { Droppable } from "@/components/Droppable";
+import { CustomDraggable } from "@/components/CustomDraggable";
+import { ExampleHeader } from "@/components/ExampleHeader";
+import { Footer } from "@/components/Footer";
 
 interface DraggableItemData {
   id: string;

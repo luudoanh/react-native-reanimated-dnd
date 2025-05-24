@@ -12,12 +12,12 @@ import {
   DropProvider,
   DropProviderRef,
   DroppedItemsMap,
-} from "../../context/DropContext";
-import { Droppable } from "../Droppable";
-import { Draggable } from "../Draggable";
-import { ExampleHeader } from "../ExampleHeader";
-import { CustomDraggable } from "../CustomDraggable";
-import { Footer } from "../Footer";
+} from "@/context/DropContext";
+import { Droppable } from "@/components/Droppable";
+import { Draggable } from "@/components/Draggable";
+import { ExampleHeader } from "@/components/ExampleHeader";
+import { CustomDraggable } from "@/components/CustomDraggable";
+import { Footer } from "@/components/Footer";
 
 interface DraggableItemData {
   id: string;

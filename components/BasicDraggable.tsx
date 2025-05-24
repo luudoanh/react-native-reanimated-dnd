@@ -1,13 +1,10 @@
 // components/BasicDraggable.tsx
 import React, { useRef } from "react";
-import { ViewStyle, StyleProp } from "react-native";
+import { StyleProp, ViewStyle } from "react-native";
 import Animated from "react-native-reanimated";
 import { GestureDetector } from "react-native-gesture-handler";
-import {
-  useDraggable,
-  UseDraggableOptions,
-  DraggableState,
-} from "../hooks/useDraggable";
+import { useDraggable } from "@/hooks/useDraggable";
+import { UseDraggableOptions, DraggableState } from "@/types/draggable";
 
 export interface BasicDraggableProps<TData = unknown>
   extends UseDraggableOptions<TData> {
@@ -24,12 +21,8 @@ const BasicDraggableComponent = <TData = unknown,>({
   children,
   ...useDraggableOptions
 }: BasicDraggableProps<TData>) => {
-  const animatedViewRef = useRef<Animated.View>(null);
-
-  const { animatedViewProps, gesture } = useDraggable<TData>(
-    useDraggableOptions,
-    animatedViewRef
-  );
+  const { animatedViewProps, gesture, animatedViewRef } =
+    useDraggable<TData>(useDraggableOptions);
 
   return (
     <GestureDetector gesture={gesture}>

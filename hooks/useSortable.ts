@@ -20,6 +20,14 @@ import {
   ScrollDirection,
 } from "../components/sortableUtils";
 
+/**
+ * @see {@link UseSortableOptions} for configuration options
+ * @see {@link UseSortableReturn} for return value details
+ * @see {@link useSortableList} for list-level management
+ * @see {@link SortableItem} for component implementation
+ * @see {@link Sortable} for high-level sortable list component
+ */
+
 export interface UseSortableOptions<T> {
   id: string;
   positions: SharedValue<{ [id: string]: number }>;
@@ -47,6 +55,126 @@ export interface UseSortableReturn {
   hasHandle: boolean;
 }
 
+/**
+ * A hook for creating sortable list items with drag-and-drop reordering capabilities.
+ *
+ * This hook provides the core functionality for individual items within a sortable list,
+ * handling drag gestures, position animations, auto-scrolling, and reordering logic.
+ * It works in conjunction with useSortableList to provide a complete sortable solution.
+ *
+ * @template T - The type of data associated with the sortable item
+ * @param options - Configuration options for the sortable item behavior
+ * @returns Object containing animated styles, gesture handlers, and state for the sortable item
+ *
+ * @example
+ * Basic sortable item:
+ * ```typescript
+ * import { useSortable } from './hooks/useSortable';
+ *
+ * function SortableTaskItem({ task, positions, ...sortableProps }) {
+ *   const { animatedStyle, panGestureHandler, isMoving } = useSortable({
+ *     id: task.id,
+ *     positions,
+ *     ...sortableProps,
+ *     onMove: (id, from, to) => {
+ *       console.log(`Task ${id} moved from ${from} to ${to}`);
+ *       reorderTasks(id, from, to);
+ *     }
+ *   });
+ *
+ *   return (
+ *     <PanGestureHandler {...panGestureHandler}>
+ *       <Animated.View style={[styles.taskItem, animatedStyle]}>
+ *         <Text style={[styles.taskText, isMoving && styles.dragging]}>
+ *           {task.title}
+ *         </Text>
+ *       </Animated.View>
+ *     </PanGestureHandler>
+ *   );
+ * }
+ * ```
+ *
+ * @example
+ * Sortable item with drag handle:
+ * ```typescript
+ * import { useSortable } from './hooks/useSortable';
+ * import { SortableHandle } from './components/SortableItem';
+ *
+ * function TaskWithHandle({ task, ...sortableProps }) {
+ *   const { animatedStyle, panGestureHandler, hasHandle } = useSortable({
+ *     id: task.id,
+ *     ...sortableProps,
+ *     children: (
+ *       <View style={styles.taskContent}>
+ *         <Text>{task.title}</Text>
+ *         <SortableHandle>
+ *           <Icon name="drag-handle" />
+ *         </SortableHandle>
+ *       </View>
+ *     )
+ *   });
+ *
+ *   return (
+ *     <PanGestureHandler {...panGestureHandler}>
+ *       <Animated.View style={[styles.taskItem, animatedStyle]}>
+ *         <View style={styles.taskContent}>
+ *           <Text>{task.title}</Text>
+ *           <SortableHandle>
+ *             <Icon name="drag-handle" />
+ *           </SortableHandle>
+ *         </View>
+ *       </Animated.View>
+ *     </PanGestureHandler>
+ *   );
+ * }
+ * ```
+ *
+ * @example
+ * Sortable item with callbacks and state tracking:
+ * ```typescript
+ * function AdvancedSortableItem({ item, ...sortableProps }) {
+ *   const [isDragging, setIsDragging] = useState(false);
+ *
+ *   const { animatedStyle, panGestureHandler } = useSortable({
+ *     id: item.id,
+ *     ...sortableProps,
+ *     onDragStart: (id, position) => {
+ *       setIsDragging(true);
+ *       analytics.track('drag_start', { itemId: id, position });
+ *     },
+ *     onDrop: (id, position) => {
+ *       setIsDragging(false);
+ *       analytics.track('drag_end', { itemId: id, position });
+ *     },
+ *     onDragging: (id, overItemId, yPosition) => {
+ *       if (overItemId) {
+ *         showDropPreview(overItemId);
+ *       }
+ *     }
+ *   });
+ *
+ *   return (
+ *     <PanGestureHandler {...panGestureHandler}>
+ *       <Animated.View
+ *         style={[
+ *           styles.item,
+ *           animatedStyle,
+ *           isDragging && styles.dragging
+ *         ]}
+ *       >
+ *         <Text>{item.title}</Text>
+ *       </Animated.View>
+ *     </PanGestureHandler>
+ *   );
+ * }
+ * ```
+ *
+ * @see {@link UseSortableOptions} for configuration options
+ * @see {@link UseSortableReturn} for return value details
+ * @see {@link useSortableList} for list-level management
+ * @see {@link SortableItem} for component implementation
+ * @see {@link Sortable} for high-level sortable list component
+ */
 export function useSortable<T>(
   options: UseSortableOptions<T>
 ): UseSortableReturn {

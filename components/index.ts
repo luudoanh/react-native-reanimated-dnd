@@ -24,7 +24,7 @@ export {
   useSortableList,
   useDraggable,
   useDroppable,
-} from "../hooks";
+} from "@/hooks";
 
 // Re-export types
 export * from "./sortableTypes";

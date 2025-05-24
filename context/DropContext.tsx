@@ -12,6 +12,27 @@ import React, {
 } from "react";
 
 // Define DropAlignment and DropOffset types here
+/**
+ * Alignment options for positioning dropped items within a droppable area.
+ *
+ * Determines where within the droppable bounds the draggable item will be positioned
+ * when successfully dropped. Can be combined with DropOffset for fine-tuning.
+ *
+ * @example
+ * ```typescript
+ * // Center the dropped item (default)
+ * const centerAlignment: DropAlignment = 'center';
+ *
+ * // Position at top-left corner
+ * const topLeftAlignment: DropAlignment = 'top-left';
+ *
+ * // Position at bottom edge, centered horizontally
+ * const bottomCenterAlignment: DropAlignment = 'bottom-center';
+ * ```
+ *
+ * @see {@link DropOffset} for additional positioning control
+ * @see {@link UseDroppableOptions} for usage in droppables
+ */
 export type DropAlignment =
   | "center"
   | "top-left"
@@ -23,8 +44,31 @@ export type DropAlignment =
   | "bottom-center"
   | "bottom-right";
 
+/**
+ * Pixel offset to apply after alignment positioning.
+ *
+ * Provides fine-grained control over the exact position where dropped items
+ * are placed within a droppable area. Applied after the DropAlignment calculation.
+ *
+ * @example
+ * ```typescript
+ * // No offset (default)
+ * const noOffset: DropOffset = { x: 0, y: 0 };
+ *
+ * // Move 10px right and 5px down from aligned position
+ * const customOffset: DropOffset = { x: 10, y: 5 };
+ *
+ * // Move 20px left from aligned position
+ * const leftOffset: DropOffset = { x: -20, y: 0 };
+ * ```
+ *
+ * @see {@link DropAlignment} for base positioning
+ * @see {@link UseDroppableOptions} for usage in droppables
+ */
 export interface DropOffset {
+  /** Horizontal offset in pixels (positive = right, negative = left) */
   x: number;
+  /** Vertical offset in pixels (positive = down, negative = up) */
   y: number;
 }
 
@@ -203,10 +247,35 @@ export const SlotsContext = createContext<SlotsContextValue<any>>(
 );
 
 // Props for the DropProvider
+/**
+ * Props for the DropProvider component.
+ *
+ * @see {@link DropProvider} for component usage
+ */
 interface DropProviderProps {
+  /** The child components that will have access to the drag-and-drop context */
   children: ReactNode;
+
+  /**
+   * Callback fired when layout updates are complete.
+   * Useful for triggering additional UI updates after position recalculations.
+   */
   onLayoutUpdateComplete?: () => void;
+
+  /**
+   * Callback fired when the dropped items mapping changes.
+   * Provides access to the current state of which items are dropped where.
+   *
+   * @param droppedItems - Current mapping of draggable IDs to their drop locations
+   */
   onDroppedItemsUpdate?: (droppedItems: DroppedItemsMap) => void;
+
+  /**
+   * Global callback fired during drag operations.
+   * Receives position updates for all draggable items.
+   *
+   * @param payload - Position and data information for the dragging item
+   */
   onDragging?: (payload: {
     x: number;
     y: number;
@@ -214,16 +283,167 @@ interface DropProviderProps {
     ty: number;
     itemData: any;
   }) => void;
+
+  /**
+   * Global callback fired when any drag operation starts.
+   * @param data - The data associated with the draggable item
+   */
   onDragStart?: (data: any) => void;
+
+  /**
+   * Global callback fired when any drag operation ends.
+   * @param data - The data associated with the draggable item
+   */
   onDragEnd?: (data: any) => void;
 }
 
 // Type for the imperative handle exposed by DropProvider
+/**
+ * Imperative handle interface for the DropProvider component.
+ * Provides methods that can be called on the DropProvider ref.
+ *
+ * @example
+ * ```typescript
+ * const dropProviderRef = useRef<DropProviderRef>(null);
+ *
+ * // Trigger position update
+ * dropProviderRef.current?.requestPositionUpdate();
+ *
+ * // Get current dropped items
+ * const droppedItems = dropProviderRef.current?.getDroppedItems();
+ * ```
+ *
+ * @see {@link DropProvider} for component usage
+ */
 export interface DropProviderRef {
+  /**
+   * Manually trigger a position update for all registered droppables and draggables.
+   * Useful after layout changes or when positions may have become stale.
+   */
   requestPositionUpdate: () => void;
+
+  /**
+   * Get the current mapping of dropped items.
+   * @returns Object mapping draggable IDs to their drop information
+   */
   getDroppedItems: () => DroppedItemsMap;
 }
 
+/**
+ * Provider component that enables drag-and-drop functionality for its children.
+ *
+ * The DropProvider creates the context necessary for draggable and droppable components
+ * to communicate with each other. It manages the registration of drop zones, tracks
+ * active hover states, handles collision detection, and maintains the state of dropped items.
+ *
+ * @example
+ * Basic setup:
+ * ```typescript
+ * import { DropProvider } from './context/DropContext';
+ * import { Draggable, Droppable } from './components';
+ *
+ * function App() {
+ *   return (
+ *     <DropProvider>
+ *       <View style={styles.container}>
+ *         <Draggable data={{ id: '1', name: 'Item 1' }}>
+ *           <Text>Drag me!</Text>
+ *         </Draggable>
+ *
+ *         <Droppable onDrop={(data) => console.log('Dropped:', data)}>
+ *           <Text>Drop zone</Text>
+ *         </Droppable>
+ *       </View>
+ *     </DropProvider>
+ *   );
+ * }
+ * ```
+ *
+ * @example
+ * With callbacks and ref:
+ * ```typescript
+ * function AdvancedApp() {
+ *   const dropProviderRef = useRef<DropProviderRef>(null);
+ *   const [droppedItems, setDroppedItems] = useState({});
+ *
+ *   const handleLayoutChange = () => {
+ *     // Trigger position update after layout changes
+ *     dropProviderRef.current?.requestPositionUpdate();
+ *   };
+ *
+ *   return (
+ *     <DropProvider
+ *       ref={dropProviderRef}
+ *       onDroppedItemsUpdate={setDroppedItems}
+ *       onDragStart={(data) => console.log('Drag started:', data)}
+ *       onDragEnd={(data) => console.log('Drag ended:', data)}
+ *       onDragging={({ x, y, itemData }) => {
+ *         console.log(`${itemData.name} at (${x}, ${y})`);
+ *       }}
+ *     >
+ *       <ScrollView onLayout={handleLayoutChange}>
+ *         {/* Your draggable and droppable components *\/}
+ *       </ScrollView>
+ *     </DropProvider>
+ *   );
+ * }
+ * ```
+ *
+ * @example
+ * Multiple drop zones with capacity:
+ * ```typescript
+ * function TaskBoard() {
+ *   const [tasks, setTasks] = useState(initialTasks);
+ *
+ *   return (
+ *     <DropProvider
+ *       onDroppedItemsUpdate={(dropped) => {
+ *         // Update task positions based on drops
+ *         updateTaskPositions(dropped);
+ *       }}
+ *     >
+ *       <View style={styles.board}>
+ *         {tasks.map(task => (
+ *           <Draggable key={task.id} data={task}>
+ *             <TaskCard task={task} />
+ *           </Draggable>
+ *         ))}
+ *
+ *         <Droppable
+ *           droppableId="todo"
+ *           capacity={10}
+ *           onDrop={(task) => moveTask(task.id, 'todo')}
+ *         >
+ *           <Column title="To Do" />
+ *         </Droppable>
+ *
+ *         <Droppable
+ *           droppableId="in-progress"
+ *           capacity={5}
+ *           onDrop={(task) => moveTask(task.id, 'in-progress')}
+ *         >
+ *           <Column title="In Progress" />
+ *         </Droppable>
+ *
+ *         <Droppable
+ *           droppableId="done"
+ *           onDrop={(task) => moveTask(task.id, 'done')}
+ *         >
+ *           <Column title="Done" />
+ *         </Droppable>
+ *       </View>
+ *     </DropProvider>
+ *   );
+ * }
+ * ```
+ *
+ * @see {@link Draggable} for draggable components
+ * @see {@link Droppable} for droppable components
+ * @see {@link useDraggable} for draggable hook
+ * @see {@link useDroppable} for droppable hook
+ * @see {@link DropProviderRef} for imperative handle interface
+ * @see {@link DroppedItemsMap} for dropped items data structure
+ */
 // The DropProvider component, now forwardRef
 export const DropProvider = forwardRef<DropProviderRef, DropProviderProps>(
   (

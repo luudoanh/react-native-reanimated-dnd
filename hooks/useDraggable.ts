@@ -29,54 +29,115 @@ import {
   DropAlignment,
   DropOffset,
   DropSlot,
-} from "../context/DropContext";
+} from "@/context/DropContext";
+import {
+  DraggableState,
+  AnimationFunction,
+  CollisionAlgorithm,
+  UseDraggableOptions,
+  UseDraggableReturn,
+} from "@/types/draggable";
 
-// Define DraggableState enum
-export enum DraggableState {
-  IDLE = "IDLE",
-  DRAGGING = "DRAGGING",
-  DROPPED = "DROPPED",
-}
-
-// Type for the custom animation function
-export type AnimationFunction = (toValue: number) => number;
-
-// New type for collision algorithm
-export type CollisionAlgorithm = "center" | "intersect" | "contain";
-
-export interface UseDraggableOptions<TData = unknown> {
-  data: TData;
-  draggableId?: string;
-  dragDisabled?: boolean;
-  onDragStart?: (data: TData) => void;
-  onDragEnd?: (data: TData) => void;
-  onDragging?: (payload: {
-    x: number;
-    y: number;
-    tx: number;
-    ty: number;
-    itemData: TData;
-  }) => void;
-  onStateChange?: (state: DraggableState) => void;
-  animationFunction?: AnimationFunction;
-  dragBoundsRef?: React.RefObject<Animated.View | View>;
-  dragAxis?: "x" | "y" | "both";
-  collisionAlgorithm?: CollisionAlgorithm;
-  children?: React.ReactNode;
-  handleComponent?: React.ComponentType<any>;
-}
-
-export interface UseDraggableReturn {
-  animatedViewProps: {
-    style: AnimatedStyle<ViewStyle>;
-    onLayout: (event: LayoutChangeEvent) => void;
-  };
-  gesture: GestureType;
-  state: DraggableState;
-  animatedViewRef: ReturnType<typeof useAnimatedRef<Animated.View>>;
-  hasHandle: boolean;
-}
-
+/**
+ * A powerful hook for creating draggable components with advanced features like
+ * collision detection, bounded dragging, axis constraints, and custom animations.
+ *
+ * This hook provides the core functionality for drag-and-drop interactions,
+ * handling gesture recognition, position tracking, collision detection with drop zones,
+ * and smooth animations.
+ *
+ * @template TData - The type of data associated with the draggable item
+ * @param options - Configuration options for the draggable behavior
+ * @returns Object containing props, gesture handlers, and state for the draggable component
+ *
+ * @example
+ * Basic draggable component:
+ * ```typescript
+ * import { useDraggable } from './hooks/useDraggable';
+ *
+ * function MyDraggable() {
+ *   const { animatedViewProps, gesture, state } = useDraggable({
+ *     data: { id: '1', name: 'Draggable Item' },
+ *     onDragStart: (data) => console.log('Started dragging:', data.name),
+ *     onDragEnd: (data) => console.log('Finished dragging:', data.name),
+ *   });
+ *
+ *   return (
+ *     <GestureDetector gesture={gesture}>
+ *       <Animated.View {...animatedViewProps}>
+ *         <Text>Drag me!</Text>
+ *       </Animated.View>
+ *     </GestureDetector>
+ *   );
+ * }
+ * ```
+ *
+ * @example
+ * Draggable with custom animation and bounds:
+ * ```typescript
+ * function BoundedDraggable() {
+ *   const boundsRef = useRef<View>(null);
+ *
+ *   const { animatedViewProps, gesture } = useDraggable({
+ *     data: { id: '2', type: 'bounded' },
+ *     dragBoundsRef: boundsRef,
+ *     dragAxis: 'x', // Only horizontal movement
+ *     animationFunction: (toValue) => {
+ *       'worklet';
+ *       return withTiming(toValue, { duration: 300 });
+ *     },
+ *     collisionAlgorithm: 'center',
+ *   });
+ *
+ *   return (
+ *     <View ref={boundsRef} style={styles.container}>
+ *       <GestureDetector gesture={gesture}>
+ *         <Animated.View {...animatedViewProps}>
+ *           <Text>Bounded horizontal draggable</Text>
+ *         </Animated.View>
+ *       </GestureDetector>
+ *     </View>
+ *   );
+ * }
+ * ```
+ *
+ * @example
+ * Draggable with state tracking:
+ * ```typescript
+ * function StatefulDraggable() {
+ *   const [dragState, setDragState] = useState(DraggableState.IDLE);
+ *
+ *   const { animatedViewProps, gesture } = useDraggable({
+ *     data: { id: '3', status: 'active' },
+ *     onStateChange: setDragState,
+ *     onDragging: ({ x, y, tx, ty }) => {
+ *       console.log(`Position: (${x + tx}, ${y + ty})`);
+ *     },
+ *   });
+ *
+ *   return (
+ *     <GestureDetector gesture={gesture}>
+ *       <Animated.View
+ *         {...animatedViewProps}
+ *         style={[
+ *           animatedViewProps.style,
+ *           { opacity: dragState === DraggableState.DRAGGING ? 0.7 : 1 }
+ *         ]}
+ *       >
+ *         <Text>State: {dragState}</Text>
+ *       </Animated.View>
+ *     </GestureDetector>
+ *   );
+ * }
+ * ```
+ *
+ * @see {@link DraggableState} for state management
+ * @see {@link CollisionAlgorithm} for collision detection options
+ * @see {@link AnimationFunction} for custom animations
+ * @see {@link UseDraggableOptions} for configuration options
+ * @see {@link UseDraggableReturn} for return value details
+ * @see {@link DropProvider} for drag-and-drop context setup
+ */
 export const useDraggable = <TData = unknown>(
   options: UseDraggableOptions<TData>
 ): UseDraggableReturn => {
@@ -653,7 +714,7 @@ export const useDraggable = <TData = unknown>(
   const animatedStyleProp = useAnimatedStyle(() => {
     "worklet";
     return {
-      transform: [{ translateX: tx.value }, { translateY: ty.value }],
+      transform: [{ translateX: tx.value }, { translateY: ty.value }] as const,
     };
   }, [tx, ty]);
 

@@ -11,13 +11,13 @@ import {
 } from "react-native";
 import { withTiming, withSpring, Easing } from "react-native-reanimated";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { DropProvider, DropProviderRef } from "../../context/DropContext";
-import { Droppable } from "../Droppable";
-import { CustomDraggable } from "../CustomDraggable";
-import { UseDraggableOptions } from "../../hooks/useDraggable";
-import { ExampleHeader } from "../ExampleHeader";
-import { Draggable } from "../Draggable";
-import { Footer } from "../Footer";
+import { DropProvider, DropProviderRef } from "@/context/DropContext";
+import { Droppable } from "@/components/Droppable";
+import { CustomDraggable } from "@/components/CustomDraggable";
+import { UseDraggableOptions } from "@/types/draggable";
+import { ExampleHeader } from "@/components/ExampleHeader";
+import { Draggable } from "@/components/Draggable";
+import { Footer } from "@/components/Footer";
 
 interface DraggableItemData {
   id: string;

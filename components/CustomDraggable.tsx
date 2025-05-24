@@ -2,11 +2,8 @@ import React, { useRef, createContext, useContext } from "react";
 import { ViewStyle, StyleProp } from "react-native";
 import Animated from "react-native-reanimated";
 import { GestureDetector } from "react-native-gesture-handler";
-import {
-  useDraggable,
-  UseDraggableOptions,
-  DraggableState,
-} from "../hooks/useDraggable";
+import { useDraggable } from "@/hooks/useDraggable";
+import { UseDraggableOptions, DraggableState } from "@/types/draggable";
 
 export interface CustomDraggableProps<TData = unknown>
   extends UseDraggableOptions<TData> {

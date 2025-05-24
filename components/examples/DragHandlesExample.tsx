@@ -44,7 +44,7 @@ export function DragHandlesExample({ onBack }: DragHandlesExampleProps) {
     // Request position update when container layout changes
     setTimeout(() => {
       dropProviderRef.current?.requestPositionUpdate();
-    }, 100);
+    }, 500);
   }, []);
 
   return (

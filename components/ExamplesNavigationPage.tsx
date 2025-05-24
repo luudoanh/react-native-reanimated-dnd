@@ -134,13 +134,6 @@ const examples: Example[] = [
     component: "CustomDraggableExample",
     icon: "⚙️",
   },
-  {
-    id: "basicMinimal",
-    title: "Minimal Basic",
-    description: "Minimal draggable component implementation",
-    component: "BasicMinimalExample",
-    icon: "🎯",
-  },
 ];
 
 interface ExamplesNavigationPageProps {

@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   Modal,
 } from "react-native";
+import Slider from "@react-native-community/slider";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { DropProvider, DropProviderRef } from "../../context/DropContext";
 import { Droppable } from "../Droppable";
@@ -48,35 +49,19 @@ const alignmentOptions: { label: string; value: DropAlignment }[] = [
   { label: "Right Center", value: "center-right" },
 ];
 
-const offsetOptions = [
-  { label: "No Offset", value: { x: 0, y: 0 } },
-  { label: "Small (10px)", value: { x: 10, y: 10 } },
-  { label: "Medium (20px)", value: { x: 20, y: 20 } },
-  { label: "Large (30px)", value: { x: 30, y: 30 } },
-  { label: "X Only (20px)", value: { x: 20, y: 0 } },
-  { label: "Y Only (20px)", value: { x: 0, y: 20 } },
-];
-
 export function AlignmentOffsetExample({
   onBack,
 }: AlignmentOffsetExampleProps) {
   const dropProviderRef = useRef<DropProviderRef>(null);
   const [selectedAlignment, setSelectedAlignment] =
     useState<DropAlignment>("center");
-  const [selectedOffset, setSelectedOffset] = useState({ x: 0, y: 0 });
+  const [offsetX, setOffsetX] = useState(0);
+  const [offsetY, setOffsetY] = useState(0);
   const [showAlignmentDropdown, setShowAlignmentDropdown] = useState(false);
-  const [showOffsetDropdown, setShowOffsetDropdown] = useState(false);
 
   const selectedAlignmentLabel =
     alignmentOptions.find((option) => option.value === selectedAlignment)
       ?.label || "Center";
-
-  const selectedOffsetLabel =
-    offsetOptions.find(
-      (option) =>
-        option.value.x === selectedOffset.x &&
-        option.value.y === selectedOffset.y
-    )?.label || "No Offset";
 
   return (
     <GestureHandlerRootView style={styles.container}>
@@ -109,16 +94,44 @@ export function AlignmentOffsetExample({
                 </TouchableOpacity>
               </View>
 
-              {/* Offset Dropdown */}
+              {/* X Offset Slider */}
               <View style={styles.controlSection}>
-                <Text style={styles.controlTitle}>Drop Offset</Text>
-                <TouchableOpacity
-                  style={styles.dropdown}
-                  onPress={() => setShowOffsetDropdown(true)}
-                >
-                  <Text style={styles.dropdownText}>{selectedOffsetLabel}</Text>
-                  <Text style={styles.dropdownArrow}>▼</Text>
-                </TouchableOpacity>
+                <Text style={styles.controlTitle}>X Offset: {offsetX}px</Text>
+                <View style={styles.sliderContainer}>
+                  <Text style={styles.sliderLabel}>-30</Text>
+                  <Slider
+                    style={styles.slider}
+                    minimumValue={-30}
+                    maximumValue={30}
+                    value={offsetX}
+                    onValueChange={setOffsetX}
+                    step={1}
+                    minimumTrackTintColor="#FF3B30"
+                    maximumTrackTintColor="#2C2C2E"
+                    thumbTintColor="#FF3B30"
+                  />
+                  <Text style={styles.sliderLabel}>30</Text>
+                </View>
+              </View>
+
+              {/* Y Offset Slider */}
+              <View style={styles.controlSection}>
+                <Text style={styles.controlTitle}>Y Offset: {offsetY}px</Text>
+                <View style={styles.sliderContainer}>
+                  <Text style={styles.sliderLabel}>-30</Text>
+                  <Slider
+                    style={styles.slider}
+                    minimumValue={-30}
+                    maximumValue={30}
+                    value={offsetY}
+                    onValueChange={setOffsetY}
+                    step={1}
+                    minimumTrackTintColor="#FF3B30"
+                    maximumTrackTintColor="#2C2C2E"
+                    thumbTintColor="#FF3B30"
+                  />
+                  <Text style={styles.sliderLabel}>30</Text>
+                </View>
               </View>
 
               <View style={styles.dropZoneArea}>
@@ -126,11 +139,11 @@ export function AlignmentOffsetExample({
                   droppableId="alignment-demo-zone"
                   style={[styles.dropZone, styles.dropZoneBlue]}
                   dropAlignment={selectedAlignment}
-                  dropOffset={selectedOffset}
+                  dropOffset={{ x: offsetX, y: offsetY }}
                   onDrop={(data) =>
                     Alert.alert(
                       "Drop!",
-                      `"${data.label}" dropped with alignment: ${selectedAlignment}, offset: (${selectedOffset.x}, ${selectedOffset.y})`
+                      `"${data.label}" dropped with alignment: ${selectedAlignment}, offset: (${offsetX}, ${offsetY})`
                     )
                   }
                 >
@@ -139,55 +152,31 @@ export function AlignmentOffsetExample({
                     Alignment: {selectedAlignment}
                   </Text>
                   <Text style={styles.dZoneSubText}>
-                    Offset: ({selectedOffset.x}, {selectedOffset.y})
+                    Offset: ({offsetX}, {offsetY})
                   </Text>
                 </Droppable>
               </View>
 
               <View style={styles.draggableItemsArea}>
                 <CustomDraggable<DraggableItemData>
-                  key={`alignment-item-1-${selectedAlignment}-${selectedOffset.x}-${selectedOffset.y}`}
+                  key={`alignment-item-1-${selectedAlignment}-${offsetX}-${offsetY}`}
                   data={{
                     id: "alignment-item-1",
                     label: "Test Item 1",
                     backgroundColor: "#ff6b6b",
                   }}
                   initialStyle={[
-                    styles.draggable,
                     {
-                      top: 0,
-                      left: 20,
                       backgroundColor: "#ff6b6b",
                       borderRadius: 12,
                     },
                   ]}
                 >
                   <View style={styles.cardContent}>
-                    <Text style={styles.cardLabel}>Test 1</Text>
-                    <Text style={styles.cardHint}>Try alignment</Text>
-                  </View>
-                </CustomDraggable>
-
-                <CustomDraggable<DraggableItemData>
-                  key={`alignment-item-2-${selectedAlignment}-${selectedOffset.x}-${selectedOffset.y}`}
-                  data={{
-                    id: "alignment-item-2",
-                    label: "Test Item 2",
-                    backgroundColor: "#4ecdc4",
-                  }}
-                  initialStyle={[
-                    styles.draggable,
-                    {
-                      top: 0,
-                      left: 160,
-                      backgroundColor: "#4ecdc4",
-                      borderRadius: 12,
-                    },
-                  ]}
-                >
-                  <View style={styles.cardContent}>
-                    <Text style={styles.cardLabel}>Test 2</Text>
-                    <Text style={styles.cardHint}>Try offset</Text>
+                    <Text style={styles.cardLabel}>Test</Text>
+                    <Text style={styles.cardHint}>
+                      Try alignment and offset
+                    </Text>
                   </View>
                 </CustomDraggable>
               </View>
@@ -252,50 +241,6 @@ export function AlignmentOffsetExample({
                       style={[
                         styles.modalOptionText,
                         selectedAlignment === option.value &&
-                          styles.selectedModalOptionText,
-                      ]}
-                    >
-                      {option.label}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            </TouchableOpacity>
-          </Modal>
-
-          {/* Offset Dropdown Modal */}
-          <Modal
-            visible={showOffsetDropdown}
-            transparent={true}
-            animationType="fade"
-            onRequestClose={() => setShowOffsetDropdown(false)}
-          >
-            <TouchableOpacity
-              style={styles.modalOverlay}
-              activeOpacity={1}
-              onPress={() => setShowOffsetDropdown(false)}
-            >
-              <View style={styles.dropdownModal}>
-                <Text style={styles.modalTitle}>Select Offset</Text>
-                {offsetOptions.map((option, index) => (
-                  <TouchableOpacity
-                    key={index}
-                    style={[
-                      styles.modalOption,
-                      selectedOffset.x === option.value.x &&
-                        selectedOffset.y === option.value.y &&
-                        styles.selectedModalOption,
-                    ]}
-                    onPress={() => {
-                      setSelectedOffset(option.value);
-                      setShowOffsetDropdown(false);
-                    }}
-                  >
-                    <Text
-                      style={[
-                        styles.modalOptionText,
-                        selectedOffset.x === option.value.x &&
-                          selectedOffset.y === option.value.y &&
                           styles.selectedModalOptionText,
                       ]}
                     >
@@ -406,13 +351,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     width: "100%",
-  },
-  draggable: {
-    position: "absolute",
+    justifyContent: "center",
+    alignItems: "center",
   },
   cardContent: {
     width: 120,
-    height: 72,
     padding: 12,
     borderRadius: 12,
     justifyContent: "center",
@@ -432,7 +375,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   cardHint: {
-    fontSize: 13,
+    fontSize: 12,
     marginTop: 6,
     color: "#8E8E93",
     letterSpacing: 0.1,
@@ -497,5 +440,17 @@ const styles = StyleSheet.create({
   },
   selectedModalOptionText: {
     color: "#FF3B30",
+  },
+  sliderContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  sliderLabel: {
+    fontSize: 12,
+    color: "#8E8E93",
+    marginHorizontal: 8,
+  },
+  slider: {
+    flex: 1,
   },
 });

@@ -199,20 +199,6 @@ export default function CustomDndExample() {
     setDroppedItemsMap(items);
   }, []);
 
-  const handleScrollEnd = useCallback(() => {
-    let localScrollTimeout: NodeJS.Timeout | null = null;
-    if (localScrollTimeout) {
-      clearTimeout(localScrollTimeout);
-    }
-    localScrollTimeout = setTimeout(() => {
-      dropProviderRef.current?.requestPositionUpdate();
-    }, 50);
-  }, []);
-
-  const handleLayoutUpdateComplete = useCallback(() => {
-    // console.log('DropProvider: Position recalculation completed.');
-  }, []);
-
   // Custom active styles for different drop zones
   const pulseActiveStyle: StyleProp<ViewStyle> = {
     borderColor: "#ff6b6b",
@@ -239,7 +225,6 @@ export default function CustomDndExample() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <DropProvider
         ref={dropProviderRef}
-        onLayoutUpdateComplete={handleLayoutUpdateComplete}
         onDroppedItemsUpdate={handleDroppedItemsUpdate}
       >
         <ScrollView

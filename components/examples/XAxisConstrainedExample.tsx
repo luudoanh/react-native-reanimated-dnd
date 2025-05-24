@@ -28,34 +28,15 @@ export function XAxisConstrainedExample({
 }: XAxisConstrainedExampleProps) {
   const dropProviderRef = useRef<DropProviderRef>(null);
 
-  const handleScrollEnd = useCallback(() => {
-    let localScrollTimeout: NodeJS.Timeout | null = null;
-    if (localScrollTimeout) {
-      clearTimeout(localScrollTimeout);
-    }
-    localScrollTimeout = setTimeout(() => {
-      dropProviderRef.current?.requestPositionUpdate();
-    }, 50);
-  }, []);
-
-  const handleLayoutUpdateComplete = useCallback(() => {
-    // console.log('DropProvider: Position recalculation completed.');
-  }, []);
-
   return (
     <GestureHandlerRootView style={styles.container}>
       <SafeAreaView style={styles.container}>
         <ExampleHeader title="X-Axis Constraints" onBack={onBack} />
 
-        <DropProvider
-          ref={dropProviderRef}
-          onLayoutUpdateComplete={handleLayoutUpdateComplete}
-        >
+        <DropProvider ref={dropProviderRef}>
           <ScrollView
             style={styles.scrollView}
             contentContainerStyle={styles.scrollContent}
-            onScrollEndDrag={handleScrollEnd}
-            onMomentumScrollEnd={handleScrollEnd}
             scrollEventThrottle={16}
           >
             <View style={styles.section}>

@@ -28,20 +28,6 @@ interface ActiveStylesExampleProps {
 export function ActiveStylesExample({ onBack }: ActiveStylesExampleProps) {
   const dropProviderRef = useRef<DropProviderRef>(null);
 
-  const handleScrollEnd = useCallback(() => {
-    let localScrollTimeout: NodeJS.Timeout | null = null;
-    if (localScrollTimeout) {
-      clearTimeout(localScrollTimeout);
-    }
-    localScrollTimeout = setTimeout(() => {
-      dropProviderRef.current?.requestPositionUpdate();
-    }, 50);
-  }, []);
-
-  const handleLayoutUpdateComplete = useCallback(() => {
-    // console.log('DropProvider: Position recalculation completed.');
-  }, []);
-
   // Custom active styles for different drop zones
   const pulseActiveStyle: StyleProp<ViewStyle> = {
     borderColor: "#ff6b6b",
@@ -69,15 +55,10 @@ export function ActiveStylesExample({ onBack }: ActiveStylesExampleProps) {
       <SafeAreaView style={styles.container}>
         <ExampleHeader title="Active Drop Styles" onBack={onBack} />
 
-        <DropProvider
-          ref={dropProviderRef}
-          onLayoutUpdateComplete={handleLayoutUpdateComplete}
-        >
+        <DropProvider ref={dropProviderRef}>
           <ScrollView
             style={styles.scrollView}
             contentContainerStyle={styles.scrollContent}
-            onScrollEndDrag={handleScrollEnd}
-            onMomentumScrollEnd={handleScrollEnd}
             scrollEventThrottle={16}
           >
             <View style={styles.section}>

@@ -37,16 +37,6 @@ export function DroppedItemsMapExample({
     setDroppedItemsMap(items);
   }, []);
 
-  const handleScrollEnd = useCallback(() => {
-    let localScrollTimeout: NodeJS.Timeout | null = null;
-    if (localScrollTimeout) {
-      clearTimeout(localScrollTimeout);
-    }
-    localScrollTimeout = setTimeout(() => {
-      dropProviderRef.current?.requestPositionUpdate();
-    }, 50);
-  }, []);
-
   const handleLayoutUpdateComplete = useCallback(() => {
     console.log("DropProvider: Position recalculation completed.");
   }, []);
@@ -58,14 +48,11 @@ export function DroppedItemsMapExample({
 
         <DropProvider
           ref={dropProviderRef}
-          onLayoutUpdateComplete={handleLayoutUpdateComplete}
           onDroppedItemsUpdate={handleDroppedItemsUpdate}
         >
           <ScrollView
             style={styles.scrollView}
             contentContainerStyle={styles.scrollContent}
-            onScrollEndDrag={handleScrollEnd}
-            onMomentumScrollEnd={handleScrollEnd}
             scrollEventThrottle={16}
           >
             <View style={styles.section}>

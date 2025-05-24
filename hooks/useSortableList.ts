@@ -63,16 +63,6 @@ export function useSortableList<TData extends { id: string }>(
     scrollY.value = event.contentOffset.y;
   });
 
-  const handleScrollEnd = useCallback(() => {
-    let localScrollTimeout: NodeJS.Timeout | null = null;
-    if (localScrollTimeout) {
-      clearTimeout(localScrollTimeout);
-    }
-    localScrollTimeout = setTimeout(() => {
-      dropProviderRef.current?.requestPositionUpdate();
-    }, 50);
-  }, []);
-
   // Calculate content height
   const contentHeight = data.length * itemHeight;
 

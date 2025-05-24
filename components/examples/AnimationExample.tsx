@@ -68,20 +68,6 @@ export function AnimationExample({ onBack }: AnimationExampleProps) {
   const [showDurationDropdown, setShowDurationDropdown] = useState(false);
   const [showEasingDropdown, setShowEasingDropdown] = useState(false);
 
-  const handleScrollEnd = useCallback(() => {
-    let localScrollTimeout: NodeJS.Timeout | null = null;
-    if (localScrollTimeout) {
-      clearTimeout(localScrollTimeout);
-    }
-    localScrollTimeout = setTimeout(() => {
-      dropProviderRef.current?.requestPositionUpdate();
-    }, 50);
-  }, []);
-
-  const handleLayoutUpdateComplete = useCallback(() => {
-    // console.log('DropProvider: Position recalculation completed.');
-  }, []);
-
   // Create animation function based on selected options
   const createAnimationFunction =
     useCallback((): UseDraggableOptions<any>["animationFunction"] => {
@@ -149,15 +135,10 @@ export function AnimationExample({ onBack }: AnimationExampleProps) {
       <SafeAreaView style={styles.container}>
         <ExampleHeader title="Custom Animations" onBack={onBack} />
 
-        <DropProvider
-          ref={dropProviderRef}
-          onLayoutUpdateComplete={handleLayoutUpdateComplete}
-        >
+        <DropProvider ref={dropProviderRef}>
           <ScrollView
             style={styles.scrollView}
             contentContainerStyle={styles.scrollContent}
-            onScrollEndDrag={handleScrollEnd}
-            onMomentumScrollEnd={handleScrollEnd}
             scrollEventThrottle={16}
           >
             <View style={styles.section}>

@@ -35,20 +35,6 @@ export function CapacityExample({ onBack }: CapacityExampleProps) {
     setDroppedItemsMap(items);
   }, []);
 
-  const handleScrollEnd = useCallback(() => {
-    let localScrollTimeout: NodeJS.Timeout | null = null;
-    if (localScrollTimeout) {
-      clearTimeout(localScrollTimeout);
-    }
-    localScrollTimeout = setTimeout(() => {
-      dropProviderRef.current?.requestPositionUpdate();
-    }, 50);
-  }, []);
-
-  const handleLayoutUpdateComplete = useCallback(() => {
-    // console.log('DropProvider: Position recalculation completed.');
-  }, []);
-
   return (
     <GestureHandlerRootView style={styles.container}>
       <SafeAreaView style={styles.container}>
@@ -56,14 +42,11 @@ export function CapacityExample({ onBack }: CapacityExampleProps) {
 
         <DropProvider
           ref={dropProviderRef}
-          onLayoutUpdateComplete={handleLayoutUpdateComplete}
           onDroppedItemsUpdate={handleDroppedItemsUpdate}
         >
           <ScrollView
             style={styles.scrollView}
             contentContainerStyle={styles.scrollContent}
-            onScrollEndDrag={handleScrollEnd}
-            onMomentumScrollEnd={handleScrollEnd}
             scrollEventThrottle={16}
           >
             <View style={styles.section}>

@@ -67,20 +67,6 @@ export function AlignmentOffsetExample({
   const [showAlignmentDropdown, setShowAlignmentDropdown] = useState(false);
   const [showOffsetDropdown, setShowOffsetDropdown] = useState(false);
 
-  const handleScrollEnd = useCallback(() => {
-    let localScrollTimeout: NodeJS.Timeout | null = null;
-    if (localScrollTimeout) {
-      clearTimeout(localScrollTimeout);
-    }
-    localScrollTimeout = setTimeout(() => {
-      dropProviderRef.current?.requestPositionUpdate();
-    }, 50);
-  }, []);
-
-  const handleLayoutUpdateComplete = useCallback(() => {
-    // console.log('DropProvider: Position recalculation completed.');
-  }, []);
-
   const selectedAlignmentLabel =
     alignmentOptions.find((option) => option.value === selectedAlignment)
       ?.label || "Center";
@@ -97,15 +83,10 @@ export function AlignmentOffsetExample({
       <SafeAreaView style={styles.container}>
         <ExampleHeader title="Alignment & Offset" onBack={onBack} />
 
-        <DropProvider
-          ref={dropProviderRef}
-          onLayoutUpdateComplete={handleLayoutUpdateComplete}
-        >
+        <DropProvider ref={dropProviderRef}>
           <ScrollView
             style={styles.scrollView}
             contentContainerStyle={styles.scrollContent}
-            onScrollEndDrag={handleScrollEnd}
-            onMomentumScrollEnd={handleScrollEnd}
             scrollEventThrottle={16}
           >
             <View style={styles.section}>

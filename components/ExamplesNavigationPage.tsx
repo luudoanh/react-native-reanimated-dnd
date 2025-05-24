@@ -20,7 +20,7 @@ const examples: Example[] = [
   {
     id: "sortable",
     title: "Sortable Music Queue",
-    description: "Reorderable list with drag handles and Apple Music theme",
+    description: "Reorderable Vertical list with drag handles.",
     component: "SortableExample",
     icon: "♫",
   },

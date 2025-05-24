@@ -18,6 +18,7 @@ import {
   KumbhSans_600SemiBold,
   KumbhSans_700Bold,
 } from "@expo-google-fonts/kumbh-sans";
+import { Footer } from "./Footer";
 
 interface Example {
   id: string;
@@ -192,6 +193,7 @@ export function ExamplesNavigationPage({
           </TouchableOpacity>
         ))}
       </ScrollView>
+      <Footer />
     </SafeAreaView>
   );
 }

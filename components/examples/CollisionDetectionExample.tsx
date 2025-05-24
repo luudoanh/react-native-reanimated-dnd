@@ -12,6 +12,7 @@ import { DropProvider, DropProviderRef } from "../../context/DropContext";
 import { Droppable } from "../Droppable";
 import { CustomDraggable } from "../CustomDraggable";
 import { ExampleHeader } from "../ExampleHeader";
+import { Footer } from "../Footer";
 
 interface DraggableItemData {
   id: string;
@@ -215,6 +216,7 @@ export function CollisionDetectionExample({
             </View>
           </ScrollView>
         </DropProvider>
+        <Footer />
       </SafeAreaView>
     </GestureHandlerRootView>
   );

@@ -11,6 +11,7 @@ import {
 import { Sortable } from "./Sortable";
 import { SortableItem } from "./SortableItem";
 import { SortableRenderItemProps } from "./sortableTypes";
+import { Footer } from "./Footer";
 
 interface Item {
   id: string;
@@ -369,6 +370,7 @@ export function SortableExample({ onBack }: SortableExampleProps = {}) {
           style={styles.list}
         />
       </View>
+      <Footer />
     </SafeAreaView>
   );
 }

@@ -16,6 +16,7 @@ import {
 import { Droppable } from "../Droppable";
 import { CustomDraggable } from "../CustomDraggable";
 import { ExampleHeader } from "../ExampleHeader";
+import { Footer } from "../Footer";
 
 interface DraggableItemData {
   id: string;
@@ -206,6 +207,7 @@ export function CapacityExample({ onBack }: CapacityExampleProps) {
           </ScrollView>
         </DropProvider>
       </SafeAreaView>
+      <Footer />
     </GestureHandlerRootView>
   );
 }

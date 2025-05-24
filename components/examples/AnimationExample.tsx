@@ -17,6 +17,7 @@ import { CustomDraggable } from "../CustomDraggable";
 import { UseDraggableOptions } from "../../hooks/useDraggable";
 import { ExampleHeader } from "../ExampleHeader";
 import { Draggable } from "../Draggable";
+import { Footer } from "../Footer";
 
 interface DraggableItemData {
   id: string;
@@ -400,6 +401,7 @@ export function AnimationExample({ onBack }: AnimationExampleProps) {
           </Modal>
         </DropProvider>
       </SafeAreaView>
+      <Footer />
     </GestureHandlerRootView>
   );
 }

@@ -16,6 +16,8 @@ import {
 import { Droppable } from "../Droppable";
 import { Draggable } from "../Draggable";
 import { ExampleHeader } from "../ExampleHeader";
+import { CustomDraggable } from "../CustomDraggable";
+import { Footer } from "../Footer";
 
 interface DraggableItemData {
   id: string;
@@ -166,6 +168,7 @@ export function DroppedItemsMapExample({
             </View>
           </ScrollView>
         </DropProvider>
+        <Footer />
       </SafeAreaView>
     </GestureHandlerRootView>
   );

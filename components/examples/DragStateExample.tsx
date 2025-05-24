@@ -14,6 +14,7 @@ import { DropProvider, DropProviderRef } from "../../context/DropContext";
 import { Droppable } from "../Droppable";
 import { Draggable, DraggableState } from "../Draggable";
 import { ExampleHeader } from "../ExampleHeader";
+import { Footer } from "../Footer";
 
 interface DraggableItemData {
   id: string;
@@ -134,6 +135,7 @@ export function DragStateExample({ onBack }: DragStateExampleProps) {
           </ScrollView>
         </DropProvider>
       </SafeAreaView>
+      <Footer />
     </GestureHandlerRootView>
   );
 }

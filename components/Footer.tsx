@@ -14,13 +14,14 @@ export function Footer() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>
-        Made with <Text style={styles.heart}>❤️</Text>
-        {" by "}
+      <View style={styles.textContainer}>
+        <Text style={styles.text}>Made with </Text>
+        <Text style={styles.heart}>❤️</Text>
+        <Text style={styles.text}> by </Text>
         <TouchableOpacity onPress={handlePress} style={styles.linkContainer}>
           <Text style={styles.link}>Vishesh Raheja</Text>
         </TouchableOpacity>
-      </Text>
+      </View>
     </View>
   );
 }
@@ -30,25 +31,26 @@ const styles = StyleSheet.create({
     paddingVertical: 24,
     paddingHorizontal: 16,
     alignItems: "center",
+    justifyContent: "center",
     backgroundColor: "#000000",
     borderTopWidth: 0.5,
     borderTopColor: "#2C2C2E",
   },
-  text: {
-    fontSize: 14,
-    fontFamily: "KumbhSans_400Regular",
-    color: "#8E8E93",
-    textAlign: "center",
+  textContainer: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "center",
+  },
+  text: {
+    fontSize: 14,
+    fontFamily: "KumbhSans_700Bold",
+    color: "#8E8E93",
   },
   heart: {
     fontSize: 14,
     color: "#FF3B30",
   },
-  linkContainer: {
-    // This allows the TouchableOpacity to be inline with the text
-  },
+  linkContainer: {},
   link: {
     fontSize: 14,
     fontFamily: "KumbhSans_500Medium",

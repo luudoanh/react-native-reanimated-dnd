@@ -28,7 +28,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/entropyconquers/react-native-reanimated-dnd.git"
+    "url": "git+https://github.com/entropyconquers/react-native-reanimated-dnd.git"
   },
   "peerDependencies": {
     "react": ">=16.8.0",

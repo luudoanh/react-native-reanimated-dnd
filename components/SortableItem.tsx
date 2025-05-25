@@ -3,8 +3,8 @@ import { StyleProp, ViewStyle } from "react-native";
 import Animated from "react-native-reanimated";
 import { PanGestureHandler } from "react-native-gesture-handler";
 import { SortableItemProps } from "./sortableTypes";
-import { useSortable } from "@/hooks/useSortable";
-import { UseSortableOptions } from "@/types/sortable";
+import { useSortable } from "../hooks/useSortable";
+import { UseSortableOptions } from "../types/sortable";
 
 // Create a context to share gesture between SortableItem and SortableHandle
 interface SortableContextValue {

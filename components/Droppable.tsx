@@ -2,8 +2,8 @@
 import React from "react";
 import { StyleProp, ViewStyle } from "react-native";
 import Animated from "react-native-reanimated";
-import { useDroppable } from "@/hooks/useDroppable";
-import { UseDroppableOptions } from "@/types/droppable";
+import { useDroppable } from "../hooks/useDroppable";
+import { UseDroppableOptions } from "../types/droppable";
 
 let _nextDroppableId = 1;
 export const _getUniqueDroppableId = (): number => {

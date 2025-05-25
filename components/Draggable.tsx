@@ -3,13 +3,13 @@ import React, { useRef, createContext, useContext, useState } from "react";
 import { ViewStyle, StyleProp } from "react-native";
 import Animated from "react-native-reanimated";
 import { GestureDetector } from "react-native-gesture-handler";
-import { useDraggable } from "@/hooks/useDraggable";
+import { useDraggable } from "../hooks/useDraggable";
 import {
   UseDraggableOptions,
   AnimationFunction,
   CollisionAlgorithm,
   DraggableState,
-} from "@/types/draggable";
+} from "../types/draggable";
 
 // Re-export types if they're meant to be part of the public API of Draggable component
 export {

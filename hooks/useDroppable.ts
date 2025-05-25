@@ -22,9 +22,9 @@ import {
   SlotsContextValue,
   DropAlignment,
   DropOffset,
-} from "@/context/DropContext";
-import { _getUniqueDroppableId } from "@/components/Droppable";
-import { UseDroppableOptions, UseDroppableReturn } from "@/types/droppable";
+} from "../context/DropContext";
+import { _getUniqueDroppableId } from "../components/Droppable";
+import { UseDroppableOptions, UseDroppableReturn } from "../types/droppable";
 
 /**
  * A hook for creating drop zones that can receive draggable items.

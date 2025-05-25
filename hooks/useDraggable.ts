@@ -29,14 +29,14 @@ import {
   DropAlignment,
   DropOffset,
   DropSlot,
-} from "@/context/DropContext";
+} from "../context/DropContext";
 import {
   DraggableState,
   AnimationFunction,
   CollisionAlgorithm,
   UseDraggableOptions,
   UseDraggableReturn,
-} from "@/types/draggable";
+} from "../types/draggable";
 
 /**
  * A powerful hook for creating draggable components with advanced features like

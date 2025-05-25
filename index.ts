@@ -1,8 +1,21 @@
-import { registerRootComponent } from 'expo';
+// Components
+export { Draggable } from "./components/Draggable";
+export { Droppable } from "./components/Droppable";
+export { Sortable } from "./components/Sortable";
+export { SortableItem } from "./components/SortableItem";
 
-import App from './App';
+// Context
+export { DropProvider } from "./context/DropContext";
 
-// registerRootComponent calls AppRegistry.registerComponent('main', () => App);
-// It also ensures that whether you load the app in Expo Go or in a native build,
-// the environment is set up appropriately
-registerRootComponent(App);
+// Hooks
+export { useDraggable } from "./hooks/useDraggable";
+export { useDroppable } from "./hooks/useDroppable";
+export { useSortable } from "./hooks/useSortable";
+export { useSortableList } from "./hooks/useSortableList";
+
+// Types
+export * from "./types";
+
+// Utils
+export { listToObject } from "./components/sortableUtils";
+export type { ScrollDirection } from "./components/sortableUtils";

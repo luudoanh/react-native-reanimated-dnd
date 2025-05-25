@@ -7,8 +7,8 @@ import Animated, {
   useAnimatedScrollHandler,
   useSharedValue,
 } from "react-native-reanimated";
-import { ScrollDirection, listToObject } from "@/components/sortableUtils";
-import { DropProviderRef } from "@/context/DropContext";
+import { ScrollDirection, listToObject } from "../components/sortableUtils";
+import { DropProviderRef } from "../context/DropContext";
 
 export interface UseSortableListOptions<TData> {
   data: TData[];

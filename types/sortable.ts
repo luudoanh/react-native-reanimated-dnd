@@ -3,6 +3,12 @@ import { SharedValue } from "react-native-reanimated";
 import { DropProviderRef } from "../types/context";
 import { ReactNode } from "react";
 
+export enum ScrollDirection {
+  None = "none",
+  Up = "up",
+  Down = "down",
+}
+
 /**
  * Configuration options for the useSortable hook.
  *
@@ -489,17 +495,4 @@ export interface SortableHandleProps {
   children: React.ReactNode;
   /** Optional style to apply to the handle */
   style?: StyleProp<ViewStyle>;
-}
-
-/**
- * Enum representing the direction of scroll.
- *
- * @enum {string}
- * @readonly
- * @enum {string}
- */
-export enum ScrollDirection {
-  None = "none",
-  Up = "up",
-  Down = "down",
 }

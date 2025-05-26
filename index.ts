@@ -7,14 +7,21 @@ export { SortableItem } from "./components/SortableItem";
 // Context
 export { DropProvider } from "./context/DropContext";
 
+// Types
+export * from "./types";
+
+// Utils
+export {
+  listToObject,
+  setAutoScroll,
+  setPosition,
+  clamp,
+  objectMove,
+  ScrollDirection,
+} from "./components/sortableUtils";
+
 // Hooks
 export { useDraggable } from "./hooks/useDraggable";
 export { useDroppable } from "./hooks/useDroppable";
 export { useSortable } from "./hooks/useSortable";
 export { useSortableList } from "./hooks/useSortableList";
-
-// Types
-export * from "./types";
-
-// Utils
-export { listToObject } from "./components/sortableUtils";

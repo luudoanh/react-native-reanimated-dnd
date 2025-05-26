@@ -14,7 +14,9 @@
   "sideEffects": false,
   "scripts": {
     "build": "tsc",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md,yml,yaml}\" --ignore-path .prettierignore",
+    "format:check": "prettier --check \"**/*.{js,jsx,ts,tsx,json,md,yml,yaml}\" --ignore-path .prettierignore"
   },
   "keywords": [
     "react-native",
@@ -44,7 +46,8 @@
     "react": "^18.2.0",
     "react-native": "^0.72.0",
     "react-native-reanimated": "^3.5.0",
-    "react-native-gesture-handler": "^2.13.0"
+    "react-native-gesture-handler": "^2.13.0",
+    "prettier": "^3.5.3"
   },
   "files": [
     "lib/",

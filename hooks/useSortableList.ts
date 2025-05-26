@@ -1,14 +1,14 @@
 import { useRef, useCallback } from "react";
-import { StyleProp, ViewStyle } from "react-native";
-import Animated, {
+import {
   scrollTo,
   useAnimatedReaction,
   useAnimatedRef,
   useAnimatedScrollHandler,
   useSharedValue,
 } from "react-native-reanimated";
-import { ScrollDirection, listToObject } from "../components/sortableUtils";
-import { DropProviderRef } from "../context/DropContext";
+import { listToObject } from "../components/sortableUtils";
+import { ScrollDirection } from "../types/sortable";
+import { DropProviderRef } from "../types/context";
 
 export interface UseSortableListOptions<TData> {
   data: TData[];

@@ -6,7 +6,7 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import { LayoutChangeEvent, ViewStyle, View } from "react-native";
+import { LayoutChangeEvent } from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -29,7 +29,7 @@ import {
   DropAlignment,
   DropOffset,
   DropSlot,
-} from "../context/DropContext";
+} from "../types/context";
 import {
   DraggableState,
   AnimationFunction,
@@ -136,8 +136,8 @@ import {
  * @see {@link AnimationFunction} for custom animations
  * @see {@link UseDraggableOptions} for configuration options
  * @see {@link UseDraggableReturn} for return value details
- * @see {@link DropProvider} for drag-and-drop context setup
  */
+
 export const useDraggable = <TData = unknown>(
   options: UseDraggableOptions<TData>
 ): UseDraggableReturn => {

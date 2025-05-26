@@ -6,50 +6,15 @@ import { GestureDetector } from "react-native-gesture-handler";
 import { useDraggable } from "../hooks/useDraggable";
 import {
   UseDraggableOptions,
-  AnimationFunction,
   CollisionAlgorithm,
   DraggableState,
+  DraggableContextValue,
+  DraggableHandleProps,
+  DraggableProps,
 } from "../types/draggable";
 
-// Re-export types if they're meant to be part of the public API of Draggable component
-export {
-  UseDraggableOptions,
-  AnimationFunction,
-  CollisionAlgorithm,
-  DraggableState,
-};
-
 // Create a context to share gesture and state between Draggable and Handle
-interface DraggableContextValue {
-  gesture: any;
-  state: DraggableState;
-}
-
 const DraggableContext = createContext<DraggableContextValue | null>(null);
-
-/**
- * Props for the Draggable component.
- *
- * @template TData - The type of data associated with the draggable item
- */
-interface DraggableProps<TData = unknown> extends UseDraggableOptions<TData> {
-  /** Style to apply to the draggable container */
-  style?: StyleProp<ViewStyle>;
-  /** The content to render inside the draggable */
-  children: React.ReactNode;
-  /** Callback fired when the draggable state changes */
-  onStateChange?: (state: DraggableState) => void;
-}
-
-/**
- * Props for the Handle component.
- */
-interface HandleProps {
-  /** The content to render inside the handle */
-  children: React.ReactNode;
-  /** Optional style to apply to the handle */
-  style?: StyleProp<ViewStyle>;
-}
 
 /**
  * A handle component that can be used within Draggable to create a specific
@@ -91,7 +56,7 @@ interface HandleProps {
  * </Draggable>
  * ```
  */
-const Handle = ({ children, style }: HandleProps) => {
+const Handle = ({ children, style }: DraggableHandleProps) => {
   const draggableContext = useContext(DraggableContext);
 
   if (!draggableContext) {

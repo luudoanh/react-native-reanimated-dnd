@@ -1,15 +1,12 @@
 import React from "react";
-import { StyleSheet, StyleProp, ViewStyle } from "react-native";
-import Animated, {
-  useAnimatedProps,
-  useAnimatedStyle,
-} from "react-native-reanimated";
+import { StyleSheet } from "react-native";
+import Animated from "react-native-reanimated";
 import {
   GestureHandlerRootView,
   ScrollView,
 } from "react-native-gesture-handler";
 import { DropProvider } from "../context/DropContext";
-import { SortableProps, SortableRenderItemProps } from "./sortableTypes";
+import { SortableProps, SortableRenderItemProps } from "../types/sortable";
 import {
   useSortableList,
   UseSortableListOptions,

@@ -2,26 +2,16 @@ import React, { createContext, useContext } from "react";
 import { StyleProp, ViewStyle } from "react-native";
 import Animated from "react-native-reanimated";
 import { PanGestureHandler } from "react-native-gesture-handler";
-import { SortableItemProps } from "./sortableTypes";
 import { useSortable } from "../hooks/useSortable";
-import { UseSortableOptions } from "../types/sortable";
+import {
+  SortableItemProps,
+  SortableHandleProps,
+  SortableContextValue,
+  UseSortableOptions,
+} from "../types/sortable";
 
 // Create a context to share gesture between SortableItem and SortableHandle
-interface SortableContextValue {
-  panGestureHandler: any;
-}
-
 const SortableContext = createContext<SortableContextValue | null>(null);
-
-/**
- * Props for the SortableHandle component.
- */
-interface SortableHandleProps {
-  /** The content to render inside the handle */
-  children: React.ReactNode;
-  /** Optional style to apply to the handle */
-  style?: StyleProp<ViewStyle>;
-}
 
 /**
  * A handle component that can be used within SortableItem to create a specific

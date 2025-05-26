@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { StyleProp, ViewStyle } from "react-native";
 import React from "react";
-import Animated, {
+import {
   runOnJS,
   runOnUI,
   SharedValue,
@@ -14,11 +14,8 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { PanGestureHandlerGestureEvent } from "react-native-gesture-handler";
-import {
-  setPosition,
-  setAutoScroll,
-  ScrollDirection,
-} from "../components/sortableUtils";
+import { setPosition, setAutoScroll } from "../components/sortableUtils";
+import { ScrollDirection } from "../types/sortable";
 
 /**
  * @see {@link UseSortableOptions} for configuration options

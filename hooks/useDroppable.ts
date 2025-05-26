@@ -5,12 +5,7 @@ import React, {
   useCallback,
   useMemo,
 } from "react";
-import {
-  LayoutChangeEvent,
-  StyleProp,
-  ViewStyle,
-  StyleSheet,
-} from "react-native";
+import { LayoutChangeEvent, StyleSheet } from "react-native";
 import Animated, {
   useAnimatedRef,
   measure,
@@ -22,7 +17,7 @@ import {
   SlotsContextValue,
   DropAlignment,
   DropOffset,
-} from "../context/DropContext";
+} from "../types/context";
 import { _getUniqueDroppableId } from "../components/Droppable";
 import { UseDroppableOptions, UseDroppableReturn } from "../types/droppable";
 
@@ -152,8 +147,6 @@ import { UseDroppableOptions, UseDroppableReturn } from "../types/droppable";
  * @see {@link DropOffset} for offset configuration
  * @see {@link UseDroppableOptions} for configuration options
  * @see {@link UseDroppableReturn} for return value details
- * @see {@link DropProvider} for drag-and-drop context setup
- * @see {@link Draggable} for draggable components
  */
 export const useDroppable = <TData = unknown>(
   options: UseDroppableOptions<TData>

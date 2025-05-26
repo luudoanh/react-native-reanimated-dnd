@@ -3,26 +3,12 @@ import React from "react";
 import { StyleProp, ViewStyle } from "react-native";
 import Animated from "react-native-reanimated";
 import { useDroppable } from "../hooks/useDroppable";
-import { UseDroppableOptions } from "../types/droppable";
+import { UseDroppableOptions, DroppableProps } from "../types/droppable";
 
 let _nextDroppableId = 1;
 export const _getUniqueDroppableId = (): number => {
   return _nextDroppableId++;
 };
-
-export { UseDroppableOptions };
-
-/**
- * Props for the Droppable component.
- *
- * @template TData - The type of data that can be dropped on this droppable
- */
-interface DroppableProps<TData = unknown> extends UseDroppableOptions<TData> {
-  /** Style to apply to the droppable container */
-  style?: StyleProp<ViewStyle>;
-  /** The content to render inside the droppable */
-  children: React.ReactNode;
-}
 
 /**
  * A component that creates drop zones for receiving draggable items.

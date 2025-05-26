@@ -1,10 +1,5 @@
 import { SharedValue } from "react-native-reanimated";
-
-export enum ScrollDirection {
-  None = "none",
-  Up = "up",
-  Down = "down",
-}
+import { ScrollDirection } from "../types/sortable";
 
 export function clamp(value: number, lowerBound: number, upperBound: number) {
   "worklet";

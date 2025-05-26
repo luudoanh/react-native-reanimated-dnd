@@ -2,68 +2,147 @@
 sidebar_position: 1
 ---
 
-# Welcome to React Native Reanimated DnD
+# Introduction
 
-**A drag and drop library that finally works on React Native** 🎉
+Welcome to React Native Reanimated DnD - a powerful, performant drag-and-drop library built on React Native Reanimated 3 and Gesture Handler.
 
-React Native Reanimated DnD is a powerful, performant, and easy-to-use drag-and-drop library built specifically for React Native using Reanimated 3 and Gesture Handler.
+## What is React Native Reanimated DnD?
 
-## Why This Library?
+React Native Reanimated DnD is a comprehensive drag-and-drop solution that provides:
 
-If you've tried implementing drag-and-drop in React Native before, you know the pain:
-- _Laggy animations that feel unnatural_
-- _Complex setup with multiple dependencies_
-- _Limited customization options_
-- _Poor performance on lower-end devices_
+- **Smooth 60fps animations** powered by React Native Reanimated 3
+- **Gesture-based interactions** using React Native Gesture Handler
+- **Flexible collision detection** with multiple algorithms
+- **TypeScript support** with full type safety
+- **Cross-platform compatibility** for iOS and Android
 
-**This library solves all of these problems.**
+## Key Features
 
-## ✨ Key Features
+### 🎯 **Easy to Use**
+Simple API that works out of the box with minimal configuration.
 
-- 🚀 **Smooth 60fps animations** powered by Reanimated 3
-- 📱 **Works on both iOS and Android** with consistent behavior
-- 🎯 **Simple API** - get started in minutes, not hours
-- 🎨 **Highly customizable** - style it exactly how you want
-- 🔧 **TypeScript support** with full type safety
-- 📦 **Lightweight** with minimal dependencies
-- 🎪 **Rich examples** - 15+ interactive demos to learn from
+### ⚡ **High Performance**
+All animations run on the UI thread for consistent 60fps performance.
 
-## Quick Start
+### 🎨 **Highly Customizable**
+Extensive customization options for animations, collision detection, and visual feedback.
 
-### Installation
+### 📱 **Mobile Optimized**
+Designed specifically for mobile touch interactions with proper gesture handling.
 
-```bash
-npm install react-native-reanimated-dnd
-# or
-yarn add react-native-reanimated-dnd
-```
+### 🔧 **TypeScript Ready**
+Full TypeScript support with comprehensive type definitions.
 
-### Basic Usage
+## Quick Example
+
+Here's a simple drag-and-drop implementation:
 
 ```tsx
-import { DragDropProvider, Draggable, Droppable } from 'react-native-reanimated-dnd';
+import React from 'react';
+import { View, Text } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { DropProvider, Draggable, Droppable } from 'react-native-reanimated-dnd';
 
-function App() {
+export default function App() {
   return (
-    <DragDropProvider>
-      <Draggable id="item-1">
-        <Text>Drag me!</Text>
-      </Draggable>
-      
-      <Droppable id="drop-zone">
-        <Text>Drop here!</Text>
-      </Droppable>
-    </DragDropProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <DropProvider>
+        <View style={{ flex: 1, padding: 20 }}>
+          <Draggable data={{ id: '1', name: 'Task 1' }}>
+            <View style={{ padding: 20, backgroundColor: '#e3f2fd' }}>
+              <Text>Drag me!</Text>
+            </View>
+          </Draggable>
+
+          <Droppable onDrop={(data) => console.log('Dropped:', data)}>
+            <View style={{ padding: 40, backgroundColor: '#f3e5f5', marginTop: 20 }}>
+              <Text>Drop here!</Text>
+            </View>
+          </Droppable>
+        </View>
+      </DropProvider>
+    </GestureHandlerRootView>
   );
 }
 ```
 
-## What's Next?
+## Core Components
 
-- 📖 **[View Examples](https://github.com/entropyconquers/react-native-reanimated-dnd/tree/main/example-app)** - See 15+ interactive examples
-- 🚀 **[API Reference](/docs/api)** - Explore all components and hooks
-- 💡 **[GitHub](https://github.com/entropyconquers/react-native-reanimated-dnd)** - Star the repo and contribute
+### Draggable
+Make any component draggable with data payload support:
+```tsx
+<Draggable data={{ id: '1', name: 'Item' }}>
+  <YourComponent />
+</Draggable>
+```
 
----
+### Droppable
+Create drop zones that receive draggable items:
+```tsx
+<Droppable onDrop={(data) => handleDrop(data)}>
+  <YourDropZone />
+</Droppable>
+```
 
-Ready to build amazing drag-and-drop experiences? Let's get started! 🎯
+### Sortable
+High-level component for reorderable lists:
+```tsx
+<Sortable data={items} onReorder={setItems}>
+  {items.map(item => (
+    <SortableItem key={item.id}>
+      <ItemComponent item={item} />
+    </SortableItem>
+  ))}
+</Sortable>
+```
+
+## Use Cases
+
+React Native Reanimated DnD is perfect for:
+
+- **Kanban boards** and task management
+- **File managers** with drag-and-drop organization
+- **Photo galleries** with reordering
+- **Form builders** with draggable components
+- **Shopping carts** with drag-to-add functionality
+- **Sortable lists** and data tables
+- **Game interfaces** with draggable elements
+
+## Why Choose This Library?
+
+### Performance First
+- UI thread animations via Reanimated 3
+- Optimized collision detection algorithms
+- Minimal JavaScript bridge communication
+- Smooth interactions even on lower-end devices
+
+### Developer Experience
+- Intuitive API design
+- Comprehensive TypeScript support
+- Extensive documentation with examples
+- Active community support
+
+### Production Ready
+- Battle-tested in production apps
+- Comprehensive error handling
+- Memory leak prevention
+- Cross-platform consistency
+
+## Getting Started
+
+Ready to add drag-and-drop to your app? Start with our quick setup guide:
+
+1. **[Installation](./getting-started/installation)** - Install the library and dependencies
+2. **[Quick Start](./getting-started/quick-start)** - Build your first drag-and-drop interface
+3. **[Basic Concepts](./getting-started/basic-concepts)** - Understand the core concepts
+4. **[API Reference](./api/overview)** - Explore all available components and hooks
+
+## Community
+
+- **GitHub**: [Repository](https://github.com/your-repo/react-native-reanimated-dnd)
+- **Issues**: [Bug Reports & Feature Requests](https://github.com/your-repo/react-native-reanimated-dnd/issues)
+- **Discussions**: [Community Discussions](https://github.com/your-repo/react-native-reanimated-dnd/discussions)
+
+## License
+
+MIT License - see the [LICENSE](https://github.com/your-repo/react-native-reanimated-dnd/blob/main/LICENSE) file for details.

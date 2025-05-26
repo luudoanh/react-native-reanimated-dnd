@@ -18,4 +18,3 @@ export * from "./types";
 
 // Utils
 export { listToObject } from "./components/sortableUtils";
-export type { ScrollDirection } from "./components/sortableUtils";

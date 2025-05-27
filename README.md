@@ -15,6 +15,15 @@ _Powerful, performant, and built for the modern React Native developer_
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
 [![React Native](https://img.shields.io/badge/React%20Native-0.60+-green.svg)](https://reactnative.dev/)
 
+<br />
+
+<a href="https://react-native-reanimated-dnd.netlify.app/" target="_blank">
+  <img src="https://img.shields.io/badge/📖%20Read%20the%20Docs-4f46e5?style=for-the-badge&logo=gitbook&logoColor=white&labelColor=1e293b&color=6366f1" alt="Documentation" />
+</a>
+<a href="#-interactive-examples" target="_blank">
+  <img src="https://img.shields.io/badge/📱%20Try%20Live%20Demo-ff3b30?style=for-the-badge&logo=expo&logoColor=white&labelColor=1e293b" alt="Live Demo" />
+</a>
+
 </div>
 
 ---
@@ -49,9 +58,42 @@ After countless attempts with drag-and-drop solutions that don't work or are sim
 
 <div align="center">
 
-### 🎮 [**Explore the Example App →**](./example-app/README.md)
+### 🎮 Try the Example App
 
-_From basic drag-and-drop to advanced collision detection and custom animations_
+<table>
+<tr>
+<td align="center" width="50%">
+
+**📱 Scan & Play**
+
+<img src="documentation/web-docs/static/img/example-app.svg" alt="Expo QR Code" width="200" height="200" />
+
+*Scan with your camera or Expo Go app*
+
+</td>
+<td align="center" width="50%">
+
+**🚀 Quick Start**
+
+1. Install [Expo Go](https://expo.dev/client) on your phone
+2. Scan the QR code with your camera
+3. Open the link in Expo Go
+4. Explore 15 interactive examples!
+
+**Or browse the code:**
+[**📂 View Example App →**](./example-app/README.md)
+
+</td>
+</tr>
+</table>
+
+### 📚 Complete Documentation
+
+<a href="https://react-native-reanimated-dnd.netlify.app/" target="_blank">
+  <img src="https://img.shields.io/badge/📖%20Documentation-Visit%20Docs-4f46e5?style=for-the-badge&logo=gitbook&logoColor=white&labelColor=1e293b" alt="Documentation" />
+</a>
+
+*Comprehensive guides, API reference, and interactive examples*
 
 </div>
 

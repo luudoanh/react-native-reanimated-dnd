@@ -16,7 +16,7 @@
     "outDir": "./lib",
     "rootDir": "./",
     "jsx": "react-native",
-    "module": "commonjs",
+    "module": "ES2015",
     "types": ["node"]
   },
   "include": [

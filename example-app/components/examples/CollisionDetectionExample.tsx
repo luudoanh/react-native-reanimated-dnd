@@ -6,6 +6,7 @@ import {
   Alert,
   ScrollView,
   SafeAreaView,
+  Platform,
 } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { DropProvider, DropProviderRef } from "react-native-reanimated-dnd";
@@ -58,7 +59,7 @@ export function CollisionDetectionExample({
                   style={[
                     styles.dropZone,
                     styles.dropZoneBlue,
-                    { width: "30%", height: 120 },
+                    { width: "35%", height: 120, minWidth: 100, padding: 10 },
                   ]} // Narrow zone
                   onDrop={(data) =>
                     Alert.alert(
@@ -69,7 +70,7 @@ export function CollisionDetectionExample({
                 >
                   <Text style={styles.dropZoneText}>Narrow Zone</Text>
                   <Text style={styles.dZoneSubText}>
-                    (Good for Center/Intersect Demo)
+                    (Good for Center/{"\n"}Intersect Demo)
                   </Text>
                 </Droppable>
 
@@ -78,7 +79,7 @@ export function CollisionDetectionExample({
                   style={[
                     styles.dropZone,
                     styles.dropZoneGreen,
-                    { width: "45%", height: 150 },
+                    { width: "45%", height: 150, minWidth: 150 },
                   ]} // Wider, taller zone
                   onDrop={(data) =>
                     Alert.alert(
@@ -231,7 +232,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    padding: 20,
+    padding: 10,
   },
   section: {
     padding: 24,
@@ -268,13 +269,13 @@ const styles = StyleSheet.create({
   },
   dropZoneText: {
     textAlign: "center",
-    fontSize: 16,
+    fontSize: Platform.OS === "web" ? 12 : 14,
     fontWeight: "600",
     color: "#FFFFFF",
     letterSpacing: 0.2,
   },
   dZoneSubText: {
-    fontSize: 12,
+    fontSize: Platform.OS === "web" ? 10 : 12,
     color: "#8E8E93",
     marginTop: 6,
     letterSpacing: 0.1,

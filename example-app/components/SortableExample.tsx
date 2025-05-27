@@ -8,6 +8,8 @@ import {
   SafeAreaView,
   TouchableOpacity,
   ActivityIndicator,
+  Platform,
+  Modal,
 } from "react-native";
 import {
   Sortable,
@@ -252,8 +254,8 @@ interface SortableExampleProps {
 
 export function SortableExample({ onBack }: SortableExampleProps = {}) {
   const [isDragHandleMode, setIsDragHandleMode] = useState(true);
-
   const [isLoading, setIsLoading] = useState(true);
+  const [showWebModal, setShowWebModal] = useState(Platform.OS === "web");
 
   // this is just to defer loading a large list during navigation
   useEffect(() => {
@@ -340,6 +342,8 @@ export function SortableExample({ onBack }: SortableExampleProps = {}) {
     [isDragHandleMode]
   );
 
+  const isWeb = Platform.OS === "web";
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
@@ -401,6 +405,50 @@ export function SortableExample({ onBack }: SortableExampleProps = {}) {
         </View>
       )}
       <Footer />
+
+      {/* Web Platform Modal */}
+      <Modal
+        visible={showWebModal}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setShowWebModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Web Platform Notice</Text>
+            <Text style={styles.modalMessage}>
+              This sortable example doesn't work on web due to platform
+              limitations with React Native Reanimated and Gesture Handler.
+            </Text>
+            <Text style={styles.modalSubMessage}>
+              Please try this example on iOS or Android.
+            </Text>
+            <View style={styles.modalButtons}>
+              <TouchableOpacity
+                style={styles.modalButton}
+                onPress={() => setShowWebModal(false)}
+              >
+                <Text style={styles.modalButtonText}>Continue Anyway</Text>
+              </TouchableOpacity>
+              {onBack && (
+                <TouchableOpacity
+                  style={[styles.modalButton, styles.modalButtonPrimary]}
+                  onPress={onBack}
+                >
+                  <Text
+                    style={[
+                      styles.modalButtonText,
+                      styles.modalButtonTextPrimary,
+                    ]}
+                  >
+                    Go Back
+                  </Text>
+                </TouchableOpacity>
+              )}
+            </View>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -575,5 +623,65 @@ const styles = StyleSheet.create({
     width: 12,
     height: 2.5,
     borderRadius: 1.25,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalContent: {
+    backgroundColor: "#FFFFFF",
+    padding: 20,
+    borderRadius: 10,
+    width: "80%",
+    maxWidth: 300,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#000000",
+    fontFamily: "KumbhSans_700Bold",
+    marginBottom: 10,
+    textAlign: "center",
+  },
+  modalMessage: {
+    fontSize: 14,
+    color: "#000000",
+    fontFamily: "KumbhSans_400Regular",
+    marginBottom: 10,
+    textAlign: "center",
+    lineHeight: 20,
+  },
+  modalSubMessage: {
+    fontSize: 14,
+    color: "#666666",
+    marginBottom: 20,
+    textAlign: "center",
+    lineHeight: 20,
+  },
+  modalButtons: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 10,
+  },
+  modalButton: {
+    flex: 1,
+    padding: 12,
+    borderWidth: 1,
+    borderColor: "#FF3B30",
+    borderRadius: 8,
+    backgroundColor: "#FFFFFF",
+    alignItems: "center",
+  },
+  modalButtonText: {
+    fontSize: 12,
+    color: "#FF3B30",
+  },
+  modalButtonPrimary: {
+    backgroundColor: "#FF3B30",
+  },
+  modalButtonTextPrimary: {
+    color: "#FFFFFF",
   },
 });

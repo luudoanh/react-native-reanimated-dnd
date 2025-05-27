@@ -28,7 +28,7 @@ export function BoundedDraggingExample({
   onBack,
 }: BoundedDraggingExampleProps) {
   const dropProviderRef = useRef<DropProviderRef>(null);
-  const boundsViewRef = useRef<View>(null);
+  const boundsViewRef = useRef<View | null>(null);
 
   return (
     <GestureHandlerRootView style={styles.container}>
@@ -70,7 +70,7 @@ export function BoundedDraggingExample({
                     label: "Draggable (Bounded)",
                     backgroundColor: "#ffafcc",
                   }}
-                  dragBoundsRef={boundsViewRef}
+                  dragBoundsRef={boundsViewRef as React.RefObject<View>}
                   style={[
                     styles.cardCentered,
                     {

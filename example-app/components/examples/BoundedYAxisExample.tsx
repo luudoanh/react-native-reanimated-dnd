@@ -69,7 +69,7 @@ export function BoundedYAxisExample({ onBack }: BoundedYAxisExampleProps) {
                     label: "Bounded Y-axis",
                     backgroundColor: "#c6def1",
                   }}
-                  dragBoundsRef={boundsViewRef2}
+                  dragBoundsRef={boundsViewRef2 as React.RefObject<View>}
                   dragAxis="y"
                   style={[
                     styles.cardCentered,

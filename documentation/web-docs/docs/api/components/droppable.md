@@ -607,5 +607,5 @@ function TypedDroppable() {
 
 - [useDroppable Hook](../../hooks/useDroppable) - Underlying hook implementation
 - [Draggable Component](./draggable) - Draggable component
-- [DropAlignment](../../types/droppable-types#dropalignment) - Alignment options
+- [DropAlignment](../types/droppable-types#dropalignment) - Alignment options
 - [DropProvider](../../context/DropProvider) - Context provider

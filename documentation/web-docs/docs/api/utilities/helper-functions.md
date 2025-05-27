@@ -566,5 +566,5 @@ const clampedValue: number = clamp(150, 0, 100);
 
 - [Sortable Component](../../components/sortable) - Uses these utilities internally
 - [useSortableList Hook](../../hooks/useSortableList) - Hook that uses these utilities
-- [ScrollDirection Enum](../../types/enums#scrolldirection) - Auto-scroll direction values
+- [ScrollDirection Enum](../types/enums#scrolldirection) - Auto-scroll direction values
 - [Animation Functions](./animation-functions) - Custom animation utilities

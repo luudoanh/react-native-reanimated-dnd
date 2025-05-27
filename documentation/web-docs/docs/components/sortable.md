@@ -683,6 +683,6 @@ The Sortable component supports accessibility features:
 ## See Also
 
 - [SortableItem](./sortable-item) - Individual sortable item component
-- [useSortableList Hook](../hooks/use-sortable-list) - Underlying hook for custom implementations
-- [useSortable Hook](../hooks/use-sortable) - Hook for individual sortable items
+- [useSortableList Hook](../hooks/useSortableList) - Underlying hook for custom implementations
+- [useSortable Hook](../hooks/useSortable) - Hook for individual sortable items
 - [Examples](../examples/sortable-lists) - More comprehensive examples

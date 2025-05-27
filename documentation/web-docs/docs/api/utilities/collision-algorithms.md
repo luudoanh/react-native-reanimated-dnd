@@ -330,37 +330,71 @@ const precisionItem = useDraggable({
 
 ## Custom Collision Logic
 
-While the library provides three built-in algorithms, you can implement custom collision logic in your drop handlers:
+While the library provides three built-in algorithms, you can implement custom collision logic in your drop handlers by accessing layout information through refs or other means:
 
 ```tsx
 function CustomCollisionDroppable() {
-  const handleDrop = (data, dropEvent) => {
-    // Custom collision validation
-    const customCollisionCheck = (draggableRect, droppableRect) => {
-      // Implement your own collision logic
-      const overlapArea = calculateOverlapArea(draggableRect, droppableRect);
-      const draggableArea = draggableRect.width * draggableRect.height;
-      const overlapPercentage = overlapArea / draggableArea;
-      
-      return overlapPercentage > 0.5; // Require 50% overlap
+  const droppableRef = useRef<View>(null);
+  const [droppableLayout, setDroppableLayout] = useState(null);
+
+  const handleDrop = (data) => {
+    // Custom collision validation using stored layout information
+    const customCollisionCheck = (itemData, droppableLayout) => {
+      // Access custom properties from your data
+      if (itemData.customRect && droppableLayout) {
+        const overlapArea = calculateOverlapArea(itemData.customRect, droppableLayout);
+        const draggableArea = itemData.customRect.width * itemData.customRect.height;
+        const overlapPercentage = overlapArea / draggableArea;
+        
+        return overlapPercentage > 0.5; // Require 50% overlap
+      }
+      return true; // Default to accepting the drop
     };
 
-    if (customCollisionCheck(data.rect, dropEvent.rect)) {
+    if (customCollisionCheck(data, droppableLayout)) {
       console.log('Custom collision detected');
       // Handle the drop
+      processDroppedItem(data);
     } else {
       console.log('Custom collision failed');
-      // Reject the drop
+      // You can show an error message, but the drop has already occurred
+      showErrorMessage('Drop not allowed in this area');
     }
   };
 
+  const handleLayout = (event) => {
+    const { x, y, width, height } = event.nativeEvent.layout;
+    setDroppableLayout({ x, y, width, height });
+  };
+
   return (
-    <Droppable onDrop={handleDrop}>
-      <Text>Custom Collision Zone</Text>
+    <Droppable 
+      onDrop={handleDrop}
+      style={styles.customDropZone}
+    >
+      <View ref={droppableRef} onLayout={handleLayout}>
+        <Text>Custom Collision Zone</Text>
+        <Text>Requires 50% overlap</Text>
+      </View>
     </Droppable>
   );
 }
+
+// Helper function for overlap calculation
+function calculateOverlapArea(rect1, rect2) {
+  const left = Math.max(rect1.x, rect2.x);
+  const right = Math.min(rect1.x + rect1.width, rect2.x + rect2.width);
+  const top = Math.max(rect1.y, rect2.y);
+  const bottom = Math.min(rect1.y + rect1.height, rect2.y + rect2.height);
+  
+  if (left < right && top < bottom) {
+    return (right - left) * (bottom - top);
+  }
+  return 0;
+}
 ```
+
+**Note**: The `onDrop` callback only receives the draggable's data. For custom collision logic, you'll need to store layout information separately and include any necessary geometric data in your draggable's data object.
 
 ## Best Practices
 
@@ -406,4 +440,4 @@ function FeedbackDraggable({ algorithm }) {
 - [Draggable Component](../../components/draggable) - Using collision algorithms
 - [Droppable Component](../../components/droppable) - Drop zone configuration
 - [useDraggable Hook](../../hooks/useDraggable) - Hook-level collision configuration
-- [CollisionAlgorithm Type](../../types/draggable-types#collisionalgorithm) - Type definitions
+- [CollisionAlgorithm Type](../types/draggable-types#collisionalgorithm) - Type definitions

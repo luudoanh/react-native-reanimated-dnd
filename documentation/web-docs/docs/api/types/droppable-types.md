@@ -247,8 +247,8 @@ Pixel offset configuration for fine-tuning drop positioning.
 
 ```tsx
 interface DropOffset {
-  x?: number;
-  y?: number;
+  x: number;
+  y: number;
 }
 ```
 

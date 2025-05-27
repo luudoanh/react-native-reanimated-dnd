@@ -703,4 +703,4 @@ The component includes accessibility features:
 - [Sortable Component](./sortable) - High-level sortable list component
 - [useSortable Hook](../hooks/useSortable) - Underlying hook
 - [useSortableList Hook](../hooks/useSortableList) - List management hook
-- [SortableItemProps Type](../types/sortable-types#sortableitemprops) - Complete type definitions
+- [SortableItemProps](../types/sortable-types#sortableitempropst) - Component props

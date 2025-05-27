@@ -301,14 +301,20 @@ interface UseSortableListReturn<TData> {
 - **Description**: Total height of the scrollable content. Calculated as `data.length * itemHeight`.
 
 ##### getItemProps
-- **Type**: `(item: TData, index: number) => SortableItemProps`
-- **Description**: Helper function to get props for individual sortable items.
+- **Type**: `(item: TData, index: number) => { id: string; positions: SharedValue<{[id: string]: number}>; lowerBound: SharedValue<number>; autoScrollDirection: SharedValue<ScrollDirection>; itemsCount: number; itemHeight: number; }`
+- **Description**: Helper function to get core props for individual sortable items. Returns the essential props that should be spread onto SortableItem components.
 
 ```tsx
 {data.map((item, index) => {
   const itemProps = getItemProps(item, index);
+  // itemProps contains: { id, positions, lowerBound, autoScrollDirection, itemsCount, itemHeight }
   return (
-    <SortableItem key={itemProps.id} {...itemProps}>
+    <SortableItem 
+      key={itemProps.id} 
+      {...itemProps}
+      data={item}
+      onMove={handleMove}
+    >
       <Text>{item.title}</Text>
     </SortableItem>
   );

@@ -80,14 +80,24 @@ const sortableProps = useSortableList({
 - **Description**: Calculated height of the scroll view content based on item count and height.
 
 #### getItemProps
-- **Type**: `(item: TData, index: number) => SortableItemProps`
-- **Description**: Function that returns props needed for each sortable item.
+- **Type**: `(item: TData, index: number) => { id: string; positions: SharedValue<{[id: string]: number}>; lowerBound: SharedValue<number>; autoScrollDirection: SharedValue<ScrollDirection>; itemsCount: number; itemHeight: number; }`
+- **Description**: Function that returns core props needed for each sortable item. These props should be spread onto SortableItem components along with additional props like data, children, and callbacks.
 
 ```tsx
 const { getItemProps } = useSortableList({ data: tasks, itemHeight: 60 });
 
 // For each item in your render
 const itemProps = getItemProps(task, index);
+// Returns: { id, positions, lowerBound, autoScrollDirection, itemsCount, itemHeight }
+
+// Use with SortableItem
+<SortableItem 
+  {...itemProps}
+  data={task}
+  onMove={handleMove}
+>
+  <TaskContent task={task} />
+</SortableItem>
 ```
 
 ## Usage Examples
@@ -840,5 +850,5 @@ function MyList() {
 - [SortableItem Component](../../components/sortable-item) - Individual item component
 - [useSortable Hook](./useSortable) - Individual item hook
 - [DropProvider](../../context/DropProvider) - Drag-and-drop context
-- [ScrollDirection Enum](../../types/enums#scrolldirection) - Auto-scroll direction values
-- [UseSortableListOptions Type](../../types/sortable-types#usesortablelistoptions) - Complete type definitions 
+- [ScrollDirection Enum](../types/enums#scrolldirection) - Auto-scroll direction values
+- [UseSortableListOptions Type](../types/sortable-types#usesortablelistoptionstdata) - Complete type definitions 

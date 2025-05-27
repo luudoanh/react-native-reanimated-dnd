@@ -624,5 +624,5 @@ The Sortable component includes accessibility features:
 
 - [SortableItem Component](./sortable-item) - Individual sortable items
 - [useSortableList Hook](../hooks/useSortableList) - Underlying hook
-- [SortableRenderItemProps Type](../types/sortable-types#sortablerenderitemprops) - Render function props
+- [SortableRenderItemProps](../types/sortable-types#sortablerenderitempropstdata) - Render function props
 - [Performance Guide](../../guides/performance) - Optimization tips

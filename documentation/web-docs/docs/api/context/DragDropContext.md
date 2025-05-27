@@ -220,8 +220,8 @@ type DropAlignment =
 
 ```tsx
 interface DropOffset {
-  x?: number;
-  y?: number;
+  x: number;
+  y: number;
 }
 ```
 
@@ -500,5 +500,5 @@ function TypedComponent() {
 
 - [DropProvider API](./DropProvider) - Provider component API
 - [DragDropContext Guide](../../context/DragDropContext) - Comprehensive usage guide
-- [useDraggable API](../hooks/use-draggable) - Draggable hook API
-- [useDroppable API](../hooks/use-droppable) - Droppable hook API
+- [useDraggable API](../hooks/useDraggable) - Draggable hook API
+- [useDroppable API](../hooks/useDroppable) - Droppable hook API

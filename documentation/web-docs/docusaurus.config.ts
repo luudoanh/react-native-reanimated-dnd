@@ -49,6 +49,19 @@ const config: Config = {
     ],
   ],
 
+  themes: [
+    [
+      require.resolve("@easyops-cn/docusaurus-search-local"),
+      {
+        hashed: true,
+        language: ["en"],
+        indexDocs: true,
+        indexBlog: false,
+        indexPages: false,
+      },
+    ],
+  ],
+
   themeConfig: {
     // Replace with your project's social card
     image: 'img/docusaurus-social-card.jpg',
@@ -56,7 +69,8 @@ const config: Config = {
       title: 'RN Reanimated DnD',
       logo: {
         alt: 'React Native Reanimated DnD Logo',
-        src: 'img/logo.svg',
+        src: 'img/logo-dark.svg',
+        srcDark: 'img/logo.svg',
       },
       items: [
         {
@@ -77,51 +91,6 @@ const config: Config = {
           position: 'right',
         },
       ],
-    },
-    footer: {
-      style: 'dark',
-      links: [
-        {
-          title: 'Docs',
-          items: [
-            {
-              label: 'Getting Started',
-              to: '/docs/intro',
-            },
-            {
-              label: 'API Reference',
-              to: '/docs/api/overview',
-            },
-          ],
-        },
-        {
-          title: 'Community',
-          items: [
-            {
-              label: 'GitHub Issues',
-              href: 'https://github.com/entropyconquers/react-native-reanimated-dnd/issues',
-            },
-            {
-              label: 'GitHub Discussions',
-              href: 'https://github.com/entropyconquers/react-native-reanimated-dnd/discussions',
-            },
-          ],
-        },
-        {
-          title: 'More',
-          items: [
-            {
-              label: 'GitHub',
-              href: 'https://github.com/entropyconquers/react-native-reanimated-dnd',
-            },
-            {
-              label: 'Example App',
-              href: 'https://github.com/entropyconquers/react-native-reanimated-dnd/tree/main/example-app',
-            },
-          ],
-        },
-      ],
-      copyright: `Copyright © ${new Date().getFullYear()} React Native Reanimated DnD.`,
     },
     prism: {
       theme: prismThemes.github,

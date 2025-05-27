@@ -744,6 +744,6 @@ function MultiSelectItem({ item, isSelected, onSelect, ...props }) {
 ## See Also
 
 - [Sortable](./sortable) - Parent sortable list component
-- [useSortable Hook](../hooks/use-sortable) - Underlying hook for custom implementations
+- [useSortable Hook](../hooks/useSortable) - Underlying hook for custom implementations
 - [Basic Concepts](../getting-started/basic-concepts) - Understanding sortable lists
 - [Examples](../examples/sortable-lists) - More comprehensive examples

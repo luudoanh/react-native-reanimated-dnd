@@ -665,7 +665,7 @@ function StateMachineDraggable() {
 ## See Also
 
 - [Draggable Component](../../components/draggable) - High-level component using this hook
-- [DraggableState](../../types/enums#draggablestate) - State management
-- [CollisionAlgorithm](../../types/draggable-types#collisionalgorithm) - Collision detection
-- [AnimationFunction](../../types/draggable-types#animationfunction) - Custom animations
-- [useDraggable Types](../../types/draggable-types#usedraggableoptions) - Complete type definitions 
+- [DraggableState](../types/enums#draggablestate) - State management
+- [CollisionAlgorithm](../types/draggable-types#collisionalgorithm) - Collision detection
+- [AnimationFunction](../types/draggable-types#animationfunction) - Custom animations
+- [useDraggable Types](../types/draggable-types#usedraggableoptionstdata) - Complete type definitions 

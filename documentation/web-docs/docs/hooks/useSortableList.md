@@ -831,12 +831,32 @@ import { Sortable } from 'react-native-reanimated-dnd';
 
 // High-level component that uses this hook internally
 function SimpleList() {
+  const [items, setItems] = useState(initialItems);
+
+  const handleMove = useCallback((id: string, from: number, to: number) => {
+    setItems(prevItems => {
+      const newItems = [...prevItems];
+      const [movedItem] = newItems.splice(from, 1);
+      newItems.splice(to, 0, movedItem);
+      return newItems;
+    });
+  }, []);
+
   return (
     <Sortable
       data={items}
       itemHeight={60}
-      renderItem={({ item }) => <ItemCard item={item} />}
-      onReorder={handleReorder}
+      renderItem={({ item, id, positions, ...props }) => (
+        <SortableItem 
+          key={id} 
+          id={id} 
+          positions={positions} 
+          {...props}
+          onMove={handleMove}
+        >
+          <ItemCard item={item} />
+        </SortableItem>
+      )}
     />
   );
 }

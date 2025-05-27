@@ -10,19 +10,17 @@ Complete API reference for React Native Reanimated DnD library. This section pro
 
 ### 🧩 [Components](./components/draggable)
 High-level React components for implementing drag-and-drop functionality:
-- **[Draggable](./components/draggable)** - Make any component draggable
+- **[Draggable](./components/draggable)** - Make any component draggable (includes `Draggable.Handle`)
 - **[Droppable](./components/droppable)** - Create drop zones for draggable items
 - **[Sortable](./components/sortable)** - High-level sortable list component
-- **[SortableItem](./components/sortable-item)** - Individual items in sortable lists
-- **[DragHandle](./components/drag-handle)** - Handle components for precise drag control
-- **[SortableHandle](./components/sortable-handle)** - Handle components for sortable items
+- **[SortableItem](./components/sortable-item)** - Individual items in sortable lists (includes `SortableItem.Handle`)
 
-### 🪝 [Hooks](./hooks/use-draggable)
+### 🪝 [Hooks](./hooks/useDraggable)
 Low-level hooks for custom implementations:
-- **[useDraggable](./hooks/use-draggable)** - Core draggable functionality
-- **[useDroppable](./hooks/use-droppable)** - Core droppable functionality
-- **[useSortable](./hooks/use-sortable)** - Individual sortable item logic
-- **[useSortableList](./hooks/use-sortable-list)** - Sortable list management
+- **[useDraggable](./hooks/useDraggable)** - Core draggable functionality
+- **[useDroppable](./hooks/useDroppable)** - Core droppable functionality
+- **[useSortable](./hooks/useSortable)** - Individual sortable item logic
+- **[useSortableList](./hooks/useSortableList)** - Sortable list management
 
 ### 🏗️ [Context & Providers](./context/DropProvider)
 Context providers and their APIs:

@@ -486,6 +486,6 @@ The Draggable component supports accessibility features:
 ## See Also
 
 - [Droppable](./droppable) - Create drop zones for draggable items
-- [useDraggable Hook](../hooks/use-draggable) - Underlying hook for custom implementations
+- [useDraggable Hook](../hooks/useDraggable) - Underlying hook for custom implementations
 - [Basic Concepts](../getting-started/basic-concepts) - Understanding collision detection and states
 - [Examples](../examples/basic-drag-drop) - More comprehensive examples 

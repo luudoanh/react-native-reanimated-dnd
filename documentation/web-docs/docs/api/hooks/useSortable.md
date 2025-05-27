@@ -741,5 +741,5 @@ function SortableWithHandle({ item, positions, ...props }) {
 - [SortableItem Component](../../components/sortable-item) - High-level component using this hook
 - [useSortableList Hook](./useSortableList) - List management hook
 - [Sortable Component](../../components/sortable) - Complete sortable list solution
-- [ScrollDirection Enum](../../types/enums#scrolldirection) - Auto-scroll direction values
-- [UseSortableOptions Type](../../types/sortable-types#usesortableoptions) - Complete type definitions 
+- [ScrollDirection Enum](../types/enums#scrolldirection) - Auto-scroll direction values
+- [UseSortableOptions Type](../types/sortable-types#usesortableoptionst) - Complete type definitions 

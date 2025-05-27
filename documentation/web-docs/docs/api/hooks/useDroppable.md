@@ -701,5 +701,5 @@ function StateMachineDropZone() {
 
 - [Droppable Component](../../components/droppable) - High-level component using this hook
 - [useDraggable Hook](./useDraggable) - Draggable counterpart
-- [DropAlignment](../../types/droppable-types#dropalignment) - Alignment options
-- [UseDroppableOptions](../../types/droppable-types#usedroppableoptions) - Complete type definitions 
+- [DropAlignment](../types/droppable-types#dropalignment) - Alignment options
+- [UseDroppableOptions](../types/droppable-types#usedroppableoptionstdata) - Complete type definitions 

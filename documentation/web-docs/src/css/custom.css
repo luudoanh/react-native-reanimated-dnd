@@ -18,7 +18,8 @@
   --ifm-color-primary-light: #ff4f46;
   --ifm-color-primary-lighter: #ff5c54;
   --ifm-color-primary-lightest: #ff7670;
-
+  --doc-sidebar-width: 230px!important;
+  
   
   /* Font settings */
   --ifm-font-family-base: 'Kumbh Sans', system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif;
@@ -44,6 +45,20 @@
 /* Apply fonts to specific elements */
 body {
   font-family: var(--ifm-font-family-base);
+ 
+}
+button {
+  font-family: var(--ifm-font-family-base);
+  font-weight: 800!important;
+}
+
+input {
+  font-family: var(--ifm-font-family-base);
+  font-weight: 600!important;
+}
+
+.navbar__title{
+  display: none;
 }
 
 h1, h2, h3, h4, h5, h6,
@@ -53,6 +68,7 @@ h1, h2, h3, h4, h5, h6,
   font-family: var(--ifm-heading-font-family);
   font-weight: 600;
 }
+
 
 /* Enhanced heading styles */
 h1 {

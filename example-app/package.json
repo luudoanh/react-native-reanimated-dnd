@@ -29,7 +29,8 @@
     "react-native-reanimated-dnd": "file:../react-native-reanimated-dnd-1.0.1.tgz",
     "react-native-safe-area-context": "5.4.0",
     "react-native-screens": "~4.10.0",
-    "react-native-web": "^0.20.0"
+    "react-native-web": "^0.20.0",
+    "expo-updates": "~0.28.13"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

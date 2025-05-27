@@ -250,5 +250,5 @@ The DropProvider includes built-in error handling:
 
 - [DropProvider Guide](../../context/DropProvider) - Comprehensive usage guide
 - [DragDropContext API](./DragDropContext) - Context API reference
-- [useDraggable API](../hooks/use-draggable) - Draggable hook API
-- [useDroppable API](../hooks/use-droppable) - Droppable hook API
+- [useDraggable API](../hooks/useDraggable) - Draggable hook API
+- [useDroppable API](../hooks/useDroppable) - Droppable hook API

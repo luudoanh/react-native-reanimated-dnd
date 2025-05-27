@@ -610,6 +610,6 @@ function AnimatedDropZone() {
 ## See Also
 
 - [Draggable](./draggable) - Create draggable items that can be dropped
-- [useDroppable Hook](../hooks/use-droppable) - Underlying hook for custom implementations
+- [useDroppable Hook](../hooks/useDroppable) - Underlying hook for custom implementations
 - [Basic Concepts](../getting-started/basic-concepts) - Understanding drop alignment and positioning
 - [Examples](../examples/drop-zones) - More comprehensive examples 

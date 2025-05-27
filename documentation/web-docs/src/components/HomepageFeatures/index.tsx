@@ -5,53 +5,86 @@ import styles from './styles.module.css';
 
 type FeatureItem = {
   title: string;
-  Svg: React.ComponentType<React.ComponentProps<'svg'>>;
+  icon: ReactNode;
   description: ReactNode;
+  metric?: string;
+  metricLabel?: string;
 };
 
 const FeatureList: FeatureItem[] = [
   {
-    title: '🚀 Smooth Performance',
-    Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
+    title: 'Smooth Performance',
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+    ),
+    metric: '60fps',
+    metricLabel: 'animations',
     description: (
       <>
-        Built with Reanimated 3 for buttery-smooth 60fps animations that run on the UI thread.
-        No more laggy drag interactions - everything feels natural and responsive.
+        Built with Reanimated 3 for buttery-smooth animations that run on the UI thread.
+        No more laggy interactions.
       </>
     ),
   },
   {
-    title: '🎯 Simple API',
-    Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
+    title: 'Simple API',
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2L2 7l10 5 10-5-10-5z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M2 17l10 5 10-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M2 12l10 5 10-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+    ),
+    metric: '2min',
+    metricLabel: 'setup',
     description: (
       <>
-        Get started in minutes with our intuitive API. Wrap your components with 
-        <code> Draggable</code> and <code> Droppable</code> - that's it! 
-        No complex configuration required.
+        Get started instantly with our intuitive API. Wrap components with{' '}
+        <code>Draggable</code> and <code>Droppable</code> — that's it.
       </>
     ),
   },
   {
-    title: '📱 Cross-Platform',
-    Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
+    title: 'Cross-Platform',
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="2" y="3" width="20" height="14" rx="2" ry="2" stroke="currentColor" strokeWidth="2"/>
+        <line x1="8" y1="21" x2="16" y2="21" stroke="currentColor" strokeWidth="2"/>
+        <line x1="12" y1="17" x2="12" y2="21" stroke="currentColor" strokeWidth="2"/>
+      </svg>
+    ),
+    metric: '100%',
+    metricLabel: 'compatible',
     description: (
       <>
-        Works perfectly on both iOS and Android with consistent behavior. 
-        One codebase, seamless experience across all devices and screen sizes.
+        Works perfectly on iOS and Android with consistent behavior.
+        One codebase, seamless experience.
       </>
     ),
   },
 ];
 
-function Feature({title, Svg, description}: FeatureItem) {
+function Feature({title, icon, description, metric, metricLabel}: FeatureItem) {
   return (
     <div className={clsx('col col--4')}>
-      <div className="text--center">
-        <Svg className={styles.featureSvg} role="img" />
-      </div>
-      <div className="text--center padding-horiz--md">
-        <Heading as="h3">{title}</Heading>
-        <p>{description}</p>
+      <div className={styles.featureCard}>
+        <div className={styles.featureHeader}>
+          <div className={styles.featureIcon}>
+            {icon}
+          </div>
+          {metric && (
+            <div className={styles.featureMetric}>
+              <div className={styles.metricNumber}>{metric}</div>
+              <div className={styles.metricLabel}>{metricLabel}</div>
+            </div>
+          )}
+        </div>
+        <div className={styles.featureContent}>
+          <Heading as="h3" className={styles.featureTitle}>{title}</Heading>
+          <p className={styles.featureDescription}>{description}</p>
+        </div>
       </div>
     </div>
   );
@@ -61,6 +94,12 @@ export default function HomepageFeatures(): ReactNode {
   return (
     <section className={styles.features}>
       <div className="container">
+        <div className={styles.featuresHeader}>
+          <h2 className={styles.featuresTitle}>Why choose React Native Reanimated DnD</h2>
+          <p className={styles.featuresSubtitle}>
+            It's the most performant and developer-friendly drag & drop library for React Native, hands down.
+          </p>
+        </div>
         <div className="row">
           {FeatureList.map((props, idx) => (
             <Feature key={idx} {...props} />

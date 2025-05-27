@@ -187,16 +187,33 @@ High-level components for reorderable lists:
 
 ```tsx
 import { Sortable, SortableItem } from 'react-native-reanimated-dnd';
+import { useCallback } from 'react';
 
-function TaskList({ tasks, onReorder }) {
+function TaskList({ tasks, onTaskReorder }) {
+  const renderTask = useCallback(({ item, id, positions, ...props }) => (
+    <SortableItem 
+      key={id} 
+      id={id} 
+      positions={positions} 
+      {...props}
+      onMove={(itemId, from, to) => {
+        // Update task order when items are moved
+        const newTasks = [...tasks];
+        const [movedTask] = newTasks.splice(from, 1);
+        newTasks.splice(to, 0, movedTask);
+        onTaskReorder(newTasks);
+      }}
+    >
+      <TaskCard task={item} />
+    </SortableItem>
+  ), [tasks, onTaskReorder]);
+
   return (
-    <Sortable data={tasks} onReorder={onReorder}>
-      {tasks.map((task, index) => (
-        <SortableItem key={task.id} index={index}>
-          <TaskCard task={task} />
-        </SortableItem>
-      ))}
-    </Sortable>
+    <Sortable 
+      data={tasks} 
+      renderItem={renderTask}
+      itemHeight={60}
+    />
   );
 }
 ```

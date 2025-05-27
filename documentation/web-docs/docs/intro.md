@@ -87,13 +87,27 @@ Create drop zones that receive draggable items:
 ### Sortable
 High-level component for reorderable lists:
 ```tsx
-<Sortable data={items} onReorder={setItems}>
-  {items.map(item => (
-    <SortableItem key={item.id}>
+<Sortable 
+  data={items} 
+  renderItem={({ item, id, positions, ...props }) => (
+    <SortableItem 
+      key={id} 
+      id={id} 
+      positions={positions} 
+      {...props}
+      onMove={(itemId, from, to) => {
+        // Handle reordering
+        const newItems = [...items];
+        const [movedItem] = newItems.splice(from, 1);
+        newItems.splice(to, 0, movedItem);
+        setItems(newItems);
+      }}
+    >
       <ItemComponent item={item} />
     </SortableItem>
-  ))}
-</Sortable>
+  )}
+  itemHeight={60}
+/>
 ```
 
 ## Use Cases

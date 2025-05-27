@@ -513,5 +513,5 @@ function TypedDraggable() {
 
 - [useDraggable Hook](../../hooks/useDraggable) - Underlying hook implementation
 - [Droppable Component](./droppable) - Drop zone component
-- [DraggableState](../../types/enums#draggablestate) - State management
-- [CollisionAlgorithm](../../types/draggable-types#collisionalgorithm) - Collision detection
+- [DraggableState](../types/enums#draggablestate) - State management
+- [CollisionAlgorithm](../types/draggable-types#collisionalgorithm) - Collision detection

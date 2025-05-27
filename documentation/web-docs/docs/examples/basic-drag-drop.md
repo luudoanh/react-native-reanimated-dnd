@@ -4,186 +4,125 @@ sidebar_position: 1
 
 # Basic Drag & Drop
 
-Learn the fundamentals with simple drag-and-drop examples.
+Simple drag and drop functionality with multiple drop zones.
 
-## Simple Drag & Drop
+## Overview
 
-The most basic example - drag an item and drop it in a zone:
+This example demonstrates the fundamental drag and drop interactions using the library's core components. You'll learn how to:
+
+- Create draggable items with data payloads
+- Set up drop zones that respond to draggable items
+- Handle drop events and access dropped data
+- Apply basic styling and visual feedback
+
+## Key Features
+
+- **Simple Setup**: Minimal configuration required
+- **Data Transfer**: Pass data from draggable to drop handler
+- **Visual Feedback**: Built-in hover states and animations
+- **Event Handling**: Callbacks for drag start, end, and drop events
+- **Flexible Styling**: Customizable appearance for all components
+
+## Basic Implementation
 
 ```tsx
-import React, { useState } from 'react';
+import React, { useRef } from 'react';
 import { View, Text, StyleSheet, Alert } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { DropProvider, Draggable, Droppable } from 'react-native-reanimated-dnd';
 
-export default function BasicDragDrop() {
-  const [dropCount, setDropCount] = useState(0);
+interface DraggableItemData {
+  id: string;
+  label: string;
+  backgroundColor: string;
+}
 
-  const handleDrop = (data) => {
-    setDropCount(prev => prev + 1);
-    Alert.alert('Success!', `${data.name} was dropped! Total drops: ${dropCount + 1}`);
-  };
-
+export function BasicDragDropExample() {
   return (
     <GestureHandlerRootView style={styles.container}>
       <DropProvider>
         <View style={styles.content}>
           <Text style={styles.title}>Basic Drag & Drop</Text>
-          
-          <Draggable data={{ id: '1', name: 'Blue Box' }}>
-            <View style={[styles.draggable, { backgroundColor: '#2196F3' }]}>
-              <Text style={styles.draggableText}>Drag me!</Text>
-            </View>
-          </Draggable>
-
-          <Droppable onDrop={handleDrop}>
-            <View style={styles.dropZone}>
-              <Text style={styles.dropText}>Drop here</Text>
-              <Text style={styles.dropCount}>Drops: {dropCount}</Text>
-            </View>
-          </Droppable>
-        </View>
-      </DropProvider>
-    </GestureHandlerRootView>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f5f5f5',
-  },
-  content: {
-    flex: 1,
-    padding: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 40,
-    color: '#333',
-  },
-  draggable: {
-    width: 100,
-    height: 100,
-    borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 40,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  draggableText: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
-  dropZone: {
-    width: 200,
-    height: 120,
-    backgroundColor: '#e0e0e0',
-    borderWidth: 2,
-    borderColor: '#999',
-    borderStyle: 'dashed',
-    borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  dropText: {
-    fontSize: 18,
-    color: '#666',
-    fontWeight: '500',
-  },
-  dropCount: {
-    fontSize: 14,
-    color: '#999',
-    marginTop: 5,
-  },
-});
-```
-
-## Multiple Items
-
-Example with multiple draggable items and different drop zones:
-
-```tsx
-import React, { useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { DropProvider, Draggable, Droppable } from 'react-native-reanimated-dnd';
-
-interface Item {
-  id: string;
-  name: string;
-  color: string;
-  category: 'fruit' | 'vegetable';
-}
-
-export default function MultipleItems() {
-  const [droppedItems, setDroppedItems] = useState<{[key: string]: Item[]}>({
-    fruits: [],
-    vegetables: []
-  });
-
-  const items: Item[] = [
-    { id: '1', name: 'Apple', color: '#FF6B6B', category: 'fruit' },
-    { id: '2', name: 'Carrot', color: '#FFA726', category: 'vegetable' },
-    { id: '3', name: 'Banana', color: '#FFEB3B', category: 'fruit' },
-    { id: '4', name: 'Broccoli', color: '#4CAF50', category: 'vegetable' },
-  ];
-
-  const handleDrop = (category: string) => (data: Item) => {
-    if (data.category === category) {
-      setDroppedItems(prev => ({
-        ...prev,
-        [category]: [...prev[category], data]
-      }));
-    } else {
-      alert(`${data.name} doesn't belong in ${category}!`);
-    }
-  };
-
-  return (
-    <GestureHandlerRootView style={styles.container}>
-      <DropProvider>
-        <View style={styles.content}>
-          <Text style={styles.title}>Sort Items by Category</Text>
-          
-          {/* Draggable Items */}
-          <View style={styles.itemsContainer}>
-            {items.map((item) => (
-              <Draggable key={item.id} data={item}>
-                <View style={[styles.item, { backgroundColor: item.color }]}>
-                  <Text style={styles.itemText}>{item.name}</Text>
-                </View>
-              </Draggable>
-            ))}
-          </View>
+          <Text style={styles.subtitle}>
+            Drag the items to different zones to see basic interactions
+          </Text>
 
           {/* Drop Zones */}
-          <View style={styles.dropZonesContainer}>
-            <Droppable onDrop={handleDrop('fruit')}>
-              <View style={[styles.dropZone, styles.fruitZone]}>
-                <Text style={styles.dropZoneTitle}>Fruits</Text>
-                <Text style={styles.dropZoneCount}>
-                  {droppedItems.fruits.length} items
-                </Text>
-              </View>
+          <View style={styles.dropZoneArea}>
+            <Droppable<DraggableItemData>
+              droppableId="zone-alpha"
+              onDrop={(data) =>
+                Alert.alert('Drop!', `"${data.label}" dropped on Zone Alpha`)
+              }
+              style={styles.dropZone}
+              activeStyle={styles.activeDropZone}
+            >
+              <Text style={styles.dropZoneText}>Zone Alpha</Text>
+              <Text style={styles.dropZoneSubtext}>Basic Drop Zone</Text>
             </Droppable>
 
-            <Droppable onDrop={handleDrop('vegetable')}>
-              <View style={[styles.dropZone, styles.vegetableZone]}>
-                <Text style={styles.dropZoneTitle}>Vegetables</Text>
-                <Text style={styles.dropZoneCount}>
-                  {droppedItems.vegetables.length} items
-                </Text>
-              </View>
+            <Droppable<DraggableItemData>
+              droppableId="zone-beta"
+              onDrop={(data) =>
+                Alert.alert('Drop!', `"${data.label}" dropped on Zone Beta`)
+              }
+              style={[styles.dropZone, styles.dropZoneBeta]}
+              activeStyle={styles.activeDropZone}
+            >
+              <Text style={styles.dropZoneText}>Zone Beta</Text>
+              <Text style={styles.dropZoneSubtext}>Another Drop Zone</Text>
             </Droppable>
+          </View>
+
+          {/* Draggable Items */}
+          <View style={styles.draggableItemsArea}>
+            <Draggable<DraggableItemData>
+              data={{
+                id: 'basic-item-1',
+                label: 'Draggable Item 1',
+                backgroundColor: '#a2d2ff',
+              }}
+              style={[styles.draggable, { backgroundColor: '#a2d2ff' }]}
+              onDragStart={(data) => console.log('Started dragging:', data.label)}
+              onDragEnd={(data) => console.log('Finished dragging:', data.label)}
+            >
+              <View style={styles.cardContent}>
+                <Text style={styles.cardLabel}>Item 1</Text>
+                <Text style={styles.cardHint}>Drag me!</Text>
+              </View>
+            </Draggable>
+
+            <Draggable<DraggableItemData>
+              data={{
+                id: 'basic-item-2',
+                label: 'Draggable Item 2',
+                backgroundColor: '#bde0fe',
+              }}
+              style={[styles.draggable, { backgroundColor: '#bde0fe' }]}
+              onDragStart={(data) => console.log('Started dragging:', data.label)}
+              onDragEnd={(data) => console.log('Finished dragging:', data.label)}
+            >
+              <View style={styles.cardContent}>
+                <Text style={styles.cardLabel}>Item 2</Text>
+                <Text style={styles.cardHint}>Drag me too!</Text>
+              </View>
+            </Draggable>
+          </View>
+
+          {/* Info */}
+          <View style={styles.infoContainer}>
+            <View style={styles.infoItem}>
+              <View style={[styles.infoIndicator, { backgroundColor: '#a2d2ff' }]} />
+              <Text style={styles.infoText}>
+                Basic draggable with default spring animation
+              </Text>
+            </View>
+            <View style={styles.infoItem}>
+              <View style={[styles.infoIndicator, { backgroundColor: '#bde0fe' }]} />
+              <Text style={styles.infoText}>
+                Standard drag and drop behavior with visual feedback
+              </Text>
+            </View>
           </View>
         </View>
       </DropProvider>
@@ -194,7 +133,7 @@ export default function MultipleItems() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#000000',
   },
   content: {
     flex: 1,
@@ -203,78 +142,241 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
+    color: '#FFFFFF',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  subtitle: {
+    fontSize: 15,
+    color: '#8E8E93',
     textAlign: 'center',
     marginBottom: 30,
-    color: '#333',
+    lineHeight: 22,
   },
-  itemsContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-    marginBottom: 40,
-  },
-  item: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
-    margin: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  itemText: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 12,
-    textAlign: 'center',
-  },
-  dropZonesContainer: {
+  dropZoneArea: {
     flexDirection: 'row',
     justifyContent: 'space-around',
+    marginBottom: 40,
+    gap: 16,
   },
   dropZone: {
-    width: 140,
+    flex: 1,
     height: 120,
-    borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
     borderWidth: 2,
     borderStyle: 'dashed',
+    borderColor: '#58a6ff',
+    backgroundColor: 'rgba(88, 166, 255, 0.08)',
+    borderRadius: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16,
   },
-  fruitZone: {
-    backgroundColor: '#FFEBEE',
-    borderColor: '#E91E63',
+  dropZoneBeta: {
+    borderColor: '#3fb950',
+    backgroundColor: 'rgba(63, 185, 80, 0.08)',
   },
-  vegetableZone: {
-    backgroundColor: '#E8F5E8',
-    borderColor: '#4CAF50',
+  activeDropZone: {
+    borderColor: '#FFFFFF',
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    transform: [{ scale: 1.02 }],
   },
-  dropZoneTitle: {
-    fontSize: 18,
+  dropZoneText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FFFFFF',
+    marginBottom: 4,
+  },
+  dropZoneSubtext: {
+    fontSize: 12,
+    color: '#8E8E93',
+  },
+  draggableItemsArea: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: 40,
+    gap: 16,
+  },
+  draggable: {
+    width: 140,
+    height: 100,
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 8,
+  },
+  cardContent: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 12,
+  },
+  cardLabel: {
+    fontSize: 16,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#000000',
+    marginBottom: 4,
   },
-  dropZoneCount: {
+  cardHint: {
+    fontSize: 12,
+    color: '#333333',
+  },
+  infoContainer: {
+    gap: 12,
+  },
+  infoItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  infoIndicator: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+  },
+  infoText: {
     fontSize: 14,
-    color: '#666',
-    marginTop: 5,
+    color: '#8E8E93',
+    flex: 1,
   },
 });
 ```
 
-## Key Concepts
+## Core Concepts
 
-- **DropProvider**: Must wrap all draggable and droppable components
-- **GestureHandlerRootView**: Required for gesture handling to work properly
-- **Data Flow**: Data passed to `Draggable` is received by `Droppable` onDrop callback
-- **Visual Feedback**: Use state to provide visual feedback during drag operations
+### DropProvider
+
+The `DropProvider` component creates the context for drag and drop interactions:
+
+```tsx
+<DropProvider>
+  {/* All draggable and droppable components go here */}
+</DropProvider>
+```
+
+### Draggable Component
+
+Create draggable items with data payloads:
+
+```tsx
+<Draggable
+  data={{ id: '1', name: 'My Item', type: 'task' }}
+  onDragStart={(data) => console.log('Drag started:', data)}
+  onDragEnd={(data) => console.log('Drag ended:', data)}
+>
+  <View style={styles.item}>
+    <Text>Drag me!</Text>
+  </View>
+</Draggable>
+```
+
+### Droppable Component
+
+Create drop zones that respond to draggable items:
+
+```tsx
+<Droppable
+  droppableId="my-drop-zone"
+  onDrop={(data) => console.log('Item dropped:', data)}
+  activeStyle={{ backgroundColor: 'rgba(0, 255, 0, 0.2)' }}
+>
+  <View style={styles.dropZone}>
+    <Text>Drop items here</Text>
+  </View>
+</Droppable>
+```
+
+## Event Handling
+
+### Drag Events
+
+```tsx
+<Draggable
+  data={itemData}
+  onDragStart={(data) => {
+    console.log('Started dragging:', data.name);
+    // Show visual feedback, haptic feedback, etc.
+  }}
+  onDragEnd={(data) => {
+    console.log('Finished dragging:', data.name);
+    // Clean up any temporary states
+  }}
+  onDragging={({ x, y, tx, ty, itemData }) => {
+    console.log(`${itemData.name} is at position (${x + tx}, ${y + ty})`);
+  }}
+>
+  {/* Content */}
+</Draggable>
+```
+
+### Drop Events
+
+```tsx
+<Droppable
+  onDrop={(data) => {
+    console.log('Received item:', data);
+    // Process the dropped item
+    addItemToList(data);
+  }}
+  onActiveChange={(isActive) => {
+    console.log('Drop zone active:', isActive);
+    // Update UI based on hover state
+  }}
+>
+  {/* Drop zone content */}
+</Droppable>
+```
+
+## Styling and Visual Feedback
+
+### Active States
+
+```tsx
+<Droppable
+  activeStyle={{
+    backgroundColor: 'rgba(88, 166, 255, 0.2)',
+    borderColor: '#58a6ff',
+    borderWidth: 2,
+    transform: [{ scale: 1.05 }],
+  }}
+>
+  {/* Content */}
+</Droppable>
+```
+
+### Custom Animations
+
+```tsx
+<Draggable
+  data={itemData}
+  animationFunction={(toValue) => {
+    'worklet';
+    return withTiming(toValue, { duration: 300 });
+  }}
+>
+  {/* Content */}
+</Draggable>
+```
+
+## Common Use Cases
+
+- **File Management**: Drag files to folders
+- **Task Management**: Move tasks between columns
+- **Image Galleries**: Organize photos
+- **Form Builders**: Arrange form elements
+- **Shopping**: Add items to cart
+
+## Best Practices
+
+1. **Wrap with GestureHandlerRootView**: Always wrap your app with `GestureHandlerRootView`
+2. **Use DropProvider**: Ensure all drag/drop components are within a `DropProvider`
+3. **Provide Visual Feedback**: Use `activeStyle` for clear drop zone indication
+4. **Handle Events**: Use callbacks to update your app state appropriately
+5. **Type Safety**: Use TypeScript generics for type-safe data transfer
 
 ## Next Steps
 
-- [Advanced Features](./advanced-features) - Explore collision algorithms, animations, and constraints
-- [Sortable Lists](./sortable-lists) - Learn about reorderable lists
-- [Real-World Examples](./real-world-examples) - See practical implementations
+- Learn about [Drag Handles](./drag-handles) for more precise control
+- Explore [Collision Detection](./collision-detection) for advanced targeting
+- Check out [Custom Animations](./custom-animations) for enhanced visual effects

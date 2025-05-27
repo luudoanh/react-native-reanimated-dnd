@@ -1,6 +1,6 @@
-# Website
+# Documentation Website
 
-This website is built using [Docusaurus](https://docusaurus.io/), a modern static website generator.
+This is the documentation website for React Native Reanimated DnD.
 
 ### Installation
 

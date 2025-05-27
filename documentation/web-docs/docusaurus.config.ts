@@ -42,21 +42,6 @@ const config: Config = {
           editUrl:
             'https://github.com/entropyconquers/react-native-reanimated-dnd/tree/main/documentation/web-docs/',
         },
-        blog: {
-          showReadingTime: true,
-          feedOptions: {
-            type: ['rss', 'atom'],
-            xslt: true,
-          },
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/entropyconquers/react-native-reanimated-dnd/tree/main/documentation/web-docs/',
-          // Useful options to enforce blogging best practices
-          onInlineTags: 'warn',
-          onInlineAuthors: 'warn',
-          onUntruncatedBlogPosts: 'warn',
-        },
         theme: {
           customCss: './src/css/custom.css',
         },
@@ -86,7 +71,6 @@ const config: Config = {
           position: 'left',
           label: 'API',
         },
-        {to: '/blog', label: 'Blog', position: 'left'},
         {
           href: 'https://github.com/entropyconquers/react-native-reanimated-dnd',
           label: 'GitHub',
@@ -106,7 +90,7 @@ const config: Config = {
             },
             {
               label: 'API Reference',
-              to: '/docs/api',
+              to: '/docs/api/overview',
             },
           ],
         },
@@ -127,10 +111,6 @@ const config: Config = {
           title: 'More',
           items: [
             {
-              label: 'Blog',
-              to: '/blog',
-            },
-            {
               label: 'GitHub',
               href: 'https://github.com/entropyconquers/react-native-reanimated-dnd',
             },
@@ -141,7 +121,7 @@ const config: Config = {
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} React Native Reanimated DnD. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} React Native Reanimated DnD.`,
     },
     prism: {
       theme: prismThemes.github,

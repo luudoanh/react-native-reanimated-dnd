@@ -65,7 +65,7 @@ After countless attempts with drag-and-drop solutions that don't work or are sim
 
 **📱 Scan & Play**
 
-<img src="documentation/web-docs/static/img/example-app.svg" alt="Expo QR Code" width="200" height="200" />
+<img src="https://github.com/user-attachments/assets/80f923f6-7c5f-42e9-9817-7770ee27a70b" alt="Expo QR Code" width="200" height="200" />
 
 *Scan with your camera or Expo Go app*
 

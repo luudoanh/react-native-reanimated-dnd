@@ -16,7 +16,9 @@
   "sideEffects": false,
   "scripts": {
     "build": "tsc && npm run minify",
+    "build:safe": "tsc",
     "build:clean": "rm -rf lib && npm run build",
+    "build:clean:safe": "rm -rf lib && npm run build:safe",
     "minify": "node scripts/build.js",
     "type-check": "tsc --noEmit",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md,yml,yaml}\" --ignore-path .prettierignore",

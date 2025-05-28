@@ -8,22 +8,17 @@ async function minifyFile(filePath) {
   try {
     const code = fs.readFileSync(filePath, "utf8");
 
+    // For React Native libraries, we'll do minimal minification
+    // Only remove comments and compress whitespace
     const result = await minify(code, {
-      compress: {
-        drop_console: true,
-        drop_debugger: true,
-        pure_funcs: ["console.log", "console.info", "console.debug"],
-        passes: 2,
-        unsafe: false,
-        keep_fnames: false,
-      },
-      mangle: {
-        reserved: ["React", "ReactNative", "createElement", "Fragment"],
-        keep_fnames: false,
-      },
+      compress: false, // Disable all compression
+      mangle: false, // Disable all mangling
       format: {
-        comments: false,
-        beautify: false,
+        comments: false, // Remove comments
+        beautify: false, // Compress whitespace
+        preserve_annotations: true,
+        semicolons: true,
+        braces: true,
       },
       parse: {
         ecma: 2018,
@@ -37,6 +32,8 @@ async function minifyFile(filePath) {
     }
   } catch (error) {
     console.error(`✗ Error minifying ${filePath}:`, error.message);
+    // If minification fails, just copy the original file
+    console.log(`⚠ Keeping original: ${filePath}`);
   }
 }
 

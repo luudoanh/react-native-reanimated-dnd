@@ -1,11 +1,10 @@
 # React Native Reanimated DnD 🎯
 
 <p align="center">
-  <img src="documentation/images/reanimated-dnd.gif" alt="React Native Reanimated DnD Demo" style="max-width: 100%; width: 100%;" />
+  <img src="https://github.com/user-attachments/assets/dba6226e-c407-4a12-9feb-e8f588d6c1e3" alt="React Native Reanimated DnD Demo" style="max-width: 100%; width: 100%;" />
 </p>
-
 <div align="center">
-
+  
 **A drag-and-drop library that _finally_ works on React Native** ✨
 
 _Powerful, performant, and built for the modern React Native developer_

@@ -106,6 +106,83 @@ The example app includes:
 - ✨ **Visual Feedback** - Active styles and state management
 - ⚙️ **Advanced Patterns** - Custom implementations and hooks
 
+## 🎬 Video Showcase
+
+**See the library in action** with these interactive demonstrations showcasing key features and use cases.
+
+<div align="center">
+
+<table>
+<tr>
+<td align="center" width="50%">
+
+### 📋 Sortable Lists
+*Drag and drop to reorder items with smooth animations*
+
+https://github.com/entropyconquers/react-native-reanimated-dnd/raw/main/documentation/videos/sortable-lists.mp4
+
+**Features:** Auto-scrolling • Drag handles • Smooth transitions
+
+</td>
+<td align="center" width="50%">
+
+### 🎯 Collision Detection
+*Multiple algorithms for precise drop targeting*
+
+https://github.com/entropyconquers/react-native-reanimated-dnd/raw/main/documentation/videos/collision-detection.mp4
+
+**Algorithms:** Center • Intersect • Contain
+
+</td>
+</tr>
+<tr>
+<td align="center" width="50%">
+
+### 🎪 Drag Handles
+*Precise control with dedicated drag areas*
+
+https://github.com/entropyconquers/react-native-reanimated-dnd/raw/main/documentation/videos/drag-handles.mp4
+
+**Features:** Touch-friendly • Visual feedback • Accessibility
+
+</td>
+<td align="center" width="50%">
+
+### 📦 Bounded Dragging
+*Constrain movement within specific boundaries*
+
+https://github.com/entropyconquers/react-native-reanimated-dnd/raw/main/documentation/videos/bounded-dragging.mp4
+
+**Constraints:** Axis-locked • Container bounds • Custom limits
+
+</td>
+</tr>
+<tr>
+<td align="center" width="50%">
+
+### ✨ Active Drop Styles
+*Visual feedback during drag operations*
+
+https://github.com/entropyconquers/react-native-reanimated-dnd/raw/main/documentation/videos/active-drop-styles.mp4
+
+**Feedback:** Hover states • Drop zones • Visual cues
+
+</td>
+<td align="center" width="50%">
+
+### 🔄 State Management
+*Complete lifecycle tracking and callbacks*
+
+https://github.com/entropyconquers/react-native-reanimated-dnd/raw/main/documentation/videos/drag-state-management.mp4
+
+**States:** Idle • Dragging • Animating • Dropped
+
+</td>
+</tr>
+</table>
+
+</div>
+
 ## 🚀 Installation
 
 ```bash

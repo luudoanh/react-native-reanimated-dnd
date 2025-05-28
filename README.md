@@ -108,7 +108,7 @@ The example app includes:
 
 ## 🎬 Video Showcase
 
-**See the library in action** with these interactive demonstrations showcasing key features and use cases.
+**See the library in action** with these demos showcasing some of the key features and use cases.
 
 <div align="center">
 
@@ -119,7 +119,7 @@ The example app includes:
 ### 📋 Sortable Lists
 *Drag and drop to reorder items with smooth animations*
 
-https://github.com/entropyconquers/react-native-reanimated-dnd/raw/main/documentation/videos/sortable-lists.mp4
+https://github.com/user-attachments/assets/1cd1929c-724b-4dda-a916-f3e69f917f7b
 
 **Features:** Auto-scrolling • Drag handles • Smooth transitions
 
@@ -129,7 +129,7 @@ https://github.com/entropyconquers/react-native-reanimated-dnd/raw/main/document
 ### 🎯 Collision Detection
 *Multiple algorithms for precise drop targeting*
 
-https://github.com/entropyconquers/react-native-reanimated-dnd/raw/main/documentation/videos/collision-detection.mp4
+https://github.com/user-attachments/assets/379040d7-8489-430b-bae4-3fcbde34264e
 
 **Algorithms:** Center • Intersect • Contain
 
@@ -141,7 +141,7 @@ https://github.com/entropyconquers/react-native-reanimated-dnd/raw/main/document
 ### 🎪 Drag Handles
 *Precise control with dedicated drag areas*
 
-https://github.com/entropyconquers/react-native-reanimated-dnd/raw/main/documentation/videos/drag-handles.mp4
+https://github.com/user-attachments/assets/ec051d5b-8ba0-41b7-86ae-379de26a97dd
 
 **Features:** Touch-friendly • Visual feedback • Accessibility
 
@@ -151,7 +151,7 @@ https://github.com/entropyconquers/react-native-reanimated-dnd/raw/main/document
 ### 📦 Bounded Dragging
 *Constrain movement within specific boundaries*
 
-https://github.com/entropyconquers/react-native-reanimated-dnd/raw/main/documentation/videos/bounded-dragging.mp4
+https://github.com/user-attachments/assets/7bd5045b-47c4-4d9b-a0c5-eb89122ec9c0
 
 **Constraints:** Axis-locked • Container bounds • Custom limits
 
@@ -163,7 +163,7 @@ https://github.com/entropyconquers/react-native-reanimated-dnd/raw/main/document
 ### ✨ Active Drop Styles
 *Visual feedback during drag operations*
 
-https://github.com/entropyconquers/react-native-reanimated-dnd/raw/main/documentation/videos/active-drop-styles.mp4
+https://github.com/user-attachments/assets/3b8a3d00-38ad-4532-bd42-173037ea61b9
 
 **Feedback:** Hover states • Drop zones • Visual cues
 
@@ -173,7 +173,7 @@ https://github.com/entropyconquers/react-native-reanimated-dnd/raw/main/document
 ### 🔄 State Management
 *Complete lifecycle tracking and callbacks*
 
-https://github.com/entropyconquers/react-native-reanimated-dnd/raw/main/documentation/videos/drag-state-management.mp4
+https://github.com/user-attachments/assets/da5e526f-f2d2-4dc5-96b5-3fecc4faf57a
 
 **States:** Idle • Dragging • Animating • Dropped
 

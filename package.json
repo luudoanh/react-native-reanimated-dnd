@@ -1,6 +1,6 @@
 {
   "name": "react-native-reanimated-dnd",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A powerful drag-and-drop library for React Native using Reanimated 3",
   "main": "lib/index.js",
   "module": "lib/index.js",

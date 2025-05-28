@@ -13,11 +13,17 @@
     "isolatedModules": false,
     "noEmit": false,
     "declaration": true,
+    "declarationMap": false,
+    "sourceMap": false,
+    "removeComments": true,
     "outDir": "./lib",
     "rootDir": "./",
-    "jsx": "react-native",
+    "jsx": "react",
     "module": "ES2015",
-    "types": ["node"]
+    "types": ["node"],
+    "stripInternal": true,
+    "noEmitHelpers": true,
+    "importHelpers": false
   },
   "include": [
     "components/**/*",

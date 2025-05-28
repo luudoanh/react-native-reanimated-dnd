@@ -1,0 +1,41 @@
+# Development files
+*.ts
+!*.d.ts
+tsconfig.json
+.prettierrc
+.prettierignore
+
+# Documentation and examples
+documentation/
+example-app/
+scripts/
+
+# Development tools
+.vscode/
+.git/
+.DS_Store
+*.tgz
+
+# Node modules and logs
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Test files
+**/*.test.js
+**/*.test.ts
+**/*.spec.js
+**/*.spec.ts
+
+# Source maps and build artifacts
+*.map
+*.tsbuildinfo
+
+# IDE files
+.idea/
+*.swp
+*.swo
+
+# OS files
+Thumbs.db 

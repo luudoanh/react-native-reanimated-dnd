@@ -67,7 +67,7 @@ After countless attempts with drag-and-drop solutions that don't work or are sim
 
 <img src="https://github.com/user-attachments/assets/80f923f6-7c5f-42e9-9817-7770ee27a70b" alt="Expo QR Code" width="200" height="200" />
 
-*Scan with your camera or Expo Go app*
+_Scan with your camera or Expo Go app_
 
 </td>
 <td align="center" width="50%">
@@ -92,7 +92,7 @@ After countless attempts with drag-and-drop solutions that don't work or are sim
   <img src="https://img.shields.io/badge/📖%20Documentation-Visit%20Docs-4f46e5?style=for-the-badge&logo=gitbook&logoColor=white&labelColor=1e293b" alt="Documentation" />
 </a>
 
-*Comprehensive guides, API reference, and interactive examples*
+_Comprehensive guides, API reference, and interactive examples_
 
 </div>
 
@@ -116,7 +116,8 @@ The example app includes:
 <td align="center" width="50%">
 
 ### 📋 Sortable Lists
-*Drag and drop to reorder items with smooth animations*
+
+_Drag and drop to reorder items with smooth animations_
 
 https://github.com/user-attachments/assets/1cd1929c-724b-4dda-a916-f3e69f917f7b
 
@@ -126,7 +127,8 @@ https://github.com/user-attachments/assets/1cd1929c-724b-4dda-a916-f3e69f917f7b
 <td align="center" width="50%">
 
 ### 🎯 Collision Detection
-*Multiple algorithms for precise drop targeting*
+
+_Multiple algorithms for precise drop targeting_
 
 https://github.com/user-attachments/assets/379040d7-8489-430b-bae4-3fcbde34264e
 
@@ -138,7 +140,8 @@ https://github.com/user-attachments/assets/379040d7-8489-430b-bae4-3fcbde34264e
 <td align="center" width="50%">
 
 ### 🎪 Drag Handles
-*Precise control with dedicated drag areas*
+
+_Precise control with dedicated drag areas_
 
 https://github.com/user-attachments/assets/ec051d5b-8ba0-41b7-86ae-379de26a97dd
 
@@ -148,7 +151,8 @@ https://github.com/user-attachments/assets/ec051d5b-8ba0-41b7-86ae-379de26a97dd
 <td align="center" width="50%">
 
 ### 📦 Bounded Dragging
-*Constrain movement within specific boundaries*
+
+_Constrain movement within specific boundaries_
 
 https://github.com/user-attachments/assets/7bd5045b-47c4-4d9b-a0c5-eb89122ec9c0
 
@@ -160,7 +164,8 @@ https://github.com/user-attachments/assets/7bd5045b-47c4-4d9b-a0c5-eb89122ec9c0
 <td align="center" width="50%">
 
 ### ✨ Active Drop Styles
-*Visual feedback during drag operations*
+
+_Visual feedback during drag operations_
 
 https://github.com/user-attachments/assets/3b8a3d00-38ad-4532-bd42-173037ea61b9
 
@@ -170,7 +175,8 @@ https://github.com/user-attachments/assets/3b8a3d00-38ad-4532-bd42-173037ea61b9
 <td align="center" width="50%">
 
 ### 🔄 State Management
-*Complete lifecycle tracking and callbacks*
+
+_Complete lifecycle tracking and callbacks_
 
 https://github.com/user-attachments/assets/da5e526f-f2d2-4dc5-96b5-3fecc4faf57a
 
@@ -205,24 +211,18 @@ Follow the setup guides:
 
 ```tsx
 import React from "react";
-import { View, Text } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Draggable, DropProvider } from "react-native-reanimated-dnd";
 
 export default function App() {
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <GestureHandlerRootView style={styles.container}>
       <DropProvider>
-        <View style={{ flex: 1, padding: 20 }}>
+        <View style={styles.content}>
           <Draggable data={{ id: "1", title: "Drag me!" }}>
-            <View
-              style={{
-                padding: 20,
-                backgroundColor: "#007AFF",
-                borderRadius: 8,
-              }}
-            >
-              <Text style={{ color: "white" }}>Drag me around!</Text>
+            <View style={styles.draggableItem}>
+              <Text style={styles.itemText}>🎯 Drag me around!</Text>
             </View>
           </Draggable>
         </View>
@@ -230,13 +230,44 @@ export default function App() {
     </GestureHandlerRootView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#000000",
+  },
+  content: {
+    flex: 1,
+    padding: 20,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  draggableItem: {
+    padding: 20,
+    backgroundColor: "#1C1C1E",
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "#3A3A3C",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  itemText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "600",
+    textAlign: "center",
+  },
+});
 ```
 
 ### Drag & Drop with Multiple Zones
 
 ```tsx
 import React from "react";
-import { View, Text } from "react-native";
+import { Alert, StyleSheet, Text, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import {
   Draggable,
@@ -245,95 +276,322 @@ import {
 } from "react-native-reanimated-dnd";
 
 export default function DragDropExample() {
-  const handleDrop = (data: any) => {
-    console.log("Item dropped:", data);
+  const handleDrop = (data: any, zoneId: string) => {
+    Alert.alert("Item Dropped", `"${data.title}" dropped in ${zoneId}`);
   };
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <GestureHandlerRootView style={styles.container}>
       <DropProvider>
-        <View style={{ flex: 1, padding: 20 }}>
-          {/* Draggable Item */}
-          <Draggable data={{ id: "1", title: "Drag me!" }}>
-            <View style={styles.draggableItem}>
-              <Text>📦 Drag me to a zone</Text>
-            </View>
-          </Draggable>
-
+        <View style={styles.content}>
           {/* Drop Zones */}
-          <Droppable onDrop={handleDrop}>
-            <View style={styles.dropZone}>
-              <Text>🎯 Drop Zone 1</Text>
-            </View>
-          </Droppable>
+          <View style={styles.dropZonesSection}>
+            <Text style={styles.sectionTitle}>Drop Zones</Text>
 
-          <Droppable onDrop={handleDrop}>
-            <View style={styles.dropZone}>
-              <Text>🎯 Drop Zone 2</Text>
-            </View>
-          </Droppable>
+            <Droppable
+              onDrop={(data) => handleDrop(data, "Zone 1")}
+              activeStyle={styles.dropZoneActive}
+              style={styles.droppable}
+            >
+              <View style={[styles.dropZoneBlue, styles.dropZone]}>
+                <Text style={styles.dropZoneText}>🎯 Zone 1</Text>
+                <Text style={styles.dropZoneSubtext}>Drop here</Text>
+              </View>
+            </Droppable>
+
+            <Droppable
+              onDrop={(data) => handleDrop(data, "Zone 2")}
+              activeStyle={styles.dropZoneActive}
+              style={styles.droppable}
+            >
+              <View style={[styles.dropZone, styles.dropZoneGreen]}>
+                <Text style={styles.dropZoneText}>🎯 Zone 2</Text>
+                <Text style={styles.dropZoneSubtext}>Drop here</Text>
+              </View>
+            </Droppable>
+          </View>
+
+          {/* Draggable Item */}
+          <View style={styles.draggableSection}>
+            <Text style={styles.sectionTitle}>Draggable Item</Text>
+            <Draggable data={{ id: "1", title: "Task Item" }}>
+              <View style={styles.draggableItem}>
+                <Text style={styles.itemText}>📦 Drag me to a zone</Text>
+              </View>
+            </Draggable>
+          </View>
         </View>
       </DropProvider>
     </GestureHandlerRootView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#000000",
+  },
+  content: {
+    flex: 1,
+    padding: 20,
+    justifyContent: "space-between",
+  },
+  sectionTitle: {
+    color: "#FFFFFF",
+    fontSize: 18,
+    fontWeight: "700",
+    marginBottom: 20,
+    textAlign: "center",
+  },
+  draggableSection: {
+    alignItems: "center",
+    paddingVertical: 40,
+  },
+  draggableItem: {
+    padding: 20,
+    backgroundColor: "#1C1C1E",
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "#3A3A3C",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  itemText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "600",
+    textAlign: "center",
+  },
+  dropZonesSection: {
+    flex: 1,
+    paddingVertical: 40,
+  },
+  droppable: {
+    marginBottom: 20,
+    overflow: "hidden",
+    borderRadius: 16,
+  },
+  dropZone: {
+    height: 140,
+    borderWidth: 2,
+    borderStyle: "dashed",
+    borderRadius: 16,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+  },
+  dropZoneBlue: {
+    borderColor: "#58a6ff",
+    backgroundColor: "rgba(88, 166, 255, 0.08)",
+  },
+  dropZoneGreen: {
+    borderColor: "#3fb950",
+    backgroundColor: "rgba(63, 185, 80, 0.08)",
+  },
+  dropZoneActive: {
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
+    borderStyle: "solid",
+    transform: [{ scale: 1.02 }],
+  },
+  dropZoneText: {
+    color: "#FFFFFF",
+    fontSize: 18,
+    fontWeight: "600",
+    textAlign: "center",
+    marginBottom: 8,
+  },
+  dropZoneSubtext: {
+    color: "#8E8E93",
+    fontSize: 14,
+    textAlign: "center",
+  },
+});
 ```
 
 ### Sortable List
 
 ```tsx
-import React, { useState } from "react";
-import { View, Text } from "react-native";
+import React, { useCallback, useState } from "react";
+import { StyleSheet, Text, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { Sortable, SortableItem } from "react-native-reanimated-dnd";
+import {
+  Sortable,
+  SortableItem,
+  SortableRenderItemProps,
+} from "react-native-reanimated-dnd";
 
 interface Task {
   id: string;
   title: string;
+  completed: boolean;
 }
 
 export default function SortableExample() {
   const [tasks, setTasks] = useState<Task[]>([
-    { id: "1", title: "Learn React Native" },
-    { id: "2", title: "Build an app" },
-    { id: "3", title: "Deploy to store" },
+    { id: "1", title: "Learn React Native", completed: false },
+    { id: "2", title: "Build an app", completed: false },
+    { id: "3", title: "Deploy to store", completed: true },
+    { id: "4", title: "Celebrate success", completed: false },
   ]);
 
-  const renderTask = ({ item, id, positions, ...props }) => (
-    <SortableItem
-      key={id}
-      id={id}
-      positions={positions}
-      {...props}
-      onMove={(itemId, from, to) => {
-        const newTasks = [...tasks];
-        const [movedTask] = newTasks.splice(from, 1);
-        newTasks.splice(to, 0, movedTask);
-        setTasks(newTasks);
-      }}
-    >
-      <View style={styles.taskItem}>
-        <Text>{item.title}</Text>
+  const renderTask = useCallback(
+    (props: SortableRenderItemProps<Task>) => {
+      const {
+        item,
+        id,
+        positions,
+        lowerBound,
+        autoScrollDirection,
+        itemsCount,
+        itemHeight,
+      } = props;
+      return (
+        <SortableItem
+          key={id}
+          data={item}
+          id={id}
+          positions={positions}
+          lowerBound={lowerBound}
+          autoScrollDirection={autoScrollDirection}
+          itemsCount={itemsCount}
+          itemHeight={itemHeight}
+          onMove={(itemId, from, to) => {
+            const newTasks = [...tasks];
+            const [movedTask] = newTasks.splice(from, 1);
+            newTasks.splice(to, 0, movedTask);
+            setTasks(newTasks);
+          }}
+          style={styles.taskItem}
+        >
+          <View style={styles.taskContent}>
+            <View style={styles.taskInfo}>
+              <Text style={styles.taskTitle}>{item.title}</Text>
+              <Text style={styles.taskStatus}>
+                {item.completed ? "✅ Completed" : "⏳ Pending"}
+              </Text>
+            </View>
 
-        {/* Drag Handle */}
-        <SortableItem.Handle style={styles.dragHandle}>
-          <Text>⋮⋮</Text>
-        </SortableItem.Handle>
-      </View>
-    </SortableItem>
+            {/* Drag Handle */}
+            <SortableItem.Handle style={styles.dragHandle}>
+              <View style={styles.dragIconContainer}>
+                <View style={styles.dragColumn}>
+                  <View style={styles.dragDot} />
+                  <View style={styles.dragDot} />
+                  <View style={styles.dragDot} />
+                </View>
+                <View style={styles.dragColumn}>
+                  <View style={styles.dragDot} />
+                  <View style={styles.dragDot} />
+                  <View style={styles.dragDot} />
+                </View>
+              </View>
+            </SortableItem.Handle>
+          </View>
+        </SortableItem>
+      );
+    },
+    [tasks]
   );
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <GestureHandlerRootView style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>📋 My Tasks</Text>
+        <Text style={styles.headerSubtitle}>Drag to reorder</Text>
+      </View>
+
       <Sortable
         data={tasks}
         renderItem={renderTask}
-        itemHeight={60}
-        style={{ flex: 1, padding: 16 }}
+        itemHeight={80}
+        style={styles.list}
       />
     </GestureHandlerRootView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#000000",
+  },
+  header: {
+    padding: 20,
+    paddingBottom: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#2C2C2E",
+  },
+  headerTitle: {
+    color: "#FFFFFF",
+    fontSize: 24,
+    fontWeight: "700",
+    marginBottom: 4,
+  },
+  headerSubtitle: {
+    color: "#8E8E93",
+    fontSize: 14,
+  },
+  list: {
+    flex: 1,
+    backgroundColor: "#000000",
+    marginTop: 20,
+    paddingHorizontal: 20,
+    borderRadius: 20,
+    overflow: "hidden",
+  },
+  taskItem: {
+    height: 80,
+
+    backgroundColor: "transparent",
+  },
+  taskContent: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    backgroundColor: "#1C1C1E",
+
+    borderWidth: 1,
+    borderColor: "#3A3A3C",
+  },
+  taskInfo: {
+    flex: 1,
+    paddingRight: 16,
+  },
+  taskTitle: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "600",
+    marginBottom: 4,
+  },
+  taskStatus: {
+    color: "#8E8E93",
+    fontSize: 14,
+  },
+  dragHandle: {
+    padding: 12,
+    borderRadius: 8,
+    backgroundColor: "rgba(255, 255, 255, 0.05)",
+  },
+  dragIconContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 3,
+  },
+  dragColumn: {
+    flexDirection: "column",
+    gap: 2,
+  },
+  dragDot: {
+    width: 3,
+    height: 3,
+    borderRadius: 1.5,
+    backgroundColor: "#6D6D70",
+  },
+});
 ```
 
 ## 📚 API Reference

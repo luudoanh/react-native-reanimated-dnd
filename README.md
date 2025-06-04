@@ -976,12 +976,6 @@ MIT © [Vishesh Raheja](https://github.com/entropyconquers)
 ## ☕ Support the Project
 
 <div align="center">
-  <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Buy Me a Coffee</title>
-</head>
 <body>
 If this library has helped you build amazing apps, consider supporting its development!
 </br></br>

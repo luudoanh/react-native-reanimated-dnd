@@ -879,6 +879,30 @@ MIT © [Vishesh Raheja](https://github.com/entropyconquers)
 - Inspired by the React ecosystem's drag-and-drop libraries
 - Special thanks to the React Native community for feedback and contributions
 
+## ☕ Support the Project
+
+<div align="center">
+  <html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buy Me a Coffee</title>
+</head>
+<body>
+If this library has helped you build amazing apps, consider supporting its development!
+</br></br>
+    <a href="https://www.buymeacoffee.com/entropyconquers" target="_blank">
+        <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me a Coffee" style="height: 60px; width: 217px;">
+    </a>
+    </br>
+</br>
+  Your support helps maintain and improve this library for the entire React Native community! 🚀
+</body>
+</html>
+
+</div>
+<br/>
+
 ---
 
 <div align="center">

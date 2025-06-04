@@ -864,9 +864,103 @@ npx expo run:android
 
 The example app includes all 15 interactive examples showcasing every feature of the library.
 
+## 🗺️ Project Roadmap
+
+We're constantly working to improve React Native Reanimated DnD. Here's what's coming next:
+
+### 🎯 Next Release (v2.0.0)
+
+**Focus: Enhanced Functionality & Bug Fixes**
+
+- 🐛 **Bug Fixes & Issues Resolution**
+
+  - Address existing reported issues
+  - Performance optimizations
+  - Memory leak fixes
+  - Gesture handling improvements
+
+- 📐 **Sortable Grids**
+
+  - 2D grid drag-and-drop support
+  - Flexible grid layouts (2x2, 3x3, custom)
+  - Smart auto-positioning and gap management
+  - Responsive grid behavior
+
+- ↔️ **Horizontal Sortable Lists**
+
+  - Full horizontal scrolling support
+  - Auto-scroll for out-of-view items
+  - RTL (Right-to-Left) language support
+  - Customizable scroll behavior
+
+- 🪆 **Nested Sortable Lists**
+
+  - Multi-level hierarchy support
+  - Collapse/expand functionality
+  - Parent-child relationship management
+  - Tree-like data structure handling
+
+- 📋 **Kanban Board Support**
+  - Cross-list dragging capabilities
+  - Multiple column support
+  - Inter-list item transfer
+  - Board-level state management
+  - Real-time collaboration support
+
+### 🔮 Future Releases
+
+**v2.1.0 - Advanced Features**
+
+- 🎨 Custom drag previews and ghost images
+- 🔄 Undo/redo functionality
+- 📱 Accessibility improvements (VoiceOver, TalkBack)
+- 🎯 Magnetic snap zones
+
+**v2.2.0 - Performance & Developer Experience**
+
+- ⚡ Web support (React Native Web)
+- 🛠️ CLI tools for boilerplate generation
+- 📊 Performance monitoring and debugging tools
+- 🧪 Automated testing suite
+
+**v3.0.0 - Next Generation**
+
+- 🌐 Multi-window/multi-screen support
+- 🤖 AI-powered drag predictions
+- 🎮 Gaming-specific optimizations
+- 📱 Native platform integrations
+
+### 💡 Community Requests
+
+Vote on features you'd like to see:
+
+- 🖼️ Image/media-specific drag behaviors
+- 📐 Shape-based collision detection
+- 🎵 Audio feedback during interactions
+- 🌈 Advanced animation presets
+
+**Have an idea?** [Open a feature request](https://github.com/entropyconquers/react-native-reanimated-dnd/issues/new?assignees=&labels=enhancement&template=feature_request.md) and let us know!
+
 ## 🤝 Contributing
 
-Contributions are always welcome! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+Contributions are always welcome! We believe in building this library together with the community.
+
+**Ways to contribute:**
+
+- 🐛 Report bugs and issues
+- ✨ Suggest new features
+- 🔧 Submit pull requests
+- 📚 Improve documentation
+- 🧪 Write tests
+- 💬 Help others in discussions
+
+Please see our [**Contributing Guide**](CONTRIBUTING.md) for detailed information on:
+
+- Setting up the development environment
+- Code style guidelines
+- Pull request process
+- Testing requirements
+- Community guidelines
 
 ## 📄 License
 

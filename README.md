@@ -36,6 +36,9 @@ After countless attempts with drag-and-drop solutions that don't work or are sim
 ## ✨ Features
 
 - 🚀 **High Performance** - Built with Reanimated 3 for buttery-smooth 60fps animations
+- 🏗️ **Full RN Fabric Support** - Works seamlessly with both New Architecture and Old Architecture
+- 📦 **Expo Compatible** - Zero configuration needed, works out of the box with Expo
+- 🪶 **Tiny Bundle Size** - Only 70kb unpacked size, won't bloat your app
 - 🎯 **Flexible API** - From simple drag-and-drop to complex sortable lists
 - 📱 **React Native First** - Designed specifically for mobile, not ported from web
 - 🔧 **TypeScript Ready** - Full type safety with comprehensive definitions

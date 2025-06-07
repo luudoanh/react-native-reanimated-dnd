@@ -16,11 +16,14 @@ _Powerful, performant, and built for the modern React Native developer_
 
 <br />
 
+<a href="https://www.npmjs.com/package/react-native-reanimated-dnd" target="_blank">
+  <img src="https://img.shields.io/badge/📦%20View%20on%20NPM-cb3837?style=for-the-badge&logo=npm&logoColor=white&labelColor=1e293b&fontSize=24" alt="NPM Package" height="36"/>
+</a>
 <a href="https://react-native-reanimated-dnd.netlify.app/" target="_blank">
-  <img src="https://img.shields.io/badge/📖%20Read%20the%20Docs-4f46e5?style=for-the-badge&logo=gitbook&logoColor=white&labelColor=1e293b&color=6366f1" alt="Documentation" />
+  <img src="https://img.shields.io/badge/📖%20Read%20the%20Docs-4f46e5?style=for-the-badge&logo=gitbook&logoColor=white&labelColor=1e293b&color=6366f1&fontSize=24" alt="Documentation"  height="36"/>
 </a>
 <a href="#-interactive-examples" target="_blank">
-  <img src="https://img.shields.io/badge/📱%20Try%20Live%20Demo-ff3b30?style=for-the-badge&logo=expo&logoColor=white&labelColor=1e293b" alt="Live Demo" />
+  <img src="https://img.shields.io/badge/📱%20Try%20Live%20Demo-fcba03?style=for-the-badge&logo=expo&logoColor=white&labelColor=1e293b&fontSize=24" alt="Live Demo" height="36"/>
 </a>
 
 </div>

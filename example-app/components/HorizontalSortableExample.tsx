@@ -10,9 +10,9 @@ import {
   Platform,
   Modal,
 } from "react-native";
-import { HorizontalSortable } from "../components/HorizontalSortable";
-import { HorizontalSortableItem } from "../components/HorizontalSortableItem";
-import { HorizontalSortableRenderItemProps } from "../types/sortable";
+import { Sortable } from "../components/Sortable";
+import { SortableItem } from "../components/SortableItem";
+import { SortableRenderItemProps, SortableDirection } from "../types/sortable";
 import { Footer } from "./Footer";
 
 interface TagItem {
@@ -159,13 +159,13 @@ export function HorizontalSortableExample({
 
   // Render each horizontal sortable item
   const renderItem = useCallback(
-    (props: HorizontalSortableRenderItemProps<TagItem>) => {
+    (props: SortableRenderItemProps<TagItem>) => {
       const {
         item,
         id,
         positions,
         leftBound,
-        autoScrollDirection,
+        autoScrollHorizontalDirection,
         itemsCount,
         itemWidth,
         gap,
@@ -175,13 +175,14 @@ export function HorizontalSortableExample({
       const isPopularTag = item.count > 1000;
 
       return (
-        <HorizontalSortableItem
+        <SortableItem
           key={id}
           id={id}
           data={item}
           positions={positions}
+          direction={SortableDirection.Horizontal}
           leftBound={leftBound}
-          autoScrollDirection={autoScrollDirection}
+          autoScrollHorizontalDirection={autoScrollHorizontalDirection}
           itemsCount={itemsCount}
           itemWidth={itemWidth}
           gap={gap}
@@ -197,47 +198,35 @@ export function HorizontalSortableExample({
           onDrop={(currentId, position) => {
             console.log(`Tag ${currentId} dropped at ${position}`);
           }}
-          onDragging={(currentId, overItemId, xPosition) => {
-            console.log(
-              `Tag ${currentId} dragging over ${overItemId} at ${xPosition}`
-            );
+          onDraggingHorizontal={(currentId, overItemId, xPosition) => {
+            if (overItemId) {
+              console.log(
+                `Tag ${currentId} is over ${overItemId} at X: ${xPosition}`
+              );
+            }
           }}
         >
           <View
             style={[
-              styles.tagContainer,
+              styles.tagItem,
               { backgroundColor: item.color },
               isPopularTag && styles.popularTag,
             ]}
           >
-            <View style={styles.tagContent}>
-              <Text style={styles.tagLabel} numberOfLines={1}>
-                {item.label}
-              </Text>
-              <Text style={styles.tagCategory} numberOfLines={1}>
-                {item.category}
-              </Text>
-              <Text style={styles.tagCount}>{item.count.toLocaleString()}</Text>
-            </View>
-
             {isDragHandleMode && (
-              <HorizontalSortableItem.Handle style={styles.dragHandle}>
-                <View style={styles.dragIconContainer}>
-                  <View style={styles.dragColumn}>
-                    <View style={styles.dragDot} />
-                    <View style={styles.dragDot} />
-                    <View style={styles.dragDot} />
-                  </View>
-                  <View style={styles.dragColumn}>
-                    <View style={styles.dragDot} />
-                    <View style={styles.dragDot} />
-                    <View style={styles.dragDot} />
-                  </View>
+              <SortableItem.Handle style={styles.dragHandle}>
+                <View style={styles.handleIcon}>
+                  <View style={styles.handleDot} />
+                  <View style={styles.handleDot} />
+                  <View style={styles.handleDot} />
                 </View>
-              </HorizontalSortableItem.Handle>
+              </SortableItem.Handle>
             )}
+            <Text style={styles.tagLabel}>{item.label}</Text>
+            <Text style={styles.tagCategory}>{item.category}</Text>
+            {isPopularTag && <Text style={styles.tagCount}>{item.count}+</Text>}
           </View>
-        </HorizontalSortableItem>
+        </SortableItem>
       );
     },
     [isDragHandleMode]
@@ -306,9 +295,10 @@ export function HorizontalSortableExample({
           </View>
 
           <View style={styles.listContainer}>
-            <HorizontalSortable
+            <Sortable
               data={MOCK_TAGS}
               renderItem={renderItem}
+              direction={SortableDirection.Horizontal}
               itemWidth={ITEM_WIDTH}
               gap={ITEM_GAP}
               paddingHorizontal={PADDING_HORIZONTAL}
@@ -503,7 +493,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  tagContainer: {
+  tagItem: {
     width: ITEM_WIDTH,
     height: 100,
     borderRadius: 12,
@@ -519,10 +509,6 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "#FFD700",
     shadowOpacity: 0.3,
-  },
-  tagContent: {
-    flex: 1,
-    justifyContent: "space-between",
   },
   tagLabel: {
     fontSize: 14,
@@ -559,19 +545,13 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     backgroundColor: "rgba(255, 255, 255, 0.2)",
   },
-  dragIconContainer: {
+  handleIcon: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     gap: 2,
   },
-  dragColumn: {
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 1.5,
-  },
-  dragDot: {
+  handleDot: {
     width: 2,
     height: 2,
     borderRadius: 1,

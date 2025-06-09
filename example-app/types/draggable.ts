@@ -1,4 +1,4 @@
-import { ViewStyle, View } from "react-native";
+import { ViewStyle, View, StyleProp } from "react-native";
 import Animated, {
   AnimatedStyle,
   useAnimatedRef,
@@ -308,4 +308,34 @@ export interface UseDraggableReturn {
    * can initiate dragging. When false, the entire component is draggable.
    */
   hasHandle: boolean;
+}
+
+export interface DraggableContextValue {
+  gesture: any;
+  state: DraggableState;
+}
+
+/**
+ * Props for the Draggable component.
+ *
+ * @template TData - The type of data associated with the draggable item
+ */
+export interface DraggableProps<TData = unknown>
+  extends UseDraggableOptions<TData> {
+  /** Style to apply to the draggable container */
+  style?: StyleProp<ViewStyle>;
+  /** The content to render inside the draggable */
+  children: React.ReactNode;
+  /** Callback fired when the draggable state changes */
+  onStateChange?: (state: DraggableState) => void;
+}
+
+/**
+ * Props for the Handle component.
+ */
+export interface DraggableHandleProps {
+  /** The content to render inside the handle */
+  children: React.ReactNode;
+  /** Optional style to apply to the handle */
+  style?: StyleProp<ViewStyle>;
 }

@@ -9,10 +9,14 @@ import {
   ActivityIndicator,
   Platform,
   Modal,
+  Image,
+  ScrollView,
 } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Sortable } from "../components/Sortable";
 import { SortableItem } from "../components/SortableItem";
 import { SortableRenderItemProps, SortableDirection } from "../types/sortable";
+import { ExampleHeader } from "./ExampleHeader";
 import { Footer } from "./Footer";
 
 interface TagItem {
@@ -21,6 +25,7 @@ interface TagItem {
   color: string;
   category: string;
   count: number;
+  image?: string;
 }
 
 const MOCK_TAGS: TagItem[] = [
@@ -30,6 +35,8 @@ const MOCK_TAGS: TagItem[] = [
     color: "#61DAFB",
     category: "Library",
     count: 1250,
+    image:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/1150px-React-icon.svg.png",
   },
   {
     id: "2",
@@ -37,6 +44,8 @@ const MOCK_TAGS: TagItem[] = [
     color: "#3178C6",
     category: "Language",
     count: 980,
+    image:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Typescript_logo_2020.svg/1200px-Typescript_logo_2020.svg.png",
   },
   {
     id: "3",
@@ -44,6 +53,8 @@ const MOCK_TAGS: TagItem[] = [
     color: "#F7DF1E",
     category: "Language",
     count: 2100,
+    image:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/JavaScript-logo.png/640px-JavaScript-logo.png",
   },
   {
     id: "4",
@@ -51,6 +62,8 @@ const MOCK_TAGS: TagItem[] = [
     color: "#0FA5E9",
     category: "Framework",
     count: 750,
+    image:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/1150px-React-icon.svg.png",
   },
   {
     id: "5",
@@ -58,6 +71,8 @@ const MOCK_TAGS: TagItem[] = [
     color: "#68A063",
     category: "Runtime",
     count: 1400,
+    image:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Node.js_logo.svg/1200px-Node.js_logo.svg.png",
   },
   {
     id: "6",
@@ -65,6 +80,8 @@ const MOCK_TAGS: TagItem[] = [
     color: "#4FC08D",
     category: "Framework",
     count: 650,
+    image:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Vue.js_Logo_2.svg/1200px-Vue.js_Logo_2.svg.png",
   },
   {
     id: "7",
@@ -72,6 +89,8 @@ const MOCK_TAGS: TagItem[] = [
     color: "#DD0031",
     category: "Framework",
     count: 580,
+    image:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Angular_full_color_logo.svg/1200px-Angular_full_color_logo.svg.png",
   },
   {
     id: "8",
@@ -79,6 +98,8 @@ const MOCK_TAGS: TagItem[] = [
     color: "#3776AB",
     category: "Language",
     count: 1800,
+    image:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/1200px-Python-logo-notext.svg.png",
   },
   {
     id: "9",
@@ -86,6 +107,8 @@ const MOCK_TAGS: TagItem[] = [
     color: "#FA7343",
     category: "Language",
     count: 420,
+    image:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Swift_logo.svg/1200px-Swift_logo.svg.png",
   },
   {
     id: "10",
@@ -93,6 +116,8 @@ const MOCK_TAGS: TagItem[] = [
     color: "#7F52FF",
     category: "Language",
     count: 380,
+    image:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Kotlin_Icon.svg/1200px-Kotlin_Icon.svg.png",
   },
   {
     id: "11",
@@ -100,6 +125,8 @@ const MOCK_TAGS: TagItem[] = [
     color: "#02569B",
     category: "Framework",
     count: 320,
+    image:
+      "https://storage.googleapis.com/cms-storage-bucket/c823e53b3a1a7b0d36a9.png",
   },
   {
     id: "12",
@@ -107,13 +134,15 @@ const MOCK_TAGS: TagItem[] = [
     color: "#00ADD8",
     category: "Language",
     count: 290,
+    image: "https://go.dev/blog/go-brand/Go-Logo/PNG/Go-Logo_Blue.png",
   },
   {
     id: "13",
     label: "Rust",
-    color: "#000000",
+    color: "#b7410e",
     category: "Language",
     count: 150,
+    image: "https://prev.rust-lang.org/logos/rust-logo-512x512.png",
   },
   {
     id: "14",
@@ -121,6 +150,8 @@ const MOCK_TAGS: TagItem[] = [
     color: "#2496ED",
     category: "Tool",
     count: 890,
+    image:
+      "https://cdn4.iconfinder.com/data/icons/logos-and-brands/512/97_Docker_logo_logos-512.png",
   },
   {
     id: "15",
@@ -128,6 +159,8 @@ const MOCK_TAGS: TagItem[] = [
     color: "#E10098",
     category: "Query Language",
     count: 340,
+    image:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/GraphQL_Logo.svg/1200px-GraphQL_Logo.svg.png",
   },
 ];
 
@@ -140,12 +173,12 @@ const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
 interface HorizontalSortableExampleProps {
-  onBack?: () => void;
+  onBack: () => void;
 }
 
 export function HorizontalSortableExample({
   onBack,
-}: HorizontalSortableExampleProps = {}) {
+}: HorizontalSortableExampleProps) {
   const [isDragHandleMode, setIsDragHandleMode] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [showWebModal, setShowWebModal] = useState(Platform.OS === "web");
@@ -171,8 +204,6 @@ export function HorizontalSortableExample({
         gap,
         paddingHorizontal,
       } = props;
-
-      const isPopularTag = item.count > 1000;
 
       return (
         <SortableItem
@@ -209,22 +240,57 @@ export function HorizontalSortableExample({
           <View
             style={[
               styles.tagItem,
-              { backgroundColor: item.color },
-              isPopularTag && styles.popularTag,
+              {
+                borderColor: item.color,
+                borderWidth: 2,
+                backgroundColor: "rgb(11, 11, 11)28)",
+              },
             ]}
           >
-            {isDragHandleMode && (
-              <SortableItem.Handle style={styles.dragHandle}>
-                <View style={styles.handleIcon}>
-                  <View style={styles.handleDot} />
-                  <View style={styles.handleDot} />
-                  <View style={styles.handleDot} />
+            <View
+              style={[
+                styles.logoContainer,
+                { borderRadius: 10, height: 32, width: 32, borderWidth: 2 },
+
+                isDragHandleMode && {
+                  borderColor: item.color,
+                  shadowColor: item.color,
+                  shadowOffset: { width: 0, height: 0 },
+                  shadowOpacity: 0.3,
+                  shadowRadius: 10,
+                },
+              ]}
+            >
+              {isDragHandleMode ? (
+                <SortableItem.Handle>
+                  {item.image && (
+                    <Image
+                      source={{ uri: item.image }}
+                      style={styles.logoImage}
+                      resizeMode="contain"
+                    />
+                  )}
+                </SortableItem.Handle>
+              ) : (
+                <View style={styles.logoContainer}>
+                  {item.image && (
+                    <Image
+                      source={{ uri: item.image }}
+                      style={styles.logoImage}
+                      resizeMode="contain"
+                    />
+                  )}
                 </View>
-              </SortableItem.Handle>
-            )}
-            <Text style={styles.tagLabel}>{item.label}</Text>
-            <Text style={styles.tagCategory}>{item.category}</Text>
-            {isPopularTag && <Text style={styles.tagCount}>{item.count}+</Text>}
+              )}
+            </View>
+
+            <View style={{ marginTop: 4 }}>
+              <Text style={[styles.tagLabel, { color: item.color }]}>
+                {item.label}
+              </Text>
+              <Text style={[styles.tagCategory]}>{item.category}</Text>
+            </View>
+            <Text style={[styles.tagCount]}>{item.count}+ downloads</Text>
           </View>
         </SortableItem>
       );
@@ -235,139 +301,151 @@ export function HorizontalSortableExample({
   const isWeb = Platform.OS === "web";
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.headerContainer}>
-        <View style={styles.headerContent}>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={onBack}
-            activeOpacity={0.7}
-          >
-            <Text style={styles.backIcon}>‹</Text>
-            <Text style={styles.backText}>Back</Text>
-          </TouchableOpacity>
+    <GestureHandlerRootView style={styles.container}>
+      <SafeAreaView style={styles.container}>
+        <ExampleHeader title="Horizontal Sortable" onBack={onBack} />
 
-          <View style={styles.titleContainer}>
-            <Text style={styles.header}>Tech Tags</Text>
-            <Text style={styles.tipText}>
-              {isDragHandleMode
-                ? "Drag the handle to reorder horizontally"
-                : "Hold and drag tags to reorder horizontally"}
+        <ScrollView style={styles.scrollView} scrollEventThrottle={16}>
+          <View style={styles.section}>
+            <Text style={styles.sectionDescription}>
+              This example demonstrates horizontal drag-and-drop sorting with
+              technology tags. You can switch between full-item dragging and
+              handle-only dragging modes. Try reordering the tags by dragging
+              them horizontally.
             </Text>
-          </View>
 
-          <View style={styles.toggleButtonContainer}>
-            {!isLoading && (
-              <TouchableOpacity
-                style={styles.toggleButton}
-                onPress={() => setIsDragHandleMode(!isDragHandleMode)}
-              >
-                <Text style={styles.toggleText}>
-                  {isDragHandleMode ? "Handle" : "Full"}
-                </Text>
-                <View
-                  style={[
-                    styles.toggleIndicator,
-                    {
-                      backgroundColor: isDragHandleMode ? "#FF3B30" : "#8E8E93",
-                    },
-                  ]}
-                />
-              </TouchableOpacity>
+            <View style={styles.controlsContainer}>
+              <View style={styles.toggleButtonContainer}>
+                {!isLoading && (
+                  <TouchableOpacity
+                    style={styles.toggleButton}
+                    onPress={() => setIsDragHandleMode(!isDragHandleMode)}
+                  >
+                    <Text style={styles.toggleText}>
+                      {isDragHandleMode ? "Handle Mode" : "Full Item Mode"}
+                    </Text>
+                    <View
+                      style={[
+                        styles.toggleIndicator,
+                        {
+                          backgroundColor: isDragHandleMode
+                            ? "#FF3B30"
+                            : "#8E8E93",
+                        },
+                      ]}
+                    />
+                  </TouchableOpacity>
+                )}
+              </View>
+            </View>
+
+            {isLoading ? (
+              <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color="#FF3B30" />
+              </View>
+            ) : (
+              <View style={styles.contentContainer}>
+                <View style={styles.statsContainer}>
+                  <Text style={styles.statsText}>
+                    {MOCK_TAGS.length} Technology Tags
+                  </Text>
+                  <Text style={styles.statsSubtext}>
+                    {isDragHandleMode
+                      ? "Drag the logo handle to reorder horizontally"
+                      : "Hold and drag tags to reorder horizontally"}
+                  </Text>
+                </View>
+
+                <View style={styles.listContainer}>
+                  <Sortable
+                    data={MOCK_TAGS}
+                    renderItem={renderItem}
+                    direction={SortableDirection.Horizontal}
+                    itemWidth={ITEM_WIDTH}
+                    gap={ITEM_GAP}
+                    paddingHorizontal={PADDING_HORIZONTAL}
+                    style={styles.list}
+                  />
+                </View>
+
+                <View style={styles.infoContainer}>
+                  <View style={styles.infoItem}>
+                    <View
+                      style={[
+                        styles.infoIndicator,
+                        { backgroundColor: "#FF3B30" },
+                      ]}
+                    />
+                    <Text style={styles.infoText}>
+                      Handle Mode: Only the logo area is draggable for precise
+                      control
+                    </Text>
+                  </View>
+                  <View style={styles.infoItem}>
+                    <View
+                      style={[
+                        styles.infoIndicator,
+                        { backgroundColor: "#8E8E93" },
+                      ]}
+                    />
+                    <Text style={styles.infoText}>
+                      Full Item Mode: The entire tag card is draggable
+                    </Text>
+                  </View>
+                </View>
+              </View>
             )}
           </View>
-        </View>
-      </View>
+        </ScrollView>
 
-      {isLoading ? (
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#FF3B30" />
-        </View>
-      ) : (
-        <View style={styles.contentContainer}>
-          <View style={styles.statsContainer}>
-            <Text style={styles.statsText}>
-              {MOCK_TAGS.length} Technology Tags
-            </Text>
-            <Text style={styles.statsSubtext}>
-              Drag to reorder by preference
-            </Text>
-          </View>
+        <Footer />
 
-          <View style={styles.listContainer}>
-            <Sortable
-              data={MOCK_TAGS}
-              renderItem={renderItem}
-              direction={SortableDirection.Horizontal}
-              itemWidth={ITEM_WIDTH}
-              gap={ITEM_GAP}
-              paddingHorizontal={PADDING_HORIZONTAL}
-              style={styles.list}
-            />
-          </View>
-
-          <View style={styles.infoContainer}>
-            <View style={styles.legendContainer}>
-              <View style={styles.legendItem}>
-                <View style={[styles.legendDot, styles.popularDot]} />
-                <Text style={styles.legendText}>Popular (&gt;1K)</Text>
-              </View>
-              <View style={styles.legendItem}>
-                <View style={[styles.legendDot, styles.normalDot]} />
-                <Text style={styles.legendText}>Normal</Text>
-              </View>
-            </View>
-          </View>
-        </View>
-      )}
-
-      <Footer />
-
-      {/* Web Platform Modal */}
-      <Modal
-        visible={showWebModal}
-        transparent={true}
-        animationType="fade"
-        onRequestClose={() => setShowWebModal(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Web Platform Notice</Text>
-            <Text style={styles.modalMessage}>
-              This horizontal sortable example doesn't work on web due to
-              platform limitations with React Native Reanimated and Gesture
-              Handler.
-            </Text>
-            <Text style={styles.modalSubMessage}>
-              Please try this example on iOS or Android.
-            </Text>
-            <View style={styles.modalButtons}>
-              <TouchableOpacity
-                style={styles.modalButton}
-                onPress={() => setShowWebModal(false)}
-              >
-                <Text style={styles.modalButtonText}>Continue Anyway</Text>
-              </TouchableOpacity>
-              {onBack && (
+        {/* Web Platform Modal */}
+        <Modal
+          visible={showWebModal}
+          transparent={true}
+          animationType="fade"
+          onRequestClose={() => setShowWebModal(false)}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>Web Platform Notice</Text>
+              <Text style={styles.modalMessage}>
+                This horizontal sortable example doesn't work on web due to
+                platform limitations with React Native Reanimated and Gesture
+                Handler.
+              </Text>
+              <Text style={styles.modalSubMessage}>
+                Please try this example on iOS or Android.
+              </Text>
+              <View style={styles.modalButtons}>
                 <TouchableOpacity
-                  style={[styles.modalButton, styles.modalButtonPrimary]}
-                  onPress={onBack}
+                  style={styles.modalButton}
+                  onPress={() => setShowWebModal(false)}
                 >
-                  <Text
-                    style={[
-                      styles.modalButtonText,
-                      styles.modalButtonTextPrimary,
-                    ]}
-                  >
-                    Go Back
-                  </Text>
+                  <Text style={styles.modalButtonText}>Continue Anyway</Text>
                 </TouchableOpacity>
-              )}
+                {onBack && (
+                  <TouchableOpacity
+                    style={[styles.modalButton, styles.modalButtonPrimary]}
+                    onPress={onBack}
+                  >
+                    <Text
+                      style={[
+                        styles.modalButtonText,
+                        styles.modalButtonTextPrimary,
+                      ]}
+                    >
+                      Go Back
+                    </Text>
+                  </TouchableOpacity>
+                )}
+              </View>
             </View>
           </View>
-        </View>
-      </Modal>
-    </SafeAreaView>
+        </Modal>
+      </SafeAreaView>
+    </GestureHandlerRootView>
   );
 }
 
@@ -375,6 +453,24 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#000000",
+  },
+  scrollView: {
+    flex: 1,
+  },
+  section: {
+    padding: 24,
+    backgroundColor: "#000000",
+    marginBottom: 20,
+  },
+  sectionDescription: {
+    fontSize: 15,
+    color: "#8E8E93",
+    marginBottom: 24,
+    lineHeight: 22,
+  },
+  controlsContainer: {
+    alignItems: "center",
+    marginBottom: 24,
   },
   headerContainer: {
     backgroundColor: "#000000",
@@ -429,27 +525,26 @@ const styles = StyleSheet.create({
     lineHeight: 16,
   },
   toggleButtonContainer: {
-    width: 80,
-    alignItems: "flex-end",
+    alignItems: "center",
     justifyContent: "center",
   },
   toggleButton: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 10,
-    paddingVertical: 6,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
     borderWidth: 1,
     borderColor: "#3A3A3C",
     borderRadius: 8,
     backgroundColor: "#1C1C1E",
-    minWidth: 70,
+    minWidth: 140,
     justifyContent: "center",
   },
   toggleText: {
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: "600",
     color: "#FFFFFF",
-    marginRight: 6,
+    marginRight: 8,
   },
   toggleIndicator: {
     width: 12,
@@ -460,14 +555,16 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    minHeight: 200,
   },
   contentContainer: {
-    flex: 1,
+    flexDirection: "column",
     backgroundColor: "#000000",
   },
   statsContainer: {
     paddingHorizontal: 20,
     paddingVertical: 16,
+    paddingBottom: 28,
     alignItems: "center",
   },
   statsText: {
@@ -480,14 +577,19 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#8E8E93",
     fontWeight: "400",
+    textAlign: "center",
   },
   listContainer: {
-    height: 140,
+    height: 200,
     paddingVertical: 20,
-    backgroundColor: "blue",
+
+    borderRadius: 12,
+    backgroundColor: "#1C1C1E",
+    marginBottom: 24,
   },
   list: {
     flex: 1,
+    backgroundColor: "#1C1C1E",
   },
   itemContainer: {
     justifyContent: "center",
@@ -495,20 +597,10 @@ const styles = StyleSheet.create({
   },
   tagItem: {
     width: ITEM_WIDTH,
-    height: 100,
+    height: 160,
     borderRadius: 12,
     padding: 12,
     justifyContent: "space-between",
-    shadowColor: "#000000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 3,
-  },
-  popularTag: {
-    borderWidth: 2,
-    borderColor: "#FFD700",
-    shadowOpacity: 0.3,
   },
   tagLabel: {
     fontSize: 14,
@@ -520,13 +612,14 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   tagCategory: {
-    fontSize: 11,
+    fontSize: 10,
     fontWeight: "500",
     color: "#FFFFFF",
-    opacity: 0.8,
+    opacity: 0.6,
     textShadowColor: "rgba(0, 0, 0, 0.3)",
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 2,
+    marginTop: -2,
   },
   tagCount: {
     fontSize: 12,
@@ -535,7 +628,7 @@ const styles = StyleSheet.create({
     textShadowColor: "rgba(0, 0, 0, 0.3)",
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 2,
-    marginTop: 4,
+    marginTop: 6,
   },
   dragHandle: {
     position: "absolute",
@@ -559,14 +652,37 @@ const styles = StyleSheet.create({
     opacity: 0.8,
   },
   infoContainer: {
-    paddingHorizontal: 20,
-    paddingVertical: 16,
+    marginTop: 24,
+    padding: 16,
+    backgroundColor: "#1C1C1E",
+    borderRadius: 12,
+    marginBottom: 16,
+  },
+  infoItem: {
+    flexDirection: "row",
     alignItems: "center",
+    marginBottom: 12,
+  },
+  infoIndicator: {
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    marginRight: 12,
+  },
+  infoText: {
+    fontSize: 14,
+    color: "#FFFFFF",
+    flex: 1,
+    lineHeight: 20,
   },
   legendContainer: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "center",
     gap: 24,
+    padding: 16,
+    backgroundColor: "#1C1C1E",
+    borderRadius: 12,
   },
   legendItem: {
     flexDirection: "row",
@@ -646,5 +762,21 @@ const styles = StyleSheet.create({
   },
   modalButtonTextPrimary: {
     color: "#FFFFFF",
+  },
+  logoContainer: {
+    width: 24,
+    height: 24,
+    borderRadius: 1,
+    backgroundColor: "#181818",
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1,
+    borderColor: "#222",
+  },
+  logoImage: {
+    width: 24,
+    height: 24,
+    borderRadius: 8,
+    backgroundColor: "#222",
   },
 });

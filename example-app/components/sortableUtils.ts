@@ -175,3 +175,19 @@ export function setHorizontalAutoScroll(
     autoScrollDirection.value = HorizontalScrollDirection.None;
   }
 }
+
+/**
+ * Returns a hash code based on the data
+ * @param  {any[]} data The data to hash.
+ * @return {string}    A 32bit integer
+ */
+export const dataHash = (data: any[]): string => {
+  const str = data.reduce((acc, item) => acc + item.id, "");
+  let hash = 0;
+  for (let i = 0, len = str.length; i < len; i++) {
+    let chr = str.charCodeAt(i);
+    hash = (hash << 5) - hash + chr;
+    hash |= 0; // Convert to 32bit integer
+  }
+  return hash.toString();
+};

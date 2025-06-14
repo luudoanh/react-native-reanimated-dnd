@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { StyleSheet } from "react-native";
 import Animated from "react-native-reanimated";
 import {
@@ -14,13 +14,10 @@ import {
 import {
   useSortableList,
   UseSortableListOptions,
-  UseSortableListReturn,
 } from "../hooks/useSortableList";
 import { useHorizontalSortableList } from "../hooks/useHorizontalSortableList";
-import {
-  UseHorizontalSortableListOptions,
-  UseHorizontalSortableListReturn,
-} from "../types/sortable";
+import { UseHorizontalSortableListOptions } from "../types/sortable";
+import { dataHash } from "./sortableUtils";
 
 // Create an animated version of the ScrollView
 const AnimatedScrollView = Animated.createAnimatedComponent(ScrollView);
@@ -169,7 +166,7 @@ const AnimatedScrollView = Animated.createAnimatedComponent(ScrollView);
  * @see {@link SortableRenderItemProps} for render function props
  * @see {@link SortableDirection} for direction options
  */
-export function Sortable<TData extends { id: string }>({
+function SortableComponent<TData extends { id: string }>({
   data,
   renderItem,
   direction = SortableDirection.Vertical,
@@ -298,6 +295,20 @@ export function Sortable<TData extends { id: string }>({
     </GestureHandlerRootView>
   );
 }
+
+export const Sortable = memo(
+  ({ data, renderItem, ...props }: SortableProps<any>) => {
+    const dataHashKey = dataHash(data);
+    return (
+      <SortableComponent
+        data={data}
+        renderItem={renderItem}
+        {...props}
+        key={dataHashKey}
+      />
+    );
+  }
+);
 
 const styles = StyleSheet.create({
   flex: {

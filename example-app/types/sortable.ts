@@ -499,6 +499,14 @@ export interface SortableProps<TData> {
 
   /** Function to extract unique key from each item */
   itemKeyExtractor?: (item: TData, index: number) => string;
+
+  /**
+   * Whether to use FlatList for rendering instead of ScrollView.
+   * FlatList provides better performance for large lists with virtualization,
+   * while ScrollView renders all items at once.
+   * @default true
+   */
+  useFlatList?: boolean;
 }
 
 /**

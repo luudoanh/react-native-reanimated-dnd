@@ -1,8 +1,9 @@
-import React, { memo } from "react";
+import React, { memo, useCallback } from "react";
 import { StyleSheet } from "react-native";
 import Animated from "react-native-reanimated";
 import {
   GestureHandlerRootView,
+  FlatList,
   ScrollView,
 } from "react-native-gesture-handler";
 import { DropProvider } from "../context/DropContext";
@@ -19,7 +20,8 @@ import { useHorizontalSortableList } from "../hooks/useHorizontalSortableList";
 import { UseHorizontalSortableListOptions } from "../types/sortable";
 import { dataHash } from "./sortableUtils";
 
-// Create an animated version of the ScrollView
+// Create animated versions of both components
+const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 const AnimatedScrollView = Animated.createAnimatedComponent(ScrollView);
 
 /**
@@ -177,6 +179,7 @@ function SortableComponent<TData extends { id: string }>({
   style,
   contentContainerStyle,
   itemKeyExtractor = (item) => item.id,
+  useFlatList = true,
 }: SortableProps<TData>) {
   // Validate required props based on direction
   if (direction === SortableDirection.Vertical && !itemHeight) {
@@ -205,40 +208,75 @@ function SortableComponent<TData extends { id: string }>({
       getItemProps: getHorizontalItemProps,
     } = useHorizontalSortableList<TData>(horizontalOptions);
 
+    const memoizedHorizontalRenderItem = useCallback(
+      ({ item, index }: { item: unknown; index: number }) => {
+        const itemProps = getHorizontalItemProps(
+          item as unknown as TData,
+          index
+        );
+        const sortableItemProps: SortableRenderItemProps<TData> = {
+          item: item as TData,
+          index,
+          direction: SortableDirection.Horizontal,
+          autoScrollHorizontalDirection: itemProps.autoScrollDirection,
+          ...itemProps,
+        };
+        return renderItem(sortableItemProps) as React.ReactElement;
+      },
+      [getHorizontalItemProps, renderItem]
+    );
+
     return (
       <GestureHandlerRootView style={styles.flex}>
         <DropProvider ref={horizontalDropProviderRef}>
-          <AnimatedScrollView
-            ref={horizontalScrollViewRef}
-            onScroll={horizontalHandleScroll}
-            scrollEventThrottle={16}
-            horizontal={true}
-            style={[styles.scrollView, style]}
-            contentContainerStyle={[
-              { width: contentWidth },
-              contentContainerStyle,
-            ]}
-            onScrollEndDrag={horizontalHandleScrollEnd}
-            onMomentumScrollEnd={horizontalHandleScrollEnd}
-            simultaneousHandlers={horizontalDropProviderRef}
-            showsHorizontalScrollIndicator={false}
-          >
-            {data.map((item, index) => {
-              // Get the item props from our horizontal hook
-              const itemProps = getHorizontalItemProps(item, index);
-
-              // Create the complete props with the item and index
-              const sortableItemProps: SortableRenderItemProps<TData> = {
-                item,
-                index,
-                direction: SortableDirection.Horizontal,
-                autoScrollHorizontalDirection: itemProps.autoScrollDirection,
-                ...itemProps,
-              };
-
-              return renderItem(sortableItemProps);
-            })}
-          </AnimatedScrollView>
+          {useFlatList ? (
+            <AnimatedFlatList
+              ref={horizontalScrollViewRef}
+              data={data}
+              keyExtractor={itemKeyExtractor as any}
+              horizontal
+              renderItem={memoizedHorizontalRenderItem}
+              onScroll={horizontalHandleScroll}
+              scrollEventThrottle={16}
+              style={[styles.scrollView, style]}
+              contentContainerStyle={[
+                { width: contentWidth },
+                contentContainerStyle,
+              ]}
+              onScrollEndDrag={horizontalHandleScrollEnd}
+              onMomentumScrollEnd={horizontalHandleScrollEnd}
+              simultaneousHandlers={horizontalDropProviderRef}
+              showsHorizontalScrollIndicator={false}
+            />
+          ) : (
+            <AnimatedScrollView
+              ref={horizontalScrollViewRef}
+              onScroll={horizontalHandleScroll}
+              scrollEventThrottle={16}
+              horizontal={true}
+              style={[styles.scrollView, style]}
+              contentContainerStyle={[
+                { width: contentWidth },
+                contentContainerStyle,
+              ]}
+              onScrollEndDrag={horizontalHandleScrollEnd}
+              onMomentumScrollEnd={horizontalHandleScrollEnd}
+              simultaneousHandlers={horizontalDropProviderRef}
+              showsHorizontalScrollIndicator={false}
+            >
+              {data.map((item, index) => {
+                const itemProps = getHorizontalItemProps(item, index);
+                const sortableItemProps: SortableRenderItemProps<TData> = {
+                  item,
+                  index,
+                  direction: SortableDirection.Horizontal,
+                  autoScrollHorizontalDirection: itemProps.autoScrollDirection,
+                  ...itemProps,
+                };
+                return renderItem(sortableItemProps);
+              })}
+            </AnimatedScrollView>
+          )}
         </DropProvider>
       </GestureHandlerRootView>
     );
@@ -260,37 +298,67 @@ function SortableComponent<TData extends { id: string }>({
     getItemProps,
   } = useSortableList<TData>(verticalOptions);
 
+  const memoizedVerticalRenderItem = useCallback(
+    ({ item, index }: { item: unknown; index: number }) => {
+      const itemProps = getItemProps(item as unknown as TData, index);
+      const sortableItemProps: SortableRenderItemProps<TData> = {
+        item: item as TData,
+        index,
+        direction: SortableDirection.Vertical,
+        ...itemProps,
+      };
+      return renderItem(sortableItemProps) as React.ReactElement;
+    },
+    [getItemProps, renderItem]
+  );
+
   return (
     <GestureHandlerRootView style={styles.flex}>
       <DropProvider ref={dropProviderRef}>
-        <AnimatedScrollView
-          ref={scrollViewRef}
-          onScroll={handleScroll}
-          scrollEventThrottle={16}
-          style={[styles.scrollView, style]}
-          contentContainerStyle={[
-            { height: contentHeight },
-            contentContainerStyle,
-          ]}
-          onScrollEndDrag={handleScrollEnd}
-          onMomentumScrollEnd={handleScrollEnd}
-          simultaneousHandlers={dropProviderRef}
-        >
-          {data.map((item, index) => {
-            // Get the item props from our vertical hook
-            const itemProps = getItemProps(item, index);
-
-            // Create the complete props with the item and index
-            const sortableItemProps: SortableRenderItemProps<TData> = {
-              item,
-              index,
-              direction: SortableDirection.Vertical,
-              ...itemProps,
-            };
-
-            return renderItem(sortableItemProps);
-          })}
-        </AnimatedScrollView>
+        {useFlatList ? (
+          <AnimatedFlatList
+            ref={scrollViewRef}
+            data={data}
+            keyExtractor={itemKeyExtractor as any}
+            renderItem={memoizedVerticalRenderItem}
+            onScroll={handleScroll}
+            scrollEventThrottle={16}
+            style={[styles.scrollView, style]}
+            contentContainerStyle={[
+              { height: contentHeight },
+              contentContainerStyle,
+            ]}
+            onScrollEndDrag={handleScrollEnd}
+            onMomentumScrollEnd={handleScrollEnd}
+            simultaneousHandlers={dropProviderRef}
+            showsVerticalScrollIndicator={false}
+          />
+        ) : (
+          <AnimatedScrollView
+            ref={scrollViewRef}
+            onScroll={handleScroll}
+            scrollEventThrottle={16}
+            style={[styles.scrollView, style]}
+            contentContainerStyle={[
+              { height: contentHeight },
+              contentContainerStyle,
+            ]}
+            onScrollEndDrag={handleScrollEnd}
+            onMomentumScrollEnd={handleScrollEnd}
+            simultaneousHandlers={dropProviderRef}
+          >
+            {data.map((item, index) => {
+              const itemProps = getItemProps(item, index);
+              const sortableItemProps: SortableRenderItemProps<TData> = {
+                item,
+                index,
+                direction: SortableDirection.Vertical,
+                ...itemProps,
+              };
+              return renderItem(sortableItemProps);
+            })}
+          </AnimatedScrollView>
+        )}
       </DropProvider>
     </GestureHandlerRootView>
   );

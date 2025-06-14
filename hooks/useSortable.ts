@@ -29,8 +29,7 @@ export function clamp(value: number, lowerBound: number, upperBound: number) {
 export function objectMove(
   object: { [id: string]: number },
   from: number,
-  to: number,
-  clampUpper: number
+  to: number
 ) {
   "worklet";
   const newObject = Object.assign({}, object);
@@ -42,12 +41,13 @@ export function objectMove(
       continue;
     }
 
-    // Items in-between from and to should shift by 1 position
+    // Items in-between from and to should shift by 1 position;
+    // clamping isn't necessary as long as to and from are valid
     const currentPosition = object[id];
     if (movedUp && currentPosition >= to && currentPosition < from) {
-      newObject[id] = clamp(currentPosition + 1, 0, clampUpper);
+      newObject[id]++;
     } else if (currentPosition <= to && currentPosition > from) {
-      newObject[id] = clamp(currentPosition - 1, 0, clampUpper);
+      newObject[id]--;
     }
   }
 
@@ -73,15 +73,17 @@ export function setPosition(
   itemHeight: number
 ) {
   "worklet";
-  const clampUpper = itemsCount - 1;
-  const newPosition = clamp(Math.floor(positionY / itemHeight), 0, clampUpper);
+  const newPosition = clamp(
+    Math.floor(positionY / itemHeight),
+    0,
+    itemsCount - 1
+  );
 
   if (newPosition !== positions.value[id]) {
     positions.value = objectMove(
       positions.value,
       positions.value[id],
-      newPosition,
-      clampUpper
+      newPosition
     );
   }
 }

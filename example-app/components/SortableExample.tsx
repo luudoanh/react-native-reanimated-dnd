@@ -11,9 +11,11 @@ import {
   Platform,
   Modal,
 } from "react-native";
-import { Sortable } from "../components/Sortable";
-import { SortableItem } from "../components/SortableItem";
-import { SortableRenderItemProps } from "@/types";
+import {
+  Sortable,
+  SortableItem,
+  SortableRenderItemProps,
+} from "react-native-reanimated-dnd";
 import { Footer } from "./Footer";
 import { BottomSheet } from "./BottomSheet";
 

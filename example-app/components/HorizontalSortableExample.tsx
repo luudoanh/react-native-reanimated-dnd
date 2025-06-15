@@ -13,9 +13,12 @@ import {
   ScrollView,
 } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { Sortable } from "../components/Sortable";
-import { SortableItem } from "../components/SortableItem";
-import { SortableRenderItemProps, SortableDirection } from "../types/sortable";
+import {
+  Sortable,
+  SortableItem,
+  SortableRenderItemProps,
+  SortableDirection,
+} from "react-native-reanimated-dnd";
 import { ExampleHeader } from "./ExampleHeader";
 import { Footer } from "./Footer";
 

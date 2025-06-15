@@ -19,18 +19,27 @@ React Native Reanimated DnD is a comprehensive drag-and-drop solution that provi
 ## Key Features
 
 ### 🎯 **Easy to Use**
+
 Simple API that works out of the box with minimal configuration.
 
 ### ⚡ **High Performance**
-All animations run on the UI thread for consistent 60fps performance.
+
+All animations run on the UI thread for consistent 60fps performance with FlatList virtualization.
+
+### 📜 **Vertical & Horizontal Sortable Lists**
+
+Drag and drop to sort lists in any direction, with automatic scrolling for out-of-view items.
 
 ### 🎨 **Highly Customizable**
+
 Extensive customization options for animations, collision detection, and visual feedback.
 
 ### 📱 **Mobile Optimized**
+
 Designed specifically for mobile touch interactions with proper gesture handling.
 
 ### 🔧 **TypeScript Ready**
+
 Full TypeScript support with comprehensive type definitions.
 
 ## Quick Example
@@ -38,24 +47,30 @@ Full TypeScript support with comprehensive type definitions.
 Here's a simple drag-and-drop implementation:
 
 ```tsx
-import React from 'react';
-import { View, Text } from 'react-native';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { DropProvider, Draggable, Droppable } from 'react-native-reanimated-dnd';
+import React from "react";
+import { View, Text } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import {
+  DropProvider,
+  Draggable,
+  Droppable,
+} from "react-native-reanimated-dnd";
 
 export default function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <DropProvider>
         <View style={{ flex: 1, padding: 20 }}>
-          <Draggable data={{ id: '1', name: 'Task 1' }}>
-            <View style={{ padding: 20, backgroundColor: '#e3f2fd' }}>
+          <Draggable data={{ id: "1", name: "Task 1" }}>
+            <View style={{ padding: 20, backgroundColor: "#e3f2fd" }}>
               <Text>Drag me!</Text>
             </View>
           </Draggable>
 
-          <Droppable onDrop={(data) => console.log('Dropped:', data)}>
-            <View style={{ padding: 40, backgroundColor: '#f3e5f5', marginTop: 20 }}>
+          <Droppable onDrop={(data) => console.log("Dropped:", data)}>
+            <View
+              style={{ padding: 40, backgroundColor: "#f3e5f5", marginTop: 20 }}
+            >
               <Text>Drop here!</Text>
             </View>
           </Droppable>
@@ -69,15 +84,19 @@ export default function App() {
 ## Core Components
 
 ### Draggable
+
 Make any component draggable with data payload support:
+
 ```tsx
-<Draggable data={{ id: '1', name: 'Item' }}>
+<Draggable data={{ id: "1", name: "Item" }}>
   <YourComponent />
 </Draggable>
 ```
 
 ### Droppable
+
 Create drop zones that receive draggable items:
+
 ```tsx
 <Droppable onDrop={(data) => handleDrop(data)}>
   <YourDropZone />
@@ -85,16 +104,23 @@ Create drop zones that receive draggable items:
 ```
 
 ### Sortable
-High-level component for reorderable lists:
+
+High-level component for reorderable lists (vertical and horizontal):
+
 ```tsx
-<Sortable 
-  data={items} 
-  renderItem={({ item, id, positions, ...props }) => (
-    <SortableItem 
-      key={id} 
-      id={id} 
-      positions={positions} 
-      {...props}
+// Vertical sortable list (default)
+<Sortable
+  data={items}
+  renderItem={({ item, id, positions, lowerBound, autoScrollDirection, itemsCount, itemHeight }) => (
+    <SortableItem
+      key={id}
+      id={id}
+      data={item}
+      positions={positions}
+      lowerBound={lowerBound}
+      autoScrollDirection={autoScrollDirection}
+      itemsCount={itemsCount}
+      itemHeight={itemHeight}
       onMove={(itemId, from, to) => {
         // Handle reordering
         const newItems = [...items];
@@ -107,6 +133,32 @@ High-level component for reorderable lists:
     </SortableItem>
   )}
   itemHeight={60}
+/>
+
+// Horizontal sortable list
+<Sortable
+  data={tags}
+  renderItem={({ item, id, positions, leftBound, autoScrollDirection, itemsCount, itemWidth, gap, paddingHorizontal }) => (
+    <SortableItem
+      key={id}
+      id={id}
+      data={item}
+      positions={positions}
+      leftBound={leftBound}
+      autoScrollHorizontalDirection={autoScrollDirection}
+      itemsCount={itemsCount}
+      direction={SortableDirection.Horizontal}
+      itemWidth={itemWidth}
+      gap={gap}
+      paddingHorizontal={paddingHorizontal}
+    >
+      <TagComponent tag={item} />
+    </SortableItem>
+  )}
+  direction={SortableDirection.Horizontal}
+  itemWidth={120}
+  gap={12}
+  paddingHorizontal={16}
 />
 ```
 
@@ -125,18 +177,21 @@ React Native Reanimated DnD is perfect for:
 ## Why Choose This Library?
 
 ### Performance First
+
 - UI thread animations via Reanimated 3
 - Optimized collision detection algorithms
 - Minimal JavaScript bridge communication
 - Smooth interactions even on lower-end devices
 
 ### Developer Experience
+
 - Intuitive API design
 - Comprehensive TypeScript support
 - Extensive documentation with examples
 - Active community support
 
 ### Production Ready
+
 - Battle-tested in production apps
 - Comprehensive error handling
 - Memory leak prevention

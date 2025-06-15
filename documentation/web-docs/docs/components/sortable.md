@@ -4,16 +4,28 @@ sidebar_position: 3
 
 # Sortable
 
-The `Sortable` component creates reorderable lists with smooth animations, auto-scrolling, and gesture handling for intuitive drag-and-drop reordering.
+The `Sortable` component creates reorderable lists with smooth animations, auto-scrolling, and gesture handling for intuitive drag-and-drop reordering. Supports both **vertical and horizontal** directions with FlatList virtualization for optimal performance.
 
 ## Overview
 
-The Sortable component provides a complete solution for sortable lists, handling all the complex state management, gesture handling, and animations internally. It renders a scrollable list where items can be dragged to reorder them with smooth animations and auto-scrolling support when dragging near edges.
+The Sortable component provides a complete solution for both **vertical and horizontal** sortable lists, handling all the complex state management, gesture handling, and animations internally. It renders a scrollable list where items can be dragged to reorder them with smooth animations and auto-scrolling support when dragging near edges.
+
+### Key Features
+
+- **Bi-directional Support**: Works with both vertical (default) and horizontal layouts
+- **FlatList Virtualization**: Performance optimization for large datasets (enabled by default)
+- **Auto-scrolling**: Automatic scrolling when dragging near container edges
+- **Gap Support**: Built-in spacing for horizontal layouts
+- **Data Hashing**: Optimized re-rendering with automatic data change detection
 
 ## Basic Usage
 
 ```tsx
-import { Sortable, SortableItem } from 'react-native-reanimated-dnd';
+import {
+  Sortable,
+  SortableItem,
+  SortableDirection,
+} from "react-native-reanimated-dnd";
 
 interface Task {
   id: string;
@@ -23,16 +35,39 @@ interface Task {
 
 function TaskList() {
   const [tasks, setTasks] = useState<Task[]>([
-    { id: '1', title: 'Learn React Native', completed: false },
-    { id: '2', title: 'Build an app', completed: false },
-    { id: '3', title: 'Deploy to store', completed: false }
+    { id: "1", title: "Learn React Native", completed: false },
+    { id: "2", title: "Build an app", completed: false },
+    { id: "3", title: "Deploy to store", completed: false },
   ]);
 
-  const renderTask = ({ item, id, positions, ...props }) => (
-    <SortableItem key={id} id={id} positions={positions} {...props}>
+  const renderTask = ({
+    item,
+    id,
+    positions,
+    lowerBound,
+    autoScrollDirection,
+    itemsCount,
+    itemHeight,
+  }) => (
+    <SortableItem
+      key={id}
+      id={id}
+      data={item}
+      positions={positions}
+      lowerBound={lowerBound}
+      autoScrollDirection={autoScrollDirection}
+      itemsCount={itemsCount}
+      itemHeight={itemHeight}
+      onMove={(itemId, from, to) => {
+        const newTasks = [...tasks];
+        const [movedTask] = newTasks.splice(from, 1);
+        newTasks.splice(to, 0, movedTask);
+        setTasks(newTasks);
+      }}
+    >
       <View style={styles.taskItem}>
         <Text>{item.title}</Text>
-        <Text>{item.completed ? '✓' : '○'}</Text>
+        <Text>{item.completed ? "✓" : "○"}</Text>
       </View>
     </SortableItem>
   );
@@ -52,19 +87,24 @@ function TaskList() {
 
 ### Core Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `data` | `TData[]` | **Required** | Array of data items (must have `id` property) |
-| `renderItem` | `RenderItemFunction` | **Required** | Function to render each item |
-| `itemHeight` | `number` | **Required** | Height of each item in pixels |
-| `style` | `StyleProp<ViewStyle>` | - | Style for the container |
-| `contentContainerStyle` | `StyleProp<ViewStyle>` | - | Style for the scroll content |
+| Prop                    | Type                         | Default                        | Description                                   |
+| ----------------------- | ---------------------------- | ------------------------------ | --------------------------------------------- |
+| `data`                  | `TData[]`                    | **Required**                   | Array of data items (must have `id` property) |
+| `renderItem`            | `RenderItemFunction`         | **Required**                   | Function to render each item                  |
+| `direction`             | `"vertical" \| "horizontal"` | `"vertical"`                   | Direction of the sortable list                |
+| `itemHeight`            | `number`                     | ⚠️ **Required for vertical**   | Height of each item in pixels                 |
+| `itemWidth`             | `number`                     | ⚠️ **Required for horizontal** | Width of each item in pixels                  |
+| `gap`                   | `number`                     | `0`                            | Gap between items (horizontal only)           |
+| `paddingHorizontal`     | `number`                     | `0`                            | Horizontal padding (horizontal only)          |
+| `style`                 | `StyleProp<ViewStyle>`       | -                              | Style for the container                       |
+| `contentContainerStyle` | `StyleProp<ViewStyle>`       | -                              | Style for the scroll content                  |
 
 ### Advanced Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `itemKeyExtractor` | `(item: TData) => string` | `(item) => item.id` | Function to extract unique key from item |
+| Prop               | Type                      | Default             | Description                                   |
+| ------------------ | ------------------------- | ------------------- | --------------------------------------------- |
+| `itemKeyExtractor` | `(item: TData) => string` | `(item) => item.id` | Function to extract unique key from item      |
+| `useFlatList`      | `boolean`                 | `true`              | Use FlatList for virtualization (performance) |
 
 ## Render Item Function
 
@@ -72,45 +112,173 @@ The `renderItem` function receives props needed for sortable functionality:
 
 ```tsx
 interface SortableRenderItemProps<TData> {
-  item: TData;                    // The data item
-  id: string;                     // Unique identifier
+  item: TData; // The data item
+  id: string; // Unique identifier
   positions: SharedValue<number[]>; // Shared value for positions
-  lowerBound: SharedValue<number>;  // Lower scroll bound
+  lowerBound: SharedValue<number>; // Lower scroll bound
   autoScrollDirection: SharedValue<ScrollDirection>; // Auto-scroll state
-  itemsCount: number;             // Total number of items
-  itemHeight: number;             // Height of each item
+  itemsCount: number; // Total number of items
+  itemHeight: number; // Height of each item
   containerHeight: SharedValue<number>; // Container height
 }
 
-type RenderItemFunction<TData> = (props: SortableRenderItemProps<TData>) => React.ReactElement;
+type RenderItemFunction<TData> = (
+  props: SortableRenderItemProps<TData>
+) => React.ReactElement;
 ```
 
 ## Examples
+
+### Horizontal Sortable List
+
+```tsx
+function HorizontalTagList() {
+  const [tags, setTags] = useState([
+    { id: "1", label: "React", color: "#61dafb" },
+    { id: "2", label: "TypeScript", color: "#3178c6" },
+    { id: "3", label: "React Native", color: "#0fa5e9" },
+    { id: "4", label: "JavaScript", color: "#f7df1e" },
+    { id: "5", label: "Node.js", color: "#339933" },
+  ]);
+
+  const renderTag = ({
+    item,
+    id,
+    positions,
+    leftBound,
+    autoScrollDirection,
+    itemsCount,
+    itemWidth,
+    gap,
+    paddingHorizontal,
+  }) => (
+    <SortableItem
+      key={id}
+      id={id}
+      data={item}
+      positions={positions}
+      leftBound={leftBound}
+      autoScrollHorizontalDirection={autoScrollDirection}
+      itemsCount={itemsCount}
+      direction={SortableDirection.Horizontal}
+      itemWidth={itemWidth}
+      gap={gap}
+      paddingHorizontal={paddingHorizontal}
+      onMove={(itemId, from, to) => {
+        const newTags = [...tags];
+        const [movedTag] = newTags.splice(from, 1);
+        newTags.splice(to, 0, movedTag);
+        setTags(newTags);
+      }}
+    >
+      <View style={[styles.tagItem, { backgroundColor: item.color }]}>
+        <Text style={styles.tagText}>{item.label}</Text>
+      </View>
+    </SortableItem>
+  );
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Drag to reorder tags</Text>
+      <Sortable
+        data={tags}
+        renderItem={renderTag}
+        direction={SortableDirection.Horizontal}
+        itemWidth={120}
+        gap={12}
+        paddingHorizontal={16}
+        style={styles.horizontalList}
+      />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 20,
+  },
+  horizontalList: {
+    height: 60,
+  },
+  tagItem: {
+    height: 40,
+    paddingHorizontal: 16,
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  tagText: {
+    color: "white",
+    fontWeight: "600",
+  },
+});
+```
 
 ### Basic Task List
 
 ```tsx
 function BasicTaskList() {
   const [tasks, setTasks] = useState([
-    { id: '1', title: 'Design UI mockups', priority: 'high', completed: false },
-    { id: '2', title: 'Implement authentication', priority: 'medium', completed: false },
-    { id: '3', title: 'Write unit tests', priority: 'low', completed: false },
-    { id: '4', title: 'Deploy to staging', priority: 'medium', completed: true },
+    { id: "1", title: "Design UI mockups", priority: "high", completed: false },
+    {
+      id: "2",
+      title: "Implement authentication",
+      priority: "medium",
+      completed: false,
+    },
+    { id: "3", title: "Write unit tests", priority: "low", completed: false },
+    {
+      id: "4",
+      title: "Deploy to staging",
+      priority: "medium",
+      completed: true,
+    },
   ]);
 
-  const renderTask = ({ item, id, positions, ...props }) => (
-    <SortableItem key={id} id={id} positions={positions} {...props}>
-      <View style={[
-        styles.taskItem,
-        item.completed && styles.completedTask,
-        getPriorityStyle(item.priority)
-      ]}>
+  const renderTask = ({
+    item,
+    id,
+    positions,
+    lowerBound,
+    autoScrollDirection,
+    itemsCount,
+    itemHeight,
+  }) => (
+    <SortableItem
+      key={id}
+      id={id}
+      data={item}
+      positions={positions}
+      lowerBound={lowerBound}
+      autoScrollDirection={autoScrollDirection}
+      itemsCount={itemsCount}
+      itemHeight={itemHeight}
+      onMove={(itemId, from, to) => {
+        const newTasks = [...tasks];
+        const [movedTask] = newTasks.splice(from, 1);
+        newTasks.splice(to, 0, movedTask);
+        setTasks(newTasks);
+      }}
+    >
+      <View
+        style={[
+          styles.taskItem,
+          item.completed && styles.completedTask,
+          getPriorityStyle(item.priority),
+        ]}
+      >
         <View style={styles.taskContent}>
           <Text style={styles.taskTitle}>{item.title}</Text>
           <Text style={styles.taskPriority}>{item.priority}</Text>
         </View>
         <View style={styles.taskStatus}>
-          <Text>{item.completed ? '✅' : '⏳'}</Text>
+          <Text>{item.completed ? "✅" : "⏳"}</Text>
         </View>
       </View>
     </SortableItem>
@@ -133,13 +301,13 @@ function BasicTaskList() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: "#f5f5f5",
   },
   header: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     padding: 20,
-    backgroundColor: 'white',
+    backgroundColor: "white",
   },
   sortableList: {
     flex: 1,
@@ -148,13 +316,13 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   taskItem: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderRadius: 8,
     padding: 16,
     marginBottom: 8,
-    flexDirection: 'row',
-    alignItems: 'center',
-    shadowColor: '#000',
+    flexDirection: "row",
+    alignItems: "center",
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 2,
@@ -162,20 +330,20 @@ const styles = StyleSheet.create({
   },
   completedTask: {
     opacity: 0.6,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: "#f0f0f0",
   },
   taskContent: {
     flex: 1,
   },
   taskTitle: {
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: "500",
     marginBottom: 4,
   },
   taskPriority: {
     fontSize: 12,
-    textTransform: 'uppercase',
-    fontWeight: 'bold',
+    textTransform: "uppercase",
+    fontWeight: "bold",
   },
   taskStatus: {
     marginLeft: 12,
@@ -184,12 +352,12 @@ const styles = StyleSheet.create({
 
 function getPriorityStyle(priority) {
   switch (priority) {
-    case 'high':
-      return { borderLeftColor: '#ef4444', borderLeftWidth: 4 };
-    case 'medium':
-      return { borderLeftColor: '#f59e0b', borderLeftWidth: 4 };
-    case 'low':
-      return { borderLeftColor: '#10b981', borderLeftWidth: 4 };
+    case "high":
+      return { borderLeftColor: "#ef4444", borderLeftWidth: 4 };
+    case "medium":
+      return { borderLeftColor: "#f59e0b", borderLeftWidth: 4 };
+    case "low":
+      return { borderLeftColor: "#10b981", borderLeftWidth: 4 };
     default:
       return {};
   }
@@ -203,12 +371,24 @@ function AdvancedTaskList() {
   const [tasks, setTasks] = useState(initialTasks);
   const [draggedTask, setDraggedTask] = useState(null);
 
-  const renderTask = ({ item, id, positions, ...props }) => (
+  const renderTask = ({
+    item,
+    id,
+    positions,
+    lowerBound,
+    autoScrollDirection,
+    itemsCount,
+    itemHeight,
+  }) => (
     <SortableItem
       key={id}
       id={id}
+      data={item}
       positions={positions}
-      {...props}
+      lowerBound={lowerBound}
+      autoScrollDirection={autoScrollDirection}
+      itemsCount={itemsCount}
+      itemHeight={itemHeight}
       onMove={(itemId, from, to) => {
         // Update data when items are reordered
         const newTasks = [...tasks];
@@ -217,46 +397,48 @@ function AdvancedTaskList() {
         setTasks(newTasks);
 
         // Analytics
-        analytics.track('task_reordered', { 
-          taskId: itemId, 
-          from, 
+        analytics.track("task_reordered", {
+          taskId: itemId,
+          from,
           to,
-          taskTitle: movedTask.title 
+          taskTitle: movedTask.title,
         });
 
         // Auto-save to backend
         saveTasks(newTasks);
       }}
       onDragStart={(itemId) => {
-        const task = tasks.find(t => t.id === itemId);
+        const task = tasks.find((t) => t.id === itemId);
         setDraggedTask(task);
         hapticFeedback();
-        
+
         // Show global drag feedback
         showDragOverlay(task);
       }}
       onDrop={(itemId) => {
         setDraggedTask(null);
         hideDragOverlay();
-        
+
         // Success feedback
-        showToast('Task reordered successfully');
+        showToast("Task reordered successfully");
       }}
       onDragging={(itemId, overItemId, yPosition) => {
         if (overItemId) {
           // Highlight the item being hovered over
           highlightItem(overItemId);
         }
-        
+
         // Update drag position for global overlay
         updateDragPosition(yPosition);
       }}
     >
-      <Animated.View style={[
-        styles.taskItem,
-        item.priority === 'high' && styles.highPriority,
-        draggedTask?.id === item.id && styles.draggingItem
-      ]}>
+      <Animated.View
+        style={[
+          styles.taskItem,
+          item.priority === "high" && styles.highPriority,
+          draggedTask?.id === item.id && styles.draggingItem,
+        ]}
+      >
         <View style={styles.taskContent}>
           <Text style={styles.taskTitle}>{item.title}</Text>
           <Text style={styles.taskDescription}>{item.description}</Text>
@@ -274,9 +456,7 @@ function AdvancedTaskList() {
     <View style={styles.container}>
       <Text style={styles.header}>Project Tasks</Text>
       {draggedTask && (
-        <Text style={styles.dragIndicator}>
-          Dragging: {draggedTask.title}
-        </Text>
+        <Text style={styles.dragIndicator}>Dragging: {draggedTask.title}</Text>
       )}
       <Sortable
         data={tasks}
@@ -295,9 +475,9 @@ function AdvancedTaskList() {
 ```tsx
 function SortableWithHandles() {
   const [items, setItems] = useState([
-    { id: '1', title: 'First Item', subtitle: 'Description for first item' },
-    { id: '2', title: 'Second Item', subtitle: 'Description for second item' },
-    { id: '3', title: 'Third Item', subtitle: 'Description for third item' },
+    { id: "1", title: "First Item", subtitle: "Description for first item" },
+    { id: "2", title: "Second Item", subtitle: "Description for second item" },
+    { id: "3", title: "Third Item", subtitle: "Description for third item" },
   ]);
 
   const renderItem = ({ item, id, positions, ...props }) => (
@@ -335,14 +515,14 @@ function SortableWithHandles() {
 
 const styles = StyleSheet.create({
   itemContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'white',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "white",
     padding: 16,
     marginHorizontal: 16,
     marginVertical: 4,
     borderRadius: 8,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 2,
@@ -353,12 +533,12 @@ const styles = StyleSheet.create({
   },
   itemTitle: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
     marginBottom: 4,
   },
   itemSubtitle: {
     fontSize: 14,
-    color: '#666',
+    color: "#666",
   },
   dragHandle: {
     padding: 8,
@@ -367,15 +547,15 @@ const styles = StyleSheet.create({
   handleIcon: {
     width: 20,
     height: 20,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    alignContent: 'space-between',
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    alignContent: "space-between",
   },
   handleDot: {
     width: 3,
     height: 3,
-    backgroundColor: '#999',
+    backgroundColor: "#999",
     borderRadius: 1.5,
   },
 });
@@ -385,7 +565,7 @@ const styles = StyleSheet.create({
 
 ```tsx
 interface CustomItem {
-  uuid: string;  // Using uuid instead of id
+  uuid: string; // Using uuid instead of id
   name: string;
   order: number;
   category: string;
@@ -393,9 +573,9 @@ interface CustomItem {
 
 function CustomSortableList() {
   const [items, setItems] = useState<CustomItem[]>([
-    { uuid: 'a1b2c3', name: 'Item Alpha', order: 1, category: 'work' },
-    { uuid: 'd4e5f6', name: 'Item Beta', order: 2, category: 'personal' },
-    { uuid: 'g7h8i9', name: 'Item Gamma', order: 3, category: 'work' },
+    { uuid: "a1b2c3", name: "Item Alpha", order: 1, category: "work" },
+    { uuid: "d4e5f6", name: "Item Beta", order: 2, category: "personal" },
+    { uuid: "g7h8i9", name: "Item Gamma", order: 3, category: "work" },
   ]);
 
   const renderItem = ({ item, id, positions, ...props }) => (
@@ -428,17 +608,20 @@ function StateManagedSortable() {
   const [isReordering, setIsReordering] = useState(false);
   const [lastReorder, setLastReorder] = useState(null);
 
-  const handleReorder = useCallback((itemId, from, to) => {
-    const newItems = [...items];
-    const [movedItem] = newItems.splice(from, 1);
-    newItems.splice(to, 0, movedItem);
-    
-    setItems(newItems);
-    setLastReorder({ itemId, from, to, timestamp: Date.now() });
-    
-    // Debounced save to prevent too many API calls
-    debouncedSave(newItems);
-  }, [items]);
+  const handleReorder = useCallback(
+    (itemId, from, to) => {
+      const newItems = [...items];
+      const [movedItem] = newItems.splice(from, 1);
+      newItems.splice(to, 0, movedItem);
+
+      setItems(newItems);
+      setLastReorder({ itemId, from, to, timestamp: Date.now() });
+
+      // Debounced save to prevent too many API calls
+      debouncedSave(newItems);
+    },
+    [items]
+  );
 
   const renderItem = ({ item, id, positions, ...props }) => (
     <SortableItem
@@ -450,10 +633,7 @@ function StateManagedSortable() {
       onDragStart={() => setIsReordering(true)}
       onDrop={() => setIsReordering(false)}
     >
-      <View style={[
-        styles.item,
-        isReordering && styles.reorderingMode
-      ]}>
+      <View style={[styles.item, isReordering && styles.reorderingMode]}>
         <Text>{item.title}</Text>
         {lastReorder?.itemId === item.id && (
           <Text style={styles.recentlyMoved}>Recently moved</Text>
@@ -465,15 +645,9 @@ function StateManagedSortable() {
   return (
     <View style={styles.container}>
       {isReordering && (
-        <Text style={styles.reorderingIndicator}>
-          Reordering items...
-        </Text>
+        <Text style={styles.reorderingIndicator}>Reordering items...</Text>
       )}
-      <Sortable
-        data={items}
-        renderItem={renderItem}
-        itemHeight={70}
-      />
+      <Sortable data={items} renderItem={renderItem} itemHeight={70} />
     </View>
   );
 }
@@ -490,6 +664,55 @@ The Sortable component automatically scrolls when dragging items near the edges:
 
 ## Performance Optimization
 
+### FlatList Virtualization
+
+The Sortable component uses FlatList by default for optimal performance with large datasets:
+
+```tsx
+// FlatList (default) - better for large lists
+<Sortable
+  data={largeDataset}
+  renderItem={renderItem}
+  itemHeight={60}
+  useFlatList={true}  // Default
+/>
+
+// ScrollView - renders all items at once
+<Sortable
+  data={smallDataset}
+  renderItem={renderItem}
+  itemHeight={60}
+  useFlatList={false}
+/>
+```
+
+**Benefits of FlatList:**
+
+- **Virtualization**: Only renders visible items
+- **Memory efficiency**: Reduces memory usage for large lists
+- **Smooth scrolling**: Better performance during scrolling
+- **Automatic optimization**: Built-in performance optimizations
+
+### Data Hashing
+
+For optimal performance, the Sortable component is memoized using a hash of the data prop's id fields:
+
+```tsx
+// The component automatically generates a stable key from your data
+// This ensures re-renders only happen when data composition changes
+<Sortable
+  data={tasks} // Hash generated from tasks.map(t => t.id)
+  renderItem={renderItem}
+  itemHeight={60}
+/>;
+
+// Providing stable data references improves performance
+const memoizedData = useMemo(
+  () => tasks.map((task) => ({ ...task, processed: true })),
+  [tasks]
+);
+```
+
 ### Large Lists
 
 For large lists, consider these optimizations:
@@ -497,11 +720,14 @@ For large lists, consider these optimizations:
 ```tsx
 function OptimizedSortableList({ data }) {
   // Memoize render function to prevent unnecessary re-renders
-  const renderItem = useCallback(({ item, id, positions, ...props }) => (
-    <SortableItem key={id} id={id} positions={positions} {...props}>
-      <MemoizedItemComponent item={item} />
-    </SortableItem>
-  ), []);
+  const renderItem = useCallback(
+    ({ item, id, positions, ...props }) => (
+      <SortableItem key={id} id={id} positions={positions} {...props}>
+        <MemoizedItemComponent item={item} />
+      </SortableItem>
+    ),
+    []
+  );
 
   return (
     <Sortable
@@ -534,25 +760,24 @@ function MemoryEfficientSortable() {
     // Handle drag start
   }, []);
 
-  const renderItem = useCallback(({ item, id, positions, ...props }) => (
-    <SortableItem
-      key={id}
-      id={id}
-      positions={positions}
-      {...props}
-      onMove={handleMove}
-      onDragStart={handleDragStart}
-    >
-      <ItemComponent item={item} />
-    </SortableItem>
-  ), [handleMove, handleDragStart]);
+  const renderItem = useCallback(
+    ({ item, id, positions, ...props }) => (
+      <SortableItem
+        key={id}
+        id={id}
+        positions={positions}
+        {...props}
+        onMove={handleMove}
+        onDragStart={handleDragStart}
+      >
+        <ItemComponent item={item} />
+      </SortableItem>
+    ),
+    [handleMove, handleDragStart]
+  );
 
   return (
-    <Sortable
-      data={data}
-      renderItem={renderItem}
-      itemHeight={ITEM_HEIGHT}
-    />
+    <Sortable data={data} renderItem={renderItem} itemHeight={ITEM_HEIGHT} />
   );
 }
 ```
@@ -565,7 +790,7 @@ The Sortable component is fully typed with generic support:
 interface TaskData {
   id: string;
   title: string;
-  priority: 'low' | 'medium' | 'high';
+  priority: "low" | "medium" | "high";
   completed: boolean;
   assignee?: string;
 }
@@ -580,7 +805,7 @@ interface TaskData {
     </SortableItem>
   )}
   itemHeight={80}
-/>
+/>;
 ```
 
 ## Integration with State Management
@@ -608,13 +833,7 @@ function ReduxSortableList() {
     </SortableItem>
   );
 
-  return (
-    <Sortable
-      data={tasks}
-      renderItem={renderItem}
-      itemHeight={70}
-    />
-  );
+  return <Sortable data={tasks} renderItem={renderItem} itemHeight={70} />;
 }
 ```
 
@@ -636,13 +855,7 @@ function ZustandSortableList() {
     </SortableItem>
   );
 
-  return (
-    <Sortable
-      data={items}
-      renderItem={renderItem}
-      itemHeight={60}
-    />
-  );
+  return <Sortable data={items} renderItem={renderItem} itemHeight={60} />;
 }
 ```
 
@@ -661,13 +874,13 @@ The Sortable component supports accessibility features:
         accessibilityLabel={`Sortable item: ${item.title}`}
         accessibilityHint="Double tap and hold to reorder this item"
         accessibilityActions={[
-          { name: 'move-up', label: 'Move up' },
-          { name: 'move-down', label: 'Move down' },
+          { name: "move-up", label: "Move up" },
+          { name: "move-down", label: "Move down" },
         ]}
         onAccessibilityAction={(event) => {
-          if (event.nativeEvent.actionName === 'move-up') {
+          if (event.nativeEvent.actionName === "move-up") {
             // Handle move up
-          } else if (event.nativeEvent.actionName === 'move-down') {
+          } else if (event.nativeEvent.actionName === "move-down") {
             // Handle move down
           }
         }}

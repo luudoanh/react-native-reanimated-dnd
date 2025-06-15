@@ -48,8 +48,8 @@ After countless attempts with drag-and-drop solutions that don't work or are sim
 - 🎨 **Infinitely Customizable** - Every animation, behavior, and style is configurable
 - 📦 **Complete Component Suite** - Draggable, Droppable, Sortable, and more
 - 🎪 **Smart Collision Detection** - Multiple algorithms (center, intersect, contain)
-- 📜 **Sortable Lists** - Drag and drop to sort a Vertical List, also
-  supports Automatic scrolling for out of screen dragging
+- 📜 **Vertical & Horizontal Sortable Lists** - Drag and drop to sort lists in any direction with automatic scrolling
+- ⚡ **FlatList Performance** - Optional FlatList rendering for large datasets with virtualization
 - 🎭 **Drag Handles** - Precise control with dedicated drag areas
 - 🎬 **Custom Animations** - Spring, timing, or bring your own animation functions
 - 📐 **Pixel-Perfect Positioning** - 9-point alignment system with custom offsets
@@ -417,7 +417,7 @@ const styles = StyleSheet.create({
 });
 ```
 
-### Sortable List
+### Vertical Sortable List
 
 ```tsx
 import React, { useCallback, useState } from "react";
@@ -600,6 +600,138 @@ const styles = StyleSheet.create({
 });
 ```
 
+### Horizontal Sortable List
+
+```tsx
+import React, { useState } from "react";
+import { StyleSheet, Text, View } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import {
+  Sortable,
+  SortableItem,
+  SortableRenderItemProps,
+  SortableDirection,
+} from "react-native-reanimated-dnd";
+
+interface Tag {
+  id: string;
+  label: string;
+  color: string;
+}
+
+export default function HorizontalSortableExample() {
+  const [tags, setTags] = useState<Tag[]>([
+    { id: "1", label: "React", color: "#61dafb" },
+    { id: "2", label: "TypeScript", color: "#3178c6" },
+    { id: "3", label: "React Native", color: "#0fa5e9" },
+    { id: "4", label: "JavaScript", color: "#f7df1e" },
+    { id: "5", label: "Node.js", color: "#339933" },
+  ]);
+
+  const renderTag = (props: SortableRenderItemProps<Tag>) => {
+    const {
+      item,
+      id,
+      positions,
+      leftBound,
+      autoScrollDirection,
+      itemsCount,
+      itemWidth,
+      gap,
+      paddingHorizontal,
+    } = props;
+
+    return (
+      <SortableItem
+        key={id}
+        data={item}
+        id={id}
+        positions={positions}
+        leftBound={leftBound}
+        autoScrollDirection={autoScrollDirection}
+        itemsCount={itemsCount}
+        direction={SortableDirection.Horizontal}
+        itemWidth={itemWidth}
+        gap={gap}
+        paddingHorizontal={paddingHorizontal}
+        onMove={(itemId, from, to) => {
+          const newTags = [...tags];
+          const [movedTag] = newTags.splice(from, 1);
+          newTags.splice(to, 0, movedTag);
+          setTags(newTags);
+        }}
+        style={styles.tagItem}
+      >
+        <View style={[styles.tagContent, { backgroundColor: item.color }]}>
+          <Text style={styles.tagText}>{item.label}</Text>
+        </View>
+      </SortableItem>
+    );
+  };
+
+  return (
+    <GestureHandlerRootView style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>🏷️ Tech Tags</Text>
+        <Text style={styles.headerSubtitle}>Drag horizontally to reorder</Text>
+      </View>
+
+      <Sortable
+        data={tags}
+        renderItem={renderTag}
+        direction={SortableDirection.Horizontal}
+        itemWidth={120}
+        gap={12}
+        paddingHorizontal={20}
+        style={styles.horizontalList}
+      />
+    </GestureHandlerRootView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#000000",
+  },
+  header: {
+    padding: 20,
+    paddingBottom: 16,
+  },
+  headerTitle: {
+    color: "#FFFFFF",
+    fontSize: 24,
+    fontWeight: "700",
+    marginBottom: 4,
+  },
+  headerSubtitle: {
+    color: "#8E8E93",
+    fontSize: 14,
+  },
+  horizontalList: {
+    height: 100,
+    marginTop: 20,
+  },
+  tagItem: {
+    width: 120,
+    height: 60,
+  },
+  tagContent: {
+    flex: 1,
+    borderRadius: 30,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 16,
+  },
+  tagText: {
+    color: "#FFFFFF",
+    fontSize: 14,
+    fontWeight: "600",
+    textAlign: "center",
+  },
+});
+```
+
 ## 📚 API Reference
 
 ### Components
@@ -647,14 +779,19 @@ Creates drop zones with visual feedback and capacity management.
 
 #### `<Sortable>`
 
-High-level component for sortable lists with auto-scrolling.
+High-level component for sortable lists with auto-scrolling. Supports both vertical and horizontal directions.
 
 ```tsx
 <Sortable
   data={Array<{ id: string }>} // Array of items to render
   renderItem={(props) => ReactNode} // Render function for items
-  itemHeight={number} // Height of each item
+  direction={SortableDirection} // "vertical" | "horizontal" (default: vertical)
+  itemHeight={number} // Height of each item (required for vertical)
+  itemWidth={number} // Width of each item (required for horizontal)
+  gap={number} // Gap between items (horizontal only)
+  paddingHorizontal={number} // Horizontal padding (horizontal only)
   itemKeyExtractor={(item) => string} // Custom key extractor
+  useFlatList={boolean} // Use FlatList for performance (default: true)
   style={StyleProp<ViewStyle>} // List container style
   contentContainerStyle={StyleProp<ViewStyle>} // Content container style
 />
@@ -696,7 +833,15 @@ Hook for individual sortable items with position management.
 
 #### `useSortableList(options)`
 
-Hook for managing entire sortable lists with auto-scrolling.
+Hook for managing entire vertical sortable lists with auto-scrolling.
+
+#### `useHorizontalSortable(options)`
+
+Core hook for implementing horizontal sortable functionality for individual items.
+
+#### `useHorizontalSortableList(options)`
+
+Hook for managing entire horizontal sortable lists with auto-scrolling.
 
 ### Context
 
@@ -739,6 +884,25 @@ type DropAlignment =
   | "bottom-left"
   | "bottom-center"
   | "bottom-right";
+```
+
+#### `SortableDirection`
+
+```tsx
+enum SortableDirection {
+  Vertical = "vertical",
+  Horizontal = "horizontal",
+}
+```
+
+#### `HorizontalScrollDirection`
+
+```tsx
+enum HorizontalScrollDirection {
+  None = "none",
+  Left = "left",
+  Right = "right",
+}
 ```
 
 ## 🎨 Advanced Usage

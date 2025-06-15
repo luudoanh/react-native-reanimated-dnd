@@ -25,3 +25,5 @@ export { useDraggable } from "./hooks/useDraggable";
 export { useDroppable } from "./hooks/useDroppable";
 export { useSortable } from "./hooks/useSortable";
 export { useSortableList } from "./hooks/useSortableList";
+export { useHorizontalSortable } from "./hooks/useHorizontalSortable";
+export { useHorizontalSortableList } from "./hooks/useHorizontalSortableList";

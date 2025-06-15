@@ -146,7 +146,7 @@ function HorizontalTagList() {
     id,
     positions,
     leftBound,
-    autoScrollDirection,
+    autoScrollHorizontalDirection,
     itemsCount,
     itemWidth,
     gap,
@@ -158,7 +158,7 @@ function HorizontalTagList() {
       data={item}
       positions={positions}
       leftBound={leftBound}
-      autoScrollHorizontalDirection={autoScrollDirection}
+      autoScrollHorizontalDirection={autoScrollHorizontalDirection}
       itemsCount={itemsCount}
       direction={SortableDirection.Horizontal}
       itemWidth={itemWidth}

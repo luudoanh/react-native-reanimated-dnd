@@ -1,10 +1,8 @@
 import { useState, useRef, useEffect } from "react";
-import { StyleProp, ViewStyle } from "react-native";
 import React from "react";
 import Animated, {
   runOnJS,
   runOnUI,
-  SharedValue,
   useAnimatedGestureHandler,
   useAnimatedReaction,
   useAnimatedStyle,
@@ -15,8 +13,6 @@ import Animated, {
 } from "react-native-reanimated";
 import { PanGestureHandlerGestureEvent } from "react-native-gesture-handler";
 import {
-  clamp,
-  objectMove,
   setHorizontalPosition,
   setHorizontalAutoScroll,
   getItemXPosition,

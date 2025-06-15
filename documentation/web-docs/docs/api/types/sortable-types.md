@@ -401,6 +401,11 @@ interface SortableItemProps<T> {
     overItemId: string | null,
     yPosition: number
   ) => void;
+  onDraggingHorizontal?: (
+    id: string,
+    overItemId: string | null,
+    xPosition: number
+  ) => void;
 }
 ```
 
@@ -471,6 +476,36 @@ interface SortableItemProps<T> {
 - **Type**: `StyleProp<ViewStyle>`
 - **Required**: No
 - **Description**: Additional animated style to apply.
+
+##### onMove
+
+- **Type**: `(id: string, from: number, to: number) => void`
+- **Required**: No
+- **Description**: Callback fired when item position changes within the list.
+
+##### onDragStart
+
+- **Type**: `(id: string, position: number) => void`
+- **Required**: No
+- **Description**: Callback fired when dragging starts for this item.
+
+##### onDrop
+
+- **Type**: `(id: string, position: number) => void`
+- **Required**: No
+- **Description**: Callback fired when dragging ends for this item.
+
+##### onDragging
+
+- **Type**: `(id: string, overItemId: string | null, yPosition: number) => void`
+- **Required**: No
+- **Description**: Callback fired continuously while dragging vertically, providing real-time position updates. Useful for showing visual feedback or updating UI during drag operations.
+
+##### onDraggingHorizontal
+
+- **Type**: `(id: string, overItemId: string | null, xPosition: number) => void`
+- **Required**: No
+- **Description**: Callback fired continuously while dragging horizontally, providing real-time position updates. Useful for showing visual feedback or updating UI during horizontal drag operations.
 
 ### SortableProps\<TData\>
 

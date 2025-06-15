@@ -634,7 +634,7 @@ export default function HorizontalSortableExample() {
       id,
       positions,
       leftBound,
-      autoScrollDirection,
+      autoScrollHorizontalDirection,
       itemsCount,
       itemWidth,
       gap,
@@ -648,7 +648,7 @@ export default function HorizontalSortableExample() {
         id={id}
         positions={positions}
         leftBound={leftBound}
-        autoScrollDirection={autoScrollDirection}
+        autoScrollHorizontalDirection={autoScrollHorizontalDirection}
         itemsCount={itemsCount}
         direction={SortableDirection.Horizontal}
         itemWidth={itemWidth}

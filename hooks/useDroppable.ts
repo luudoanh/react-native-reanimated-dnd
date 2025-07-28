@@ -18,8 +18,12 @@ import {
   DropAlignment,
   DropOffset,
 } from "../types/context";
-import { _getUniqueDroppableId } from "../components/Droppable";
 import { UseDroppableOptions, UseDroppableReturn } from "../types/droppable";
+
+let _nextDroppableId = 1;
+const _getUniqueDroppableId = (): number => {
+  return _nextDroppableId++;
+};
 
 /**
  * A hook for creating drop zones that can receive draggable items.

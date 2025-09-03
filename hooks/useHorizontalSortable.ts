@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import React from "react";
 import Animated, {
   runOnJS,
@@ -166,26 +166,19 @@ export function useHorizontalSortable<T>(
   const onDraggingLastCallTimestamp = useSharedValue(0);
   const THROTTLE_INTERVAL = 50; // milliseconds
 
-  const positionX = useSharedValue(0);
-  const left = useSharedValue(0);
-  const targetLeftBound = useSharedValue(0);
-
-  useEffect(() => {
-    runOnUI(() => {
-      "worklet";
-      const initialLeftVal = getItemXPosition(
-        positions.value[id],
-        itemWidth,
-        gap,
-        paddingHorizontal
-      );
-      const initialLeftBoundVal = leftBound.value;
-      left.value = initialLeftVal;
-      positionX.value = initialLeftVal;
-      targetLeftBound.value = initialLeftBoundVal;
-    })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  const initialLeftVal = useMemo(() => {
+    const posArr = positions.get();
+    const pos = posArr?.[id];
+    return getItemXPosition(pos, itemWidth, gap, paddingHorizontal);
   }, []);
+
+  const initialLeftBoundVal = useMemo(() => {
+    return leftBound.get();
+  }, []);
+
+  const positionX = useSharedValue(initialLeftVal);
+  const left = useSharedValue(initialLeftVal);
+  const targetLeftBound = useSharedValue(initialLeftBoundVal);
 
   const calculatedContainerWidth = useRef(containerWidth).current;
   const rightBound = useDerivedValue(

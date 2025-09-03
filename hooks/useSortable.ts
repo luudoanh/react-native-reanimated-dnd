@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { StyleProp, ViewStyle } from "react-native";
 import React from "react";
 import Animated, {
@@ -286,21 +286,19 @@ export function useSortable<T>(
   const onDraggingLastCallTimestamp = useSharedValue(0);
   const THROTTLE_INTERVAL = 50; // milliseconds
 
-  const positionY = useSharedValue(0);
-  const top = useSharedValue(0);
-  const targetLowerBound = useSharedValue(0);
-
-  useEffect(() => {
-    runOnUI(() => {
-      "worklet";
-      const initialTopVal = positions.value[id] * itemHeight;
-      const initialLowerBoundVal = lowerBound.value;
-      top.value = initialTopVal;
-      positionY.value = initialTopVal;
-      targetLowerBound.value = initialLowerBoundVal;
-    })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  const initialTopVal = useMemo(() => {
+    const posArr = positions.get();
+    const pos = posArr?.[id];
+    return pos * itemHeight;
   }, []);
+
+  const initialLowerBoundVal = useMemo(() => {
+    return lowerBound.get();
+  }, []);
+
+  const positionY = useSharedValue(initialTopVal);
+  const top = useSharedValue(initialTopVal);
+  const targetLowerBound = useSharedValue(initialLowerBoundVal);
 
   const calculatedContainerHeight = useRef(containerHeight).current;
   const upperBound = useDerivedValue(

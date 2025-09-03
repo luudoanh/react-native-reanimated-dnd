@@ -8,8 +8,8 @@ import {
   SafeAreaView,
 } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { DropProvider, DropProviderRef } from "react-native-reanimated-dnd";
-import { Droppable } from "react-native-reanimated-dnd";
+import { DropProvider, DropProviderRef } from "@/external-lib";
+import { Droppable } from "@/external-lib";
 import { CustomDraggable } from "@/components/CustomDraggable";
 import { ExampleHeader } from "@/components/ExampleHeader";
 import { Footer } from "@/components/Footer";

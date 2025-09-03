@@ -11,11 +11,11 @@ import {
 import { withTiming, withSpring, Easing } from "react-native-reanimated";
 import { useSharedValue } from "react-native-reanimated";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { DropProvider, DropProviderRef } from "react-native-reanimated-dnd";
-import { Droppable } from "react-native-reanimated-dnd";
+import { DropProvider, DropProviderRef } from "@/external-lib";
+import { Droppable } from "@/external-lib";
 import { UseDraggableOptions } from "@/types/draggable";
 import { ExampleHeader } from "@/components/ExampleHeader";
-import { Draggable } from "react-native-reanimated-dnd";
+import { Draggable } from "@/external-lib";
 import { Footer } from "@/components/Footer";
 import { BottomSheet } from "@/components/BottomSheet";
 import { BottomSheetOption } from "@/components/BottomSheetOption";

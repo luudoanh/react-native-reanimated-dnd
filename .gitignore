@@ -82,3 +82,12 @@ coverage/
 
 # TernJS port file
 .tern-port 
+
+# example-app
+example-app/external-lib/
+example-app/ios/
+example-app/android/
+example-app/build/
+example-app/dist/
+example-app/lib/
+example-app/coverage/

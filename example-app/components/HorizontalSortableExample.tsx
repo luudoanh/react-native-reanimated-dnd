@@ -18,7 +18,7 @@ import {
   SortableItem,
   SortableRenderItemProps,
   SortableDirection,
-} from "react-native-reanimated-dnd";
+} from "@/external-lib";
 import { ExampleHeader } from "./ExampleHeader";
 import { Footer } from "./Footer";
 

@@ -14,6 +14,7 @@ module.exports = function (api) {
             "@/types": "./types",
             "@/context": "./context",
             "@/navigation": "./navigation",
+            "@/external-lib": "./external-lib",
           },
         },
       ],

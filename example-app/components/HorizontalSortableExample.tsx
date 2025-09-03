@@ -173,7 +173,6 @@ const ITEM_GAP = 12;
 const PADDING_HORIZONTAL = 12;
 
 const windowWidth = Dimensions.get("window").width;
-const windowHeight = Dimensions.get("window").height;
 
 interface HorizontalSortableExampleProps {
   onBack: () => void;
@@ -229,8 +228,11 @@ export function HorizontalSortableExample({
           onDragStart={(currentId, position) => {
             console.log(`Tag ${currentId} dragged from ${position}`);
           }}
-          onDrop={(currentId, position) => {
+          onDrop={(currentId, position, allPositions) => {
             console.log(`Tag ${currentId} dropped at ${position}`);
+            if (allPositions) {
+              console.log("All positions available:", allPositions);
+            }
           }}
           onDraggingHorizontal={(currentId, overItemId, xPosition) => {
             if (overItemId) {
@@ -300,8 +302,6 @@ export function HorizontalSortableExample({
     },
     [isDragHandleMode]
   );
-
-  const isWeb = Platform.OS === "web";
 
   return (
     <GestureHandlerRootView style={styles.container}>

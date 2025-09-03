@@ -534,8 +534,11 @@ export function SortableExample({ onBack }: SortableExampleProps = {}) {
           onDragStart={(currentId, position) => {
             console.log(`Item ${currentId} dragged from ${position}`);
           }}
-          onDrop={(currentId, position) => {
+          onDrop={(currentId, position, allPositions) => {
             console.log(`Item ${currentId} dropped at ${position}`);
+            if (allPositions) {
+              console.log("All positions available:", allPositions);
+            }
           }}
           onDragging={(currentId, overItemId, yPosition) => {
             console.log(

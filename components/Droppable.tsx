@@ -5,11 +5,6 @@ import Animated from "react-native-reanimated";
 import { useDroppable } from "../hooks/useDroppable";
 import { UseDroppableOptions, DroppableProps } from "../types/droppable";
 
-let _nextDroppableId = 1;
-export const _getUniqueDroppableId = (): number => {
-  return _nextDroppableId++;
-};
-
 /**
  * A component that creates drop zones for receiving draggable items.
  *

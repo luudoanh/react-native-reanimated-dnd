@@ -3,6 +3,23 @@ import { SharedValue } from "react-native-reanimated";
 import { DropProviderRef } from "../types/context";
 import { ReactNode } from "react";
 
+/**
+ * Base interface requiring an ID property for sortable data items.
+ * All data items used with sortable components MUST extend this interface.
+ *
+ * @example
+ * ```typescript
+ * interface Task extends SortableData {
+ *   id: string; // Required!
+ *   title: string;
+ *   completed: boolean;
+ * }
+ * ```
+ */
+export interface SortableData {
+  id: string;
+}
+
 export enum ScrollDirection {
   None = "none",
   Up = "up",
@@ -133,17 +150,29 @@ export interface UseSortableOptions<T> {
    *
    * @param id - The ID of the item that was being dragged
    * @param position - The final position index of the item
+   * @param allPositions - Optional. The complete positions object containing all items' positions
    *
    * @example
    * ```typescript
-   * const handleDrop = (id: string, position: number) => {
+   * const handleDrop = (id: string, position: number, allPositions?: { [id: string]: number }) => {
    *   console.log(`Dropped item ${id} at position ${position}`);
+   *   if (allPositions) {
+   *     // Update state with new positions
+   *     const reordered = Object.entries(allPositions)
+   *       .sort(([,a], [,b]) => a - b)
+   *       .map(([id]) => items.find(item => item.id === id));
+   *     setItems(reordered);
+   *   }
    *   setDraggingItem(null);
    *   saveNewOrder();
    * };
    * ```
    */
-  onDrop?: (id: string, position: number) => void;
+  onDrop?: (
+    id: string,
+    position: number,
+    allPositions?: { [id: string]: number }
+  ) => void;
 
   /**
    * Callback fired continuously while dragging, providing real-time position updates.
@@ -217,9 +246,9 @@ export interface UseSortableReturn {
 /**
  * Configuration options for the useSortableList hook.
  *
- * @template TData - The type of data items in the sortable list
+ * @template TData - The type of data items in the sortable list (must have an id property)
  */
-export interface UseSortableListOptions<TData> {
+export interface UseSortableListOptions<TData extends SortableData> {
   /**
    * Array of data items to be rendered as sortable list items.
    * Each item must have an `id` property for tracking.
@@ -271,9 +300,9 @@ export interface UseSortableListOptions<TData> {
 /**
  * Return value from the useSortableList hook.
  *
- * @template TData - The type of data items in the sortable list
+ * @template TData - The type of data items in the sortable list (must have an id property)
  */
-export interface UseSortableListReturn<TData> {
+export interface UseSortableListReturn<TData extends SortableData> {
   /**
    * Shared value containing the current positions of all items.
    * Maps item IDs to their current position indices.
@@ -442,7 +471,11 @@ export interface SortableItemProps<T> {
   onDragStart?: (id: string, position: number) => void;
 
   /** Callback fired when dragging ends */
-  onDrop?: (id: string, position: number) => void;
+  onDrop?: (
+    id: string,
+    position: number,
+    allPositions?: { [id: string]: number }
+  ) => void;
 
   /** Callback fired during dragging with position updates (for vertical) */
   onDragging?: (
@@ -462,14 +495,14 @@ export interface SortableItemProps<T> {
 /**
  * Props interface for the Sortable component.
  *
- * @template TData - The type of data items in the sortable list
+ * @template TData - The type of data items in the sortable list (must have an id property)
  *
  * @see {@link Sortable} for component usage
  * @see {@link useSortableList} for the underlying hook
  * @see {@link UseSortableListOptions} for hook configuration options
  * @see {@link UseSortableListReturn} for hook return details
  */
-export interface SortableProps<TData> {
+export interface SortableProps<TData extends SortableData> {
   /** Array of data items to render as sortable list */
   data: TData[];
 
@@ -512,13 +545,13 @@ export interface SortableProps<TData> {
 /**
  * Props passed to the renderItem function in Sortable component.
  *
- * @template TData - The type of data item being rendered
+ * @template TData - The type of data item being rendered (must have an id property)
  *
  * @see {@link SortableProps} for usage
  * @see {@link Sortable} for component usage
  * @see {@link SortableItem} for individual item component
  */
-export interface SortableRenderItemProps<TData> {
+export interface SortableRenderItemProps<TData extends SortableData> {
   /** The data item being rendered */
   item: TData;
 
@@ -649,8 +682,16 @@ export interface UseHorizontalSortableOptions<T> {
 
   /**
    * Callback fired when dragging ends for this item.
+   *
+   * @param id - The ID of the item that was being dragged
+   * @param position - The final position index of the item
+   * @param allPositions - Optional. The complete positions object containing all items' positions
    */
-  onDrop?: (id: string, position: number) => void;
+  onDrop?: (
+    id: string,
+    position: number,
+    allPositions?: { [id: string]: number }
+  ) => void;
 
   /**
    * Callback fired continuously while dragging, providing real-time position updates.
@@ -705,9 +746,9 @@ export interface UseHorizontalSortableReturn {
 /**
  * Configuration options for the useHorizontalSortableList hook.
  *
- * @template TData - The type of data items in the sortable list
+ * @template TData - The type of data items in the sortable list (must have an id property)
  */
-export interface UseHorizontalSortableListOptions<TData> {
+export interface UseHorizontalSortableListOptions<TData extends SortableData> {
   /**
    * Array of data items to be rendered as sortable list items.
    */
@@ -741,9 +782,9 @@ export interface UseHorizontalSortableListOptions<TData> {
 /**
  * Return value from the useHorizontalSortableList hook.
  *
- * @template TData - The type of data items in the sortable list
+ * @template TData - The type of data items in the sortable list (must have an id property)
  */
-export interface UseHorizontalSortableListReturn<TData> {
+export interface UseHorizontalSortableListReturn<TData extends SortableData> {
   /**
    * Shared value containing the current positions of all items.
    */
@@ -854,7 +895,11 @@ export interface HorizontalSortableItemProps<T> {
   onDragStart?: (id: string, position: number) => void;
 
   /** Callback fired when dragging ends */
-  onDrop?: (id: string, position: number) => void;
+  onDrop?: (
+    id: string,
+    position: number,
+    allPositions?: { [id: string]: number }
+  ) => void;
 
   /** Callback fired during dragging with position updates */
   onDragging?: (
@@ -867,9 +912,9 @@ export interface HorizontalSortableItemProps<T> {
 /**
  * Props interface for the HorizontalSortable component.
  *
- * @template TData - The type of data items in the sortable list
+ * @template TData - The type of data items in the sortable list (must have an id property)
  */
-export interface HorizontalSortableProps<TData> {
+export interface HorizontalSortableProps<TData extends SortableData> {
   /** Array of data items to render as sortable list */
   data: TData[];
 
@@ -898,13 +943,13 @@ export interface HorizontalSortableProps<TData> {
 /**
  * Props passed to the renderItem function in HorizontalSortable component.
  *
- * @template TData - The type of data item being rendered
+ * @template TData - The type of data item being rendered (must have an id property)
  *
  * @see {@link SortableProps} for usage
  * @see {@link Sortable} for component usage
  * @see {@link SortableItem} for individual item component
  */
-export interface HorizontalSortableRenderItemProps<TData> {
+export interface HorizontalSortableRenderItemProps<TData extends SortableData> {
   /** The data item being rendered */
   item: TData;
 

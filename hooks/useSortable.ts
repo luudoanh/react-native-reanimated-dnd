@@ -123,7 +123,11 @@ export interface UseSortableOptions<T> {
   containerHeight?: number;
   onMove?: (id: string, from: number, to: number) => void;
   onDragStart?: (id: string, position: number) => void;
-  onDrop?: (id: string, position: number) => void;
+  onDrop?: (
+    id: string,
+    position: number,
+    allPositions?: { [id: string]: number }
+  ) => void;
   onDragging?: (
     id: string,
     overItemId: string | null,
@@ -497,7 +501,8 @@ export function useSortable<T>(
       runOnJS(setIsMoving)(false);
 
       if (onDrop) {
-        runOnJS(onDrop)(id, positions.value[id]);
+        const positionsCopy = { ...positions.value };
+        runOnJS(onDrop)(id, positions.value[id], positionsCopy);
       }
 
       currentOverItemId.value = null;

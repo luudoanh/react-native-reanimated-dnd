@@ -416,7 +416,8 @@ export function useHorizontalSortable<T>(
       runOnJS(setIsMoving)(false);
 
       if (onDrop) {
-        runOnJS(onDrop)(id, positions.value[id]);
+        const positionsCopy = { ...positions.value };
+        runOnJS(onDrop)(id, positions.value[id], positionsCopy);
       }
 
       currentOverItemId.value = null;

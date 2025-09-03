@@ -198,6 +198,19 @@ export function useSortableList<TData extends { id: string }>(
 ): UseSortableListReturn<TData> {
   const { data, itemHeight, itemKeyExtractor = (item) => item.id } = options;
 
+  // Runtime validation in development mode
+  if (__DEV__) {
+    data.forEach((item, index) => {
+      const id = itemKeyExtractor(item, index);
+      if (typeof id !== "string" || !id) {
+        console.error(
+          `[react-native-reanimated-dnd] Item at index ${index} has invalid id: ${id}. ` +
+            `Each item must have a unique string id property.`
+        );
+      }
+    });
+  }
+
   // Set up shared values
   const positions = useSharedValue(listToObject(data));
   const scrollY = useSharedValue(0);

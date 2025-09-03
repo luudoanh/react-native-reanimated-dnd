@@ -211,6 +211,64 @@ Follow the setup guides:
 - [React Native Reanimated](https://docs.swmansion.com/react-native-reanimated/docs/fundamentals/installation)
 - [React Native Gesture Handler](https://docs.swmansion.com/react-native-gesture-handler/docs/installation)
 
+## 📋 Requirements
+
+### Data Structure
+
+All items in your data array **MUST** have an `id` property of type string:
+
+```typescript
+interface YourDataType {
+  id: string; // Required!
+  // ... your other properties
+}
+```
+
+This is essential for the library to track items during reordering.
+
+**Example:**
+
+```typescript
+// ✅ Good - Each item has a unique string id
+const tasks = [
+  { id: "1", title: "Learn React Native", completed: false },
+  { id: "2", title: "Build an app", completed: false },
+  { id: "3", title: "Deploy to store", completed: true },
+];
+
+// ❌ Bad - Missing id properties
+const badTasks = [{ title: "Task 1" }, { title: "Task 2" }];
+
+// ❌ Bad - Non-string ids
+const badTasksWithNumbers = [
+  { id: 1, title: "Task 1" },
+  { id: 2, title: "Task 2" },
+];
+```
+
+The library includes runtime validation in development mode that will warn you if items are missing valid ID properties.
+
+## State Management Guidelines
+
+**IMPORTANT**: Sortable components maintain their own internal state for optimal performance and animation consistency.
+
+### Do NOT Do This
+
+- Never update external state (arrays, Redux, Zustand, etc.) directly in `onMove` callbacks
+- Never call `setItems()`, `setTasks()`, or similar functions during drag operations
+- Never manually splice or reorder external arrays in response to drag events
+
+### Correct Approach
+
+- Use `onMove` for logging, analytics, or side effects only
+- Use `onDrop` with `allPositions` parameter for read-only position tracking
+- Let sortable components handle their internal reordering automatically
+- Use external state only for the initial data and for non-reordering updates
+
+### Future Features
+
+Programmatic list operations (add, update, delete, reorder items) that work correctly with internal state management will be added in upcoming releases. This will provide safe methods to modify sortable lists externally.
+
 ## 🏃‍♂️ Quick Start
 
 ### Basic Draggable
@@ -465,10 +523,14 @@ export default function SortableExample() {
           itemsCount={itemsCount}
           itemHeight={itemHeight}
           onMove={(itemId, from, to) => {
-            const newTasks = [...tasks];
-            const [movedTask] = newTasks.splice(from, 1);
-            newTasks.splice(to, 0, movedTask);
-            setTasks(newTasks);
+            console.log(`Task ${itemId} moved from ${from} to ${to}`);
+            // Only log - do NOT update state here
+          }}
+          onDrop={(itemId, position, allPositions) => {
+            if (allPositions) {
+              console.log("All positions:", allPositions);
+              // Use for tracking, analytics, etc. - NOT for reordering state
+            }
           }}
           style={styles.taskItem}
         >
@@ -655,10 +717,14 @@ export default function HorizontalSortableExample() {
         gap={gap}
         paddingHorizontal={paddingHorizontal}
         onMove={(itemId, from, to) => {
-          const newTags = [...tags];
-          const [movedTag] = newTags.splice(from, 1);
-          newTags.splice(to, 0, movedTag);
-          setTags(newTags);
+          console.log(`Tag ${itemId} moved from ${from} to ${to}`);
+          // Only log - do NOT update state here
+        }}
+        onDrop={(itemId, position, allPositions) => {
+          if (allPositions) {
+            console.log("All positions:", allPositions);
+            // Use for tracking, analytics, etc. - NOT for reordering state
+          }
         }}
         style={styles.tagItem}
       >
@@ -806,10 +872,10 @@ Individual item within a sortable list with gesture handling.
   id={string}                                 // Unique identifier
   data={any}                                  // Item data
   positions={SharedValue}                     // Position tracking
-  onMove={(id, from, to) => void}            // Called when item moves
-  onDragStart={(id, position) => void}       // Called when dragging starts
-  onDrop={(id, position) => void}            // Called when item is dropped
-  onDragging={(id, overItemId, y) => void}   // Called during dragging
+  onMove={(id, from, to) => void}                        // Called when item moves
+  onDragStart={(id, position) => void}                   // Called when dragging starts
+  onDrop={(id, position, allPositions?) => void}        // Called when item is dropped
+  onDragging={(id, overItemId, y) => void}               // Called during dragging
   style={StyleProp<ViewStyle>}               // Item styling
   animatedStyle={StyleProp<AnimatedStyle>}   // Animated styling
 >
@@ -933,6 +999,40 @@ const springAnimation = (toValue) => {
 <Draggable animationFunction={springAnimation}>{/* content */}</Draggable>;
 ```
 
+### Enhanced onDrop Callback with Positions
+
+The `onDrop` callback now includes an optional third parameter containing all item positions, making it easier to update your state with the new order:
+
+```tsx
+import { SortableItem } from "react-native-reanimated-dnd";
+
+// Enhanced onDrop with allPositions parameter
+const handleDrop = (
+  id: string,
+  position: number,
+  allPositions?: { [id: string]: number }
+) => {
+  console.log(`Item ${id} dropped at position ${position}`);
+
+  if (allPositions) {
+    // allPositions contains all current item positions
+    console.log("All positions:", allPositions);
+
+    // IMPORTANT: Use this ONLY for read-only tracking
+    // DO NOT update your state arrays directly with this data
+    // Use for: analytics, external state synchronization, logging
+  }
+};
+
+<SortableItem id={item.id} onDrop={handleDrop} {...otherProps}>
+  {/* item content */}
+</SortableItem>;
+```
+
+**Backward Compatibility**: The `allPositions` parameter is optional, so existing code continues to work unchanged. The parameter provides additional position data for advanced use cases where you need complete visibility into all item positions.
+
+**Important**: The `allPositions` parameter is for **read-only tracking only**. Do not use it to automatically update your external state arrays, as this will break the internal state management. Programmatic list operations (add, update, delete, reorder) will be added in future releases.
+
 ### Collision Detection Strategies
 
 ```tsx
@@ -1043,27 +1143,23 @@ I am constantly working to improve React Native Reanimated DnD. Here's what's co
 **Focus: Enhanced Functionality & Bug Fixes**
 
 - 🐛 **Bug Fixes & Issues Resolution**
-
   - Address existing reported issues
   - Performance optimizations
   - Gesture handling improvements
   - API Improvements
 
 - 📐 **Sortable Grids**
-
   - 2D grid drag-and-drop support
   - Flexible grid layouts (2x2, 3x3, custom)
   - Smart auto-positioning and gap management
   - Responsive grid behavior
 
 - ↔️ **Horizontal Sortable Lists**
-
   - Full horizontal scrolling support
   - Auto-scroll for out-of-view items
   - Customizable scroll behavior
 
 - 🪆 **Nested Sortable Lists**
-
   - Multi-level hierarchy support
   - Collapse/expand functionality
   - Parent-child relationship management

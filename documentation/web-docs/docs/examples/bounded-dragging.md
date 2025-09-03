@@ -17,10 +17,14 @@ Bounded dragging restricts the movement of draggable items to specific areas or 
 ## Basic Implementation
 
 ```tsx
-import React, { useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { DropProvider, Draggable, Droppable } from 'react-native-reanimated-dnd';
+import React, { useState } from "react";
+import { View, Text, StyleSheet } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import {
+  DropProvider,
+  Draggable,
+  Droppable,
+} from "react-native-reanimated-dnd";
 
 interface BoundedItemData {
   id: string;
@@ -30,8 +34,8 @@ interface BoundedItemData {
 
 export function BoundedDraggingExample() {
   const [items] = useState<BoundedItemData[]>([
-    { id: '1', label: 'Bounded Item 1', color: '#ff6b6b' },
-    { id: '2', label: 'Bounded Item 2', color: '#4ecdc4' },
+    { id: "1", label: "Bounded Item 1", color: "#ff6b6b" },
+    { id: "2", label: "Bounded Item 2", color: "#4ecdc4" },
   ]);
 
   return (
@@ -81,7 +85,9 @@ export function BoundedDraggingExample() {
           <View style={styles.dropZoneArea}>
             <Droppable<BoundedItemData>
               droppableId="outside-boundary"
-              onDrop={(data) => console.log(`${data.label} dropped outside boundary`)}
+              onDrop={(data) =>
+                console.log(`${data.label} dropped outside boundary`)
+              }
               style={styles.dropZone}
               activeStyle={styles.activeDropZone}
             >
@@ -94,10 +100,10 @@ export function BoundedDraggingExample() {
           <View style={styles.infoContainer}>
             <Text style={styles.infoTitle}>Boundary Implementation:</Text>
             <Text style={styles.infoText}>
-              • Use container views to define visual boundaries{'\n'}
-              • Implement custom logic in onDragging callbacks{'\n'}
-              • Combine with drop zones for controlled interactions{'\n'}
-              • Style boundaries to provide clear visual feedback
+              • Use container views to define visual boundaries{"\n"}• Implement
+              custom logic in onDragging callbacks{"\n"}• Combine with drop
+              zones for controlled interactions{"\n"}• Style boundaries to
+              provide clear visual feedback
             </Text>
           </View>
         </View>
@@ -109,7 +115,7 @@ export function BoundedDraggingExample() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000000',
+    backgroundColor: "#000000",
   },
   content: {
     flex: 1,
@@ -117,15 +123,15 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-    textAlign: 'center',
+    fontWeight: "bold",
+    color: "#FFFFFF",
+    textAlign: "center",
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 15,
-    color: '#8E8E93',
-    textAlign: 'center',
+    color: "#8E8E93",
+    textAlign: "center",
     marginBottom: 30,
     lineHeight: 22,
   },
@@ -134,27 +140,27 @@ const styles = StyleSheet.create({
   },
   boundaryTitle: {
     fontSize: 16,
-    fontWeight: '600',
-    color: '#FFFFFF',
+    fontWeight: "600",
+    color: "#FFFFFF",
     marginBottom: 12,
-    textAlign: 'center',
+    textAlign: "center",
   },
   boundary: {
     height: 300,
-    backgroundColor: '#1a1a1a',
+    backgroundColor: "#1a1a1a",
     borderRadius: 16,
     borderWidth: 2,
-    borderColor: '#58a6ff',
-    borderStyle: 'dashed',
+    borderColor: "#58a6ff",
+    borderStyle: "dashed",
     padding: 20,
-    position: 'relative',
+    position: "relative",
   },
   draggable: {
     width: 120,
     height: 80,
     borderRadius: 12,
-    position: 'absolute',
-    shadowColor: '#000',
+    position: "absolute",
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 6,
@@ -162,69 +168,69 @@ const styles = StyleSheet.create({
   },
   itemContent: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: 8,
   },
   itemLabel: {
     fontSize: 14,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
+    fontWeight: "bold",
+    color: "#FFFFFF",
     marginBottom: 4,
-    textAlign: 'center',
+    textAlign: "center",
   },
   itemHint: {
     fontSize: 10,
-    color: 'rgba(255, 255, 255, 0.8)',
-    textAlign: 'center',
+    color: "rgba(255, 255, 255, 0.8)",
+    textAlign: "center",
   },
   dropZoneArea: {
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 30,
   },
   dropZone: {
-    width: '60%',
+    width: "60%",
     height: 100,
     borderWidth: 2,
-    borderStyle: 'dashed',
-    borderColor: '#3fb950',
-    backgroundColor: 'rgba(63, 185, 80, 0.08)',
+    borderStyle: "dashed",
+    borderColor: "#3fb950",
+    backgroundColor: "rgba(63, 185, 80, 0.08)",
     borderRadius: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: 16,
   },
   activeDropZone: {
-    borderColor: '#FFFFFF',
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderColor: "#FFFFFF",
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
     transform: [{ scale: 1.02 }],
   },
   dropZoneText: {
     fontSize: 16,
-    fontWeight: '600',
-    color: '#FFFFFF',
+    fontWeight: "600",
+    color: "#FFFFFF",
     marginBottom: 4,
   },
   dropZoneSubtext: {
     fontSize: 12,
-    color: '#8E8E93',
+    color: "#8E8E93",
   },
   infoContainer: {
-    backgroundColor: '#1a1a1a',
+    backgroundColor: "#1a1a1a",
     borderRadius: 12,
     padding: 16,
     borderLeftWidth: 4,
-    borderLeftColor: '#58a6ff',
+    borderLeftColor: "#58a6ff",
   },
   infoTitle: {
     fontSize: 16,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
+    fontWeight: "bold",
+    color: "#FFFFFF",
     marginBottom: 8,
   },
   infoText: {
     fontSize: 14,
-    color: '#8E8E93',
+    color: "#8E8E93",
     lineHeight: 20,
   },
 });
@@ -259,10 +265,10 @@ const styles = StyleSheet.create({
     width: 300,
     height: 200,
     borderWidth: 2,
-    borderColor: '#007AFF',
-    borderStyle: 'dashed',
-    backgroundColor: 'rgba(0, 122, 255, 0.1)',
-    position: 'relative',
+    borderColor: "#007AFF",
+    borderStyle: "dashed",
+    backgroundColor: "rgba(0, 122, 255, 0.1)",
+    position: "relative",
   },
 });
 ```
@@ -276,26 +282,22 @@ function CustomBoundaryDraggable({ data, boundaryRect }) {
   const handleDragging = ({ x, y, tx, ty }) => {
     const newX = x + tx;
     const newY = y + ty;
-    
+
     // Check if within bounds
-    const withinBounds = (
+    const withinBounds =
       newX >= boundaryRect.left &&
       newX <= boundaryRect.right &&
       newY >= boundaryRect.top &&
-      newY <= boundaryRect.bottom
-    );
-    
+      newY <= boundaryRect.bottom;
+
     if (!withinBounds) {
-      console.log('Item approaching boundary');
+      console.log("Item approaching boundary");
       // Could implement haptic feedback or visual warnings
     }
   };
 
   return (
-    <Draggable
-      data={data}
-      onDragging={handleDragging}
-    >
+    <Draggable data={data} onDragging={handleDragging}>
       <View style={styles.item}>
         <Text>Bounded Item</Text>
       </View>
@@ -315,18 +317,18 @@ function DropZoneBoundary() {
       {/* Allowed area */}
       <Droppable
         droppableId="allowed-area"
-        onDrop={(data) => console.log('Dropped in allowed area')}
+        onDrop={(data) => console.log("Dropped in allowed area")}
         style={styles.allowedZone}
       >
         <Text>Allowed Drop Area</Text>
-        
+
         <Draggable data={itemData}>
           <View style={styles.draggableItem}>
             <Text>Drag me within this zone</Text>
           </View>
         </Draggable>
       </Droppable>
-      
+
       {/* Restricted area */}
       <View style={styles.restrictedZone}>
         <Text>Restricted Area</Text>
@@ -350,12 +352,17 @@ const rectangularBoundary = {
 
 function RectangularBoundary() {
   return (
-    <View style={[styles.boundary, {
-      left: rectangularBoundary.left,
-      top: rectangularBoundary.top,
-      width: rectangularBoundary.right - rectangularBoundary.left,
-      height: rectangularBoundary.bottom - rectangularBoundary.top,
-    }]}>
+    <View
+      style={[
+        styles.boundary,
+        {
+          left: rectangularBoundary.left,
+          top: rectangularBoundary.top,
+          width: rectangularBoundary.right - rectangularBoundary.left,
+          height: rectangularBoundary.bottom - rectangularBoundary.top,
+        },
+      ]}
+    >
       <Draggable data={itemData}>
         <View style={styles.item}>
           <Text>Rectangular Boundary</Text>
@@ -377,30 +384,32 @@ function CircularBoundary() {
   const handleDragging = ({ x, y, tx, ty }) => {
     const newX = x + tx;
     const newY = y + ty;
-    
+
     // Calculate distance from center
     const distance = Math.sqrt(
       Math.pow(newX - centerX, 2) + Math.pow(newY - centerY, 2)
     );
-    
+
     if (distance > radius) {
-      console.log('Item outside circular boundary');
+      console.log("Item outside circular boundary");
     }
   };
 
   return (
     <View style={styles.circularContainer}>
-      <View style={[styles.circularBoundary, {
-        width: radius * 2,
-        height: radius * 2,
-        borderRadius: radius,
-        left: centerX - radius,
-        top: centerY - radius,
-      }]}>
-        <Draggable
-          data={itemData}
-          onDragging={handleDragging}
-        >
+      <View
+        style={[
+          styles.circularBoundary,
+          {
+            width: radius * 2,
+            height: radius * 2,
+            borderRadius: radius,
+            left: centerX - radius,
+            top: centerY - radius,
+          },
+        ]}
+      >
+        <Draggable data={itemData} onDragging={handleDragging}>
           <View style={styles.item}>
             <Text>Circular Boundary</Text>
           </View>
@@ -416,9 +425,9 @@ function CircularBoundary() {
 ```tsx
 function MultipleBoundaries() {
   const boundaries = [
-    { id: 'zone1', x: 50, y: 50, width: 150, height: 100, color: '#ff6b6b' },
-    { id: 'zone2', x: 220, y: 50, width: 150, height: 100, color: '#4ecdc4' },
-    { id: 'zone3', x: 135, y: 170, width: 150, height: 100, color: '#45b7d1' },
+    { id: "zone1", x: 50, y: 50, width: 150, height: 100, color: "#ff6b6b" },
+    { id: "zone2", x: 220, y: 50, width: 150, height: 100, color: "#4ecdc4" },
+    { id: "zone3", x: 135, y: 170, width: 150, height: 100, color: "#45b7d1" },
   ];
 
   return (
@@ -460,33 +469,26 @@ function BoundaryWithIndicators() {
   const handleDragging = ({ x, y, tx, ty }) => {
     const newX = x + tx;
     const newY = y + ty;
-    
+
     // Check proximity to boundary
     const threshold = 20;
-    const nearBoundary = (
-      newX < threshold || 
-      newY < threshold || 
-      newX > (300 - threshold) || 
-      newY > (200 - threshold)
-    );
-    
+    const nearBoundary =
+      newX < threshold ||
+      newY < threshold ||
+      newX > 300 - threshold ||
+      newY > 200 - threshold;
+
     setIsNearBoundary(nearBoundary);
   };
 
   return (
-    <View style={[
-      styles.boundary,
-      isNearBoundary && styles.boundaryWarning
-    ]}>
+    <View style={[styles.boundary, isNearBoundary && styles.boundaryWarning]}>
       <Draggable
         data={itemData}
         onDragging={handleDragging}
         onDragEnd={() => setIsNearBoundary(false)}
       >
-        <View style={[
-          styles.item,
-          isNearBoundary && styles.itemWarning
-        ]}>
+        <View style={[styles.item, isNearBoundary && styles.itemWarning]}>
           <Text>Boundary Aware Item</Text>
         </View>
       </Draggable>
@@ -496,11 +498,11 @@ function BoundaryWithIndicators() {
 
 const styles = StyleSheet.create({
   boundaryWarning: {
-    borderColor: '#ff4444',
-    backgroundColor: 'rgba(255, 68, 68, 0.1)',
+    borderColor: "#ff4444",
+    backgroundColor: "rgba(255, 68, 68, 0.1)",
   },
   itemWarning: {
-    backgroundColor: '#ff4444',
+    backgroundColor: "#ff4444",
   },
 });
 ```
@@ -511,7 +513,7 @@ const styles = StyleSheet.create({
 function GradientBoundary() {
   return (
     <LinearGradient
-      colors={['rgba(0,122,255,0.1)', 'rgba(0,122,255,0.3)']}
+      colors={["rgba(0,122,255,0.1)", "rgba(0,122,255,0.3)"]}
       style={styles.gradientBoundary}
     >
       <Draggable data={itemData}>
@@ -538,7 +540,7 @@ function GameBoard() {
       {Array.from({ length: boardSize * boardSize }).map((_, index) => {
         const row = Math.floor(index / boardSize);
         const col = index % boardSize;
-        
+
         return (
           <View
             key={index}
@@ -567,7 +569,7 @@ function GameBoard() {
 function DrawingCanvas() {
   return (
     <View style={styles.canvas}>
-      <Draggable data={{ type: 'drawing-tool' }}>
+      <Draggable data={{ type: "drawing-tool" }}>
         <View style={styles.drawingTool}>
           <Text>Drawing Tool</Text>
         </View>

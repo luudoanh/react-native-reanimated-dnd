@@ -19,9 +19,11 @@ type AnimationFunction = (toValue: number) => number;
 Animation functions are worklets that take a target value and return an animated value using Reanimated's animation functions.
 
 ### Parameters
+
 - `toValue`: The target value to animate to (typically 0 for returning to original position)
 
 ### Returns
+
 An animated value created using Reanimated animation functions like `withSpring`, `withTiming`, etc.
 
 ## Built-in Animation Patterns
@@ -31,28 +33,27 @@ An animated value created using Reanimated animation functions like `withSpring`
 Spring animations provide natural, bouncy motion that feels responsive and organic.
 
 #### Basic Spring
+
 ```tsx
 const springAnimation = (toValue) => {
-  'worklet';
+  "worklet";
   return withSpring(toValue);
 };
 
-<Draggable 
-  data={data}
-  animationFunction={springAnimation}
->
+<Draggable data={data} animationFunction={springAnimation}>
   <Text>Spring animation</Text>
-</Draggable>
+</Draggable>;
 ```
 
 #### Custom Spring Configuration
+
 ```tsx
 const customSpring = (toValue) => {
-  'worklet';
+  "worklet";
   return withSpring(toValue, {
-    damping: 15,      // Controls oscillation (higher = less bouncy)
-    stiffness: 150,   // Controls speed (higher = faster)
-    mass: 1,          // Controls inertia (higher = slower)
+    damping: 15, // Controls oscillation (higher = less bouncy)
+    stiffness: 150, // Controls speed (higher = faster)
+    mass: 1, // Controls inertia (higher = slower)
     overshootClamping: false, // Allow overshooting
     restDisplacementThreshold: 0.01,
     restSpeedThreshold: 2,
@@ -61,11 +62,12 @@ const customSpring = (toValue) => {
 ```
 
 #### Bouncy Spring
+
 ```tsx
 const bouncySpring = (toValue) => {
-  'worklet';
+  "worklet";
   return withSpring(toValue, {
-    damping: 8,       // Low damping for more bounce
+    damping: 8, // Low damping for more bounce
     stiffness: 100,
     mass: 0.8,
   });
@@ -73,11 +75,12 @@ const bouncySpring = (toValue) => {
 ```
 
 #### Gentle Spring
+
 ```tsx
 const gentleSpring = (toValue) => {
-  'worklet';
+  "worklet";
   return withSpring(toValue, {
-    damping: 20,      // High damping for smooth motion
+    damping: 20, // High damping for smooth motion
     stiffness: 120,
     mass: 1.2,
   });
@@ -89,9 +92,10 @@ const gentleSpring = (toValue) => {
 Timing animations provide precise control over duration and easing curves.
 
 #### Basic Timing
+
 ```tsx
 const timingAnimation = (toValue) => {
-  'worklet';
+  "worklet";
   return withTiming(toValue, {
     duration: 300,
     easing: Easing.out(Easing.cubic),
@@ -100,11 +104,12 @@ const timingAnimation = (toValue) => {
 ```
 
 #### Elastic Timing
+
 ```tsx
-import { Easing } from 'react-native-reanimated';
+import { Easing } from "react-native-reanimated";
 
 const elasticTiming = (toValue) => {
-  'worklet';
+  "worklet";
   return withTiming(toValue, {
     duration: 600,
     easing: Easing.elastic(2), // Elastic effect
@@ -113,9 +118,10 @@ const elasticTiming = (toValue) => {
 ```
 
 #### Bounce Timing
+
 ```tsx
 const bounceTiming = (toValue) => {
-  'worklet';
+  "worklet";
   return withTiming(toValue, {
     duration: 800,
     easing: Easing.bounce,
@@ -124,9 +130,10 @@ const bounceTiming = (toValue) => {
 ```
 
 #### Smooth Timing
+
 ```tsx
 const smoothTiming = (toValue) => {
-  'worklet';
+  "worklet";
   return withTiming(toValue, {
     duration: 250,
     easing: Easing.bezier(0.25, 0.1, 0.25, 1), // Material Design curve
@@ -140,10 +147,10 @@ const smoothTiming = (toValue) => {
 
 ```tsx
 const sequentialAnimation = (toValue) => {
-  'worklet';
+  "worklet";
   return withSequence(
     withTiming(toValue * 1.1, { duration: 100 }), // Slight overshoot
-    withSpring(toValue, { damping: 15 })           // Spring back
+    withSpring(toValue, { damping: 15 }) // Spring back
   );
 };
 ```
@@ -152,7 +159,7 @@ const sequentialAnimation = (toValue) => {
 
 ```tsx
 const delayedAnimation = (toValue) => {
-  'worklet';
+  "worklet";
   return withDelay(
     200, // 200ms delay
     withSpring(toValue)
@@ -164,7 +171,7 @@ const delayedAnimation = (toValue) => {
 
 ```tsx
 const pulseAnimation = (toValue) => {
-  'worklet';
+  "worklet";
   return withRepeat(
     withSequence(
       withTiming(toValue * 0.95, { duration: 150 }),
@@ -180,7 +187,7 @@ const pulseAnimation = (toValue) => {
 
 ```tsx
 const conditionalAnimation = (toValue) => {
-  'worklet';
+  "worklet";
   // Different animation based on target value
   if (toValue === 0) {
     // Returning to original position - use spring
@@ -198,25 +205,25 @@ const conditionalAnimation = (toValue) => {
 
 ```tsx
 function StatefulDraggable({ data, isSuccess }) {
-  const getAnimation = useCallback((toValue) => {
-    'worklet';
-    if (isSuccess) {
-      // Success animation - bouncy and celebratory
-      return withSequence(
-        withTiming(toValue * 1.2, { duration: 100 }),
-        withSpring(toValue, { damping: 8, stiffness: 150 })
-      );
-    } else {
-      // Default animation - smooth return
-      return withSpring(toValue, { damping: 15 });
-    }
-  }, [isSuccess]);
+  const getAnimation = useCallback(
+    (toValue) => {
+      "worklet";
+      if (isSuccess) {
+        // Success animation - bouncy and celebratory
+        return withSequence(
+          withTiming(toValue * 1.2, { duration: 100 }),
+          withSpring(toValue, { damping: 8, stiffness: 150 })
+        );
+      } else {
+        // Default animation - smooth return
+        return withSpring(toValue, { damping: 15 });
+      }
+    },
+    [isSuccess]
+  );
 
   return (
-    <Draggable 
-      data={data}
-      animationFunction={getAnimation}
-    >
+    <Draggable data={data} animationFunction={getAnimation}>
       <Text>State-aware animation</Text>
     </Draggable>
   );
@@ -227,25 +234,25 @@ function StatefulDraggable({ data, isSuccess }) {
 
 ```tsx
 function PerformanceDraggable({ data, isLowEndDevice }) {
-  const getAnimation = useCallback((toValue) => {
-    'worklet';
-    if (isLowEndDevice) {
-      // Simple, fast animation for low-end devices
-      return withTiming(toValue, { duration: 150 });
-    } else {
-      // Rich animation for high-end devices
-      return withSequence(
-        withTiming(toValue * 1.1, { duration: 100 }),
-        withSpring(toValue, { damping: 12, stiffness: 200 })
-      );
-    }
-  }, [isLowEndDevice]);
+  const getAnimation = useCallback(
+    (toValue) => {
+      "worklet";
+      if (isLowEndDevice) {
+        // Simple, fast animation for low-end devices
+        return withTiming(toValue, { duration: 150 });
+      } else {
+        // Rich animation for high-end devices
+        return withSequence(
+          withTiming(toValue * 1.1, { duration: 100 }),
+          withSpring(toValue, { damping: 12, stiffness: 200 })
+        );
+      }
+    },
+    [isLowEndDevice]
+  );
 
   return (
-    <Draggable 
-      data={data}
-      animationFunction={getAnimation}
-    >
+    <Draggable data={data} animationFunction={getAnimation}>
       <Text>Performance-aware animation</Text>
     </Draggable>
   );
@@ -260,23 +267,23 @@ function PerformanceDraggable({ data, isLowEndDevice }) {
 // Material Design motion curves
 const materialAnimations = {
   standard: (toValue) => {
-    'worklet';
+    "worklet";
     return withTiming(toValue, {
       duration: 300,
       easing: Easing.bezier(0.4, 0.0, 0.2, 1),
     });
   },
-  
+
   decelerate: (toValue) => {
-    'worklet';
+    "worklet";
     return withTiming(toValue, {
       duration: 250,
       easing: Easing.bezier(0.0, 0.0, 0.2, 1),
     });
   },
-  
+
   accelerate: (toValue) => {
-    'worklet';
+    "worklet";
     return withTiming(toValue, {
       duration: 200,
       easing: Easing.bezier(0.4, 0.0, 1, 1),
@@ -290,24 +297,24 @@ const materialAnimations = {
 ```tsx
 const iOSAnimations = {
   default: (toValue) => {
-    'worklet';
+    "worklet";
     return withSpring(toValue, {
       damping: 20,
       stiffness: 300,
       mass: 1,
     });
   },
-  
+
   gentle: (toValue) => {
-    'worklet';
+    "worklet";
     return withTiming(toValue, {
       duration: 350,
       easing: Easing.out(Easing.cubic),
     });
   },
-  
+
   snappy: (toValue) => {
-    'worklet';
+    "worklet";
     return withSpring(toValue, {
       damping: 15,
       stiffness: 400,
@@ -322,24 +329,24 @@ const iOSAnimations = {
 ```tsx
 const gameAnimations = {
   powerUp: (toValue) => {
-    'worklet';
+    "worklet";
     return withSequence(
       withTiming(toValue * 1.3, { duration: 100 }),
       withTiming(toValue * 0.9, { duration: 100 }),
       withSpring(toValue, { damping: 10 })
     );
   },
-  
+
   impact: (toValue) => {
-    'worklet';
+    "worklet";
     return withSequence(
       withTiming(toValue * 0.8, { duration: 50 }),
       withSpring(toValue, { damping: 8, stiffness: 200 })
     );
   },
-  
+
   float: (toValue) => {
-    'worklet';
+    "worklet";
     return withRepeat(
       withSequence(
         withTiming(toValue - 5, { duration: 1000 }),
@@ -361,38 +368,38 @@ class AnimationFactory {
   static create(type: string, options: any = {}) {
     const animations = {
       spring: (toValue) => {
-        'worklet';
+        "worklet";
         return withSpring(toValue, {
           damping: options.damping || 15,
           stiffness: options.stiffness || 150,
-          ...options
+          ...options,
         });
       },
-      
+
       timing: (toValue) => {
-        'worklet';
+        "worklet";
         return withTiming(toValue, {
           duration: options.duration || 300,
           easing: options.easing || Easing.out(Easing.cubic),
-          ...options
+          ...options,
         });
       },
-      
+
       bounce: (toValue) => {
-        'worklet';
+        "worklet";
         return withTiming(toValue, {
           duration: options.duration || 600,
           easing: Easing.bounce,
-          ...options
+          ...options,
         });
       },
-      
+
       elastic: (toValue) => {
-        'worklet';
+        "worklet";
         return withTiming(toValue, {
           duration: options.duration || 800,
           easing: Easing.elastic(options.elasticity || 2),
-          ...options
+          ...options,
         });
       },
     };
@@ -404,12 +411,9 @@ class AnimationFactory {
 // Usage
 function ConfigurableDraggable({ animationType, animationOptions }) {
   const animation = AnimationFactory.create(animationType, animationOptions);
-  
+
   return (
-    <Draggable 
-      data={data}
-      animationFunction={animation}
-    >
+    <Draggable data={data} animationFunction={animation}>
       <Text>Configurable animation</Text>
     </Draggable>
   );
@@ -424,39 +428,39 @@ const useThemeAnimations = (theme) => {
     const animations = {
       light: {
         gentle: (toValue) => {
-          'worklet';
+          "worklet";
           return withSpring(toValue, { damping: 20, stiffness: 200 });
         },
         quick: (toValue) => {
-          'worklet';
+          "worklet";
           return withTiming(toValue, { duration: 200 });
         },
       },
-      
+
       dark: {
         smooth: (toValue) => {
-          'worklet';
-          return withTiming(toValue, { 
+          "worklet";
+          return withTiming(toValue, {
             duration: 300,
-            easing: Easing.out(Easing.cubic)
+            easing: Easing.out(Easing.cubic),
           });
         },
         dramatic: (toValue) => {
-          'worklet';
+          "worklet";
           return withSequence(
             withTiming(toValue * 1.2, { duration: 150 }),
             withSpring(toValue, { damping: 10 })
           );
         },
       },
-      
+
       playful: {
         bounce: (toValue) => {
-          'worklet';
+          "worklet";
           return withSpring(toValue, { damping: 8, stiffness: 150 });
         },
         wiggle: (toValue) => {
-          'worklet';
+          "worklet";
           return withSequence(
             withTiming(toValue + 5, { duration: 50 }),
             withTiming(toValue - 5, { duration: 50 }),
@@ -478,7 +482,7 @@ const useThemeAnimations = (theme) => {
 ```tsx
 // Prefer spring animations for better performance
 const optimizedSpring = (toValue) => {
-  'worklet';
+  "worklet";
   return withSpring(toValue, {
     damping: 15,
     stiffness: 150,
@@ -490,7 +494,7 @@ const optimizedSpring = (toValue) => {
 
 // Use shorter durations for timing animations
 const optimizedTiming = (toValue) => {
-  'worklet';
+  "worklet";
   return withTiming(toValue, {
     duration: 200, // Shorter duration
     easing: Easing.out(Easing.quad), // Simpler easing
@@ -502,10 +506,10 @@ const optimizedTiming = (toValue) => {
 
 ```tsx
 const adaptiveAnimation = (toValue) => {
-  'worklet';
+  "worklet";
   // Use simpler animations during heavy operations
   const isHeavyOperation = global.isHeavyOperation || false;
-  
+
   if (isHeavyOperation) {
     return withTiming(toValue, { duration: 100 });
   } else {
@@ -521,23 +525,20 @@ const adaptiveAnimation = (toValue) => {
 ```tsx
 const createTestAnimation = (duration = 100) => {
   return (toValue) => {
-    'worklet';
+    "worklet";
     return withTiming(toValue, { duration });
   };
 };
 
 // Use in tests
 function TestDraggable() {
-  const isTest = process.env.NODE_ENV === 'test';
-  const animation = isTest 
+  const isTest = process.env.NODE_ENV === "test";
+  const animation = isTest
     ? createTestAnimation(0) // Instant for tests
-    : springAnimation;       // Normal for app
+    : springAnimation; // Normal for app
 
   return (
-    <Draggable 
-      data={data}
-      animationFunction={animation}
-    >
+    <Draggable data={data} animationFunction={animation}>
       <Text>Test-friendly animation</Text>
     </Draggable>
   );
@@ -570,14 +571,12 @@ const getContextualAnimation = (context) => {
 
 // Good: Performance-aware animations
 const getPerformanceAnimation = (deviceCapability) => {
-  return deviceCapability === 'high' 
-    ? richAnimation 
-    : simpleAnimation;
+  return deviceCapability === "high" ? richAnimation : simpleAnimation;
 };
 
 // Avoid: Overly complex animations
 const avoidComplexAnimation = (toValue) => {
-  'worklet';
+  "worklet";
   // Too many nested animations can hurt performance
   return withSequence(
     withRepeat(withTiming(toValue * 1.1, { duration: 50 }), 5),

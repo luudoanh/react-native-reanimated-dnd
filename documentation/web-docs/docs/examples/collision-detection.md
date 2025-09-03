@@ -21,10 +21,14 @@ Collision detection determines when a draggable item is considered to be "over" 
 ## Basic Implementation
 
 ```tsx
-import React, { useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { DropProvider, Draggable, Droppable } from 'react-native-reanimated-dnd';
+import React, { useState } from "react";
+import { View, Text, StyleSheet } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import {
+  DropProvider,
+  Draggable,
+  Droppable,
+} from "react-native-reanimated-dnd";
 
 interface DraggableItemData {
   id: string;
@@ -36,9 +40,9 @@ export function CollisionDetectionExample() {
   const [activeZone, setActiveZone] = useState<string | null>(null);
 
   const items: DraggableItemData[] = [
-    { id: '1', label: 'Center', color: '#ff6b6b' },
-    { id: '2', label: 'Intersect', color: '#4ecdc4' },
-    { id: '3', label: 'Contain', color: '#45b7d1' },
+    { id: "1", label: "Center", color: "#ff6b6b" },
+    { id: "2", label: "Intersect", color: "#4ecdc4" },
+    { id: "3", label: "Contain", color: "#45b7d1" },
   ];
 
   return (
@@ -54,12 +58,16 @@ export function CollisionDetectionExample() {
           <View style={styles.dropZonesContainer}>
             <Droppable<DraggableItemData>
               droppableId="center-zone"
-              onDrop={(data) => console.log(`${data.label} dropped on center zone`)}
-              onActiveChange={(isActive) => setActiveZone(isActive ? 'center-zone' : null)}
+              onDrop={(data) =>
+                console.log(`${data.label} dropped on center zone`)
+              }
+              onActiveChange={(isActive) =>
+                setActiveZone(isActive ? "center-zone" : null)
+              }
               style={[
                 styles.dropZone,
                 styles.centerZone,
-                activeZone === 'center-zone' && styles.activeZone
+                activeZone === "center-zone" && styles.activeZone,
               ]}
             >
               <Text style={styles.zoneTitle}>Center Detection</Text>
@@ -70,12 +78,16 @@ export function CollisionDetectionExample() {
 
             <Droppable<DraggableItemData>
               droppableId="intersect-zone"
-              onDrop={(data) => console.log(`${data.label} dropped on intersect zone`)}
-              onActiveChange={(isActive) => setActiveZone(isActive ? 'intersect-zone' : null)}
+              onDrop={(data) =>
+                console.log(`${data.label} dropped on intersect zone`)
+              }
+              onActiveChange={(isActive) =>
+                setActiveZone(isActive ? "intersect-zone" : null)
+              }
               style={[
                 styles.dropZone,
                 styles.intersectZone,
-                activeZone === 'intersect-zone' && styles.activeZone
+                activeZone === "intersect-zone" && styles.activeZone,
               ]}
             >
               <Text style={styles.zoneTitle}>Intersect Detection</Text>
@@ -86,12 +98,16 @@ export function CollisionDetectionExample() {
 
             <Droppable<DraggableItemData>
               droppableId="contain-zone"
-              onDrop={(data) => console.log(`${data.label} dropped on contain zone`)}
-              onActiveChange={(isActive) => setActiveZone(isActive ? 'contain-zone' : null)}
+              onDrop={(data) =>
+                console.log(`${data.label} dropped on contain zone`)
+              }
+              onActiveChange={(isActive) =>
+                setActiveZone(isActive ? "contain-zone" : null)
+              }
               style={[
                 styles.dropZone,
                 styles.containZone,
-                activeZone === 'contain-zone' && styles.activeZone
+                activeZone === "contain-zone" && styles.activeZone,
               ]}
             >
               <Text style={styles.zoneTitle}>Contain Detection</Text>
@@ -141,21 +157,30 @@ export function CollisionDetectionExample() {
           <View style={styles.infoContainer}>
             <Text style={styles.infoTitle}>How it works:</Text>
             <View style={styles.infoItem}>
-              <View style={[styles.infoIndicator, { backgroundColor: '#ff6b6b' }]} />
+              <View
+                style={[styles.infoIndicator, { backgroundColor: "#ff6b6b" }]}
+              />
               <Text style={styles.infoText}>
-                <Text style={styles.bold}>Center:</Text> Precise targeting, center point must be over zone
+                <Text style={styles.bold}>Center:</Text> Precise targeting,
+                center point must be over zone
               </Text>
             </View>
             <View style={styles.infoItem}>
-              <View style={[styles.infoIndicator, { backgroundColor: '#4ecdc4' }]} />
+              <View
+                style={[styles.infoIndicator, { backgroundColor: "#4ecdc4" }]}
+              />
               <Text style={styles.infoText}>
-                <Text style={styles.bold}>Intersect:</Text> Easy dropping, any overlap triggers detection
+                <Text style={styles.bold}>Intersect:</Text> Easy dropping, any
+                overlap triggers detection
               </Text>
             </View>
             <View style={styles.infoItem}>
-              <View style={[styles.infoIndicator, { backgroundColor: '#45b7d1' }]} />
+              <View
+                style={[styles.infoIndicator, { backgroundColor: "#45b7d1" }]}
+              />
               <Text style={styles.infoText}>
-                <Text style={styles.bold}>Contain:</Text> Strict placement, entire item must fit inside
+                <Text style={styles.bold}>Contain:</Text> Strict placement,
+                entire item must fit inside
               </Text>
             </View>
           </View>
@@ -168,7 +193,7 @@ export function CollisionDetectionExample() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000000',
+    backgroundColor: "#000000",
   },
   content: {
     flex: 1,
@@ -176,15 +201,15 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-    textAlign: 'center',
+    fontWeight: "bold",
+    color: "#FFFFFF",
+    textAlign: "center",
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 15,
-    color: '#8E8E93',
-    textAlign: 'center',
+    color: "#8E8E93",
+    textAlign: "center",
     marginBottom: 30,
     lineHeight: 22,
   },
@@ -196,42 +221,42 @@ const styles = StyleSheet.create({
     height: 100,
     borderRadius: 12,
     borderWidth: 2,
-    borderStyle: 'dashed',
-    justifyContent: 'center',
-    alignItems: 'center',
+    borderStyle: "dashed",
+    justifyContent: "center",
+    alignItems: "center",
     padding: 16,
   },
   centerZone: {
-    borderColor: '#ff6b6b',
-    backgroundColor: 'rgba(255, 107, 107, 0.1)',
+    borderColor: "#ff6b6b",
+    backgroundColor: "rgba(255, 107, 107, 0.1)",
   },
   intersectZone: {
-    borderColor: '#4ecdc4',
-    backgroundColor: 'rgba(78, 205, 196, 0.1)',
+    borderColor: "#4ecdc4",
+    backgroundColor: "rgba(78, 205, 196, 0.1)",
   },
   containZone: {
-    borderColor: '#45b7d1',
-    backgroundColor: 'rgba(69, 183, 209, 0.1)',
+    borderColor: "#45b7d1",
+    backgroundColor: "rgba(69, 183, 209, 0.1)",
   },
   activeZone: {
-    borderColor: '#FFFFFF',
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderColor: "#FFFFFF",
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
     transform: [{ scale: 1.02 }],
   },
   zoneTitle: {
     fontSize: 16,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
+    fontWeight: "bold",
+    color: "#FFFFFF",
     marginBottom: 4,
   },
   zoneDescription: {
     fontSize: 12,
-    color: '#8E8E93',
-    textAlign: 'center',
+    color: "#8E8E93",
+    textAlign: "center",
   },
   draggableItemsArea: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
+    flexDirection: "row",
+    justifyContent: "space-around",
     marginBottom: 40,
     gap: 12,
   },
@@ -239,7 +264,7 @@ const styles = StyleSheet.create({
     width: 100,
     height: 80,
     borderRadius: 12,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 6,
@@ -247,37 +272,37 @@ const styles = StyleSheet.create({
   },
   itemContent: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: 8,
   },
   itemLabel: {
     fontSize: 14,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
+    fontWeight: "bold",
+    color: "#FFFFFF",
     marginBottom: 2,
   },
   itemHint: {
     fontSize: 10,
-    color: 'rgba(255, 255, 255, 0.8)',
-    textAlign: 'center',
+    color: "rgba(255, 255, 255, 0.8)",
+    textAlign: "center",
   },
   infoContainer: {
-    backgroundColor: '#1a1a1a',
+    backgroundColor: "#1a1a1a",
     borderRadius: 12,
     padding: 16,
     borderLeftWidth: 4,
-    borderLeftColor: '#58a6ff',
+    borderLeftColor: "#58a6ff",
   },
   infoTitle: {
     fontSize: 16,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
+    fontWeight: "bold",
+    color: "#FFFFFF",
     marginBottom: 12,
   },
   infoItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 12,
     marginBottom: 8,
   },
@@ -288,13 +313,13 @@ const styles = StyleSheet.create({
   },
   infoText: {
     fontSize: 14,
-    color: '#8E8E93',
+    color: "#8E8E93",
     flex: 1,
     lineHeight: 20,
   },
   bold: {
-    fontWeight: 'bold',
-    color: '#FFFFFF',
+    fontWeight: "bold",
+    color: "#FFFFFF",
   },
 });
 ```
@@ -306,15 +331,13 @@ const styles = StyleSheet.create({
 The center point of the draggable must be over the droppable:
 
 ```tsx
-<Draggable
-  data={itemData}
-  collisionAlgorithm="center"
->
+<Draggable data={itemData} collisionAlgorithm="center">
   {/* Content */}
 </Draggable>
 ```
 
 **Use cases:**
+
 - Precise targeting required
 - Small drop zones
 - Grid-based layouts
@@ -325,15 +348,13 @@ The center point of the draggable must be over the droppable:
 Any overlap between draggable and droppable triggers detection:
 
 ```tsx
-<Draggable
-  data={itemData}
-  collisionAlgorithm="intersect"
->
+<Draggable data={itemData} collisionAlgorithm="intersect">
   {/* Content */}
 </Draggable>
 ```
 
 **Use cases:**
+
 - General drag and drop
 - Large drop zones
 - User-friendly interactions
@@ -344,15 +365,13 @@ Any overlap between draggable and droppable triggers detection:
 The entire draggable must be within the droppable bounds:
 
 ```tsx
-<Draggable
-  data={itemData}
-  collisionAlgorithm="contain"
->
+<Draggable data={itemData} collisionAlgorithm="contain">
   {/* Content */}
 </Draggable>
 ```
 
 **Use cases:**
+
 - Strict placement requirements
 - Container-based layouts
 - Puzzle games
@@ -383,15 +402,15 @@ function MixedAlgorithmExample() {
         </Droppable>
 
         {/* Items with different algorithms */}
-        <Draggable data={{ id: '1' }} collisionAlgorithm="center">
+        <Draggable data={{ id: "1" }} collisionAlgorithm="center">
           <Text>Precise Item</Text>
         </Draggable>
 
-        <Draggable data={{ id: '2' }} collisionAlgorithm="intersect">
+        <Draggable data={{ id: "2" }} collisionAlgorithm="intersect">
           <Text>Easy Item</Text>
         </Draggable>
 
-        <Draggable data={{ id: '3' }} collisionAlgorithm="contain">
+        <Draggable data={{ id: "3" }} collisionAlgorithm="contain">
           <Text>Strict Item</Text>
         </Draggable>
       </View>
@@ -404,15 +423,21 @@ function MixedAlgorithmExample() {
 
 ```tsx
 function DynamicAlgorithmExample() {
-  const [algorithm, setAlgorithm] = useState<'center' | 'intersect' | 'contain'>('intersect');
-  const [precision, setPrecision] = useState('normal');
+  const [algorithm, setAlgorithm] = useState<
+    "center" | "intersect" | "contain"
+  >("intersect");
+  const [precision, setPrecision] = useState("normal");
 
   const getAlgorithm = () => {
     switch (precision) {
-      case 'high': return 'center';
-      case 'low': return 'intersect';
-      case 'strict': return 'contain';
-      default: return 'intersect';
+      case "high":
+        return "center";
+      case "low":
+        return "intersect";
+      case "strict":
+        return "contain";
+      default:
+        return "intersect";
     }
   };
 
@@ -421,13 +446,13 @@ function DynamicAlgorithmExample() {
       <View style={styles.container}>
         <View style={styles.controls}>
           <Text>Precision:</Text>
-          {['high', 'normal', 'low', 'strict'].map((level) => (
+          {["high", "normal", "low", "strict"].map((level) => (
             <TouchableOpacity
               key={level}
               onPress={() => setPrecision(level)}
               style={[
                 styles.button,
-                precision === level && styles.activeButton
+                precision === level && styles.activeButton,
               ]}
             >
               <Text>{level}</Text>
@@ -435,10 +460,7 @@ function DynamicAlgorithmExample() {
           ))}
         </View>
 
-        <Draggable
-          data={{ id: 'dynamic' }}
-          collisionAlgorithm={getAlgorithm()}
-        >
+        <Draggable data={{ id: "dynamic" }} collisionAlgorithm={getAlgorithm()}>
           <Text>Dynamic Algorithm Item</Text>
         </Draggable>
       </View>
@@ -455,15 +477,15 @@ function DynamicAlgorithmExample() {
 function AlgorithmFeedback({ algorithm, isActive }) {
   const getFeedbackStyle = () => {
     const baseStyle = styles.dropZone;
-    
+
     if (!isActive) return baseStyle;
-    
+
     switch (algorithm) {
-      case 'center':
+      case "center":
         return [baseStyle, styles.centerActive];
-      case 'intersect':
+      case "intersect":
         return [baseStyle, styles.intersectActive];
-      case 'contain':
+      case "contain":
         return [baseStyle, styles.containActive];
       default:
         return baseStyle;
@@ -488,11 +510,13 @@ function CollisionIndicator({ draggableId, droppableId, algorithm }) {
   return (
     <View style={styles.indicator}>
       <Text>Algorithm: {algorithm}</Text>
-      <View style={[
-        styles.status,
-        isColliding ? styles.colliding : styles.notColliding
-      ]}>
-        <Text>{isColliding ? 'Colliding' : 'Not Colliding'}</Text>
+      <View
+        style={[
+          styles.status,
+          isColliding ? styles.colliding : styles.notColliding,
+        ]}
+      >
+        <Text>{isColliding ? "Colliding" : "Not Colliding"}</Text>
       </View>
     </View>
   );
@@ -507,25 +531,25 @@ function CollisionIndicator({ draggableId, droppableId, algorithm }) {
 // Use appropriate algorithm for your use case
 const getOptimalAlgorithm = (useCase: string) => {
   switch (useCase) {
-    case 'file-manager':
-      return 'intersect'; // Easy dropping
-    case 'grid-layout':
-      return 'center'; // Precise placement
-    case 'container-puzzle':
-      return 'contain'; // Strict fitting
+    case "file-manager":
+      return "intersect"; // Easy dropping
+    case "grid-layout":
+      return "center"; // Precise placement
+    case "container-puzzle":
+      return "contain"; // Strict fitting
     default:
-      return 'intersect';
+      return "intersect";
   }
 };
 
 // Minimize collision checks for better performance
 <Draggable
   data={itemData}
-  collisionAlgorithm={getOptimalAlgorithm('file-manager')}
+  collisionAlgorithm={getOptimalAlgorithm("file-manager")}
   // Other optimizations handled by library
 >
   {/* Content */}
-</Draggable>
+</Draggable>;
 ```
 
 ## Common Use Cases
@@ -570,16 +594,19 @@ const getOptimalAlgorithm = (useCase: string) => {
 ### Common Issues
 
 **Collision not detected:**
+
 - Check if algorithm matches your expectations
 - Verify drop zone size is appropriate
 - Ensure proper positioning
 
 **Too sensitive/not sensitive enough:**
+
 - Switch between algorithms
 - Adjust drop zone sizes
 - Consider user feedback
 
 **Performance issues:**
+
 - Use simpler algorithms when possible
 - Optimize component re-renders
 - Check for unnecessary calculations

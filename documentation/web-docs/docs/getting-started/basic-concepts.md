@@ -36,8 +36,8 @@ App
 All drag-and-drop functionality relies on React Context for component communication:
 
 ```tsx
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { DropProvider } from 'react-native-reanimated-dnd';
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { DropProvider } from "react-native-reanimated-dnd";
 
 // The DropProvider creates a context that enables:
 // - Registration of draggable and droppable components
@@ -81,21 +81,21 @@ The library automatically handles collision detection between draggable items an
 
 ```tsx
 // Different collision algorithms available:
-<Draggable 
+<Draggable
   data={data}
   collisionAlgorithm="intersect" // Default - any overlap
 >
   <Text>Easy to drop</Text>
 </Draggable>
 
-<Draggable 
+<Draggable
   data={data}
   collisionAlgorithm="center" // Center point must be over droppable
 >
   <Text>Precise dropping</Text>
 </Draggable>
 
-<Draggable 
+<Draggable
   data={data}
   collisionAlgorithm="contain" // Entire item must be contained
 >
@@ -109,13 +109,13 @@ Built on React Native Reanimated for smooth, performant animations:
 
 ```tsx
 // Automatic spring animations on drop
-<Draggable 
+<Draggable
   data={data}
   animationFunction={(toValue) => {
-    'worklet';
+    "worklet";
     return withSpring(toValue, {
       damping: 15,
-      stiffness: 150
+      stiffness: 150,
     });
   }}
 >
@@ -130,7 +130,7 @@ Built on React Native Reanimated for smooth, performant animations:
 Make any React Native component draggable:
 
 ```tsx
-import { Draggable } from 'react-native-reanimated-dnd';
+import { Draggable } from "react-native-reanimated-dnd";
 
 function TaskItem({ task }) {
   return (
@@ -145,6 +145,7 @@ function TaskItem({ task }) {
 ```
 
 **Key Features:**
+
 - Automatic gesture handling
 - Collision detection
 - Animation support
@@ -157,15 +158,11 @@ function TaskItem({ task }) {
 Create areas where draggable items can be dropped:
 
 ```tsx
-import { Droppable } from 'react-native-reanimated-dnd';
+import { Droppable } from "react-native-reanimated-dnd";
 
 function DropZone({ onTaskDrop }) {
   return (
-    <Droppable 
-      onDrop={onTaskDrop}
-      dropAlignment="center"
-      capacity={5}
-    >
+    <Droppable onDrop={onTaskDrop} dropAlignment="center" capacity={5}>
       <View style={styles.dropZone}>
         <Text>Drop tasks here</Text>
       </View>
@@ -175,6 +172,7 @@ function DropZone({ onTaskDrop }) {
 ```
 
 **Key Features:**
+
 - Drop event handling
 - Visual feedback for active drops
 - Alignment options for dropped items
@@ -186,39 +184,37 @@ function DropZone({ onTaskDrop }) {
 High-level components for reorderable lists:
 
 ```tsx
-import { Sortable, SortableItem } from 'react-native-reanimated-dnd';
-import { useCallback } from 'react';
+import { Sortable, SortableItem } from "react-native-reanimated-dnd";
+import { useCallback } from "react";
 
 function TaskList({ tasks, onTaskReorder }) {
-  const renderTask = useCallback(({ item, id, positions, ...props }) => (
-    <SortableItem 
-      key={id} 
-      id={id} 
-      positions={positions} 
-      {...props}
-      onMove={(itemId, from, to) => {
-        // Update task order when items are moved
-        const newTasks = [...tasks];
-        const [movedTask] = newTasks.splice(from, 1);
-        newTasks.splice(to, 0, movedTask);
-        onTaskReorder(newTasks);
-      }}
-    >
-      <TaskCard task={item} />
-    </SortableItem>
-  ), [tasks, onTaskReorder]);
-
-  return (
-    <Sortable 
-      data={tasks} 
-      renderItem={renderTask}
-      itemHeight={60}
-    />
+  const renderTask = useCallback(
+    ({ item, id, positions, ...props }) => (
+      <SortableItem
+        key={id}
+        id={id}
+        positions={positions}
+        {...props}
+        onMove={(itemId, from, to) => {
+          // Update task order when items are moved
+          const newTasks = [...tasks];
+          const [movedTask] = newTasks.splice(from, 1);
+          newTasks.splice(to, 0, movedTask);
+          onTaskReorder(newTasks);
+        }}
+      >
+        <TaskCard task={item} />
+      </SortableItem>
+    ),
+    [tasks, onTaskReorder]
   );
+
+  return <Sortable data={tasks} renderItem={renderTask} itemHeight={60} />;
 }
 ```
 
 **Key Features:**
+
 - Automatic list reordering
 - Smooth item animations
 - Handle-based sorting
@@ -238,20 +234,20 @@ The `DropProvider` creates a context that enables:
 ### Provider Configuration
 
 ```tsx
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 <GestureHandlerRootView style={{ flex: 1 }}>
   <DropProvider
-    onDragStart={(data) => console.log('Drag started:', data)}
-    onDragEnd={(data) => console.log('Drag ended:', data)}
-    onDroppedItemsUpdate={(items) => console.log('Items updated:', items)}
+    onDragStart={(data) => console.log("Drag started:", data)}
+    onDragEnd={(data) => console.log("Drag ended:", data)}
+    onDroppedItemsUpdate={(items) => console.log("Items updated:", items)}
     onDragging={({ x, y, tx, ty, itemData }) => {
       console.log(`${itemData.name} at (${x + tx}, ${y + ty})`);
     }}
   >
     <YourApp />
   </DropProvider>
-</GestureHandlerRootView>
+</GestureHandlerRootView>;
 ```
 
 ## Data Flow
@@ -321,11 +317,11 @@ function App() {
 
   const handleDroppedItemsUpdate = (items) => {
     setDroppedItems(items);
-    
+
     // Sync with your state management
     const updatedTasks = syncTasksWithDroppedItems(tasks, items);
     setTasks(updatedTasks);
-    
+
     // Persist to backend
     saveTasks(updatedTasks);
   };
@@ -400,8 +396,8 @@ function DragDropErrorBoundary({ children }) {
     <ErrorBoundary
       fallback={<Text>Drag and drop temporarily unavailable</Text>}
       onError={(error) => {
-        console.error('Drag and drop error:', error);
-        analytics.track('dnd_error', { error: error.message });
+        console.error("Drag and drop error:", error);
+        analytics.track("dnd_error", { error: error.message });
       }}
     >
       {children}
@@ -468,4 +464,4 @@ Now that you understand the basic concepts:
 2. **[Setup Provider](./setup-provider)** - Learn advanced provider configuration
 3. **[API Reference](../api/overview)** - Explore all available components and hooks
 4. **[Examples](../examples/basic-drag-drop)** - See real-world implementations
-5. **[Performance Guide](../guides/performance)** - Optimize your implementation 
+5. **[Performance Guide](../guides/performance)** - Optimize your implementation

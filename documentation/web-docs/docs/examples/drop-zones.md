@@ -22,58 +22,66 @@ Drop zones are designated areas where draggable items can be dropped. This examp
 ## Basic Implementation
 
 ```tsx
-import React, { useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { DropProvider, Draggable, Droppable } from 'react-native-reanimated-dnd';
+import React, { useState } from "react";
+import { View, Text, StyleSheet } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import {
+  DropProvider,
+  Draggable,
+  Droppable,
+} from "react-native-reanimated-dnd";
 
 interface DropItem {
   id: string;
   label: string;
-  type: 'image' | 'text' | 'video';
+  type: "image" | "text" | "video";
   color: string;
 }
 
 export function DropZonesExample() {
-  const [droppedItems, setDroppedItems] = useState<{[key: string]: DropItem[]}>({
+  const [droppedItems, setDroppedItems] = useState<{
+    [key: string]: DropItem[];
+  }>({
     images: [],
     text: [],
-    trash: []
+    trash: [],
   });
 
   const items: DropItem[] = [
-    { id: '1', label: 'Photo', type: 'image', color: '#ff6b6b' },
-    { id: '2', label: 'Document', type: 'text', color: '#4ecdc4' },
-    { id: '3', label: 'Video', type: 'video', color: '#45b7d1' },
+    { id: "1", label: "Photo", type: "image", color: "#ff6b6b" },
+    { id: "2", label: "Document", type: "text", color: "#4ecdc4" },
+    { id: "3", label: "Video", type: "video", color: "#45b7d1" },
   ];
 
-  const handleDrop = (zoneId: string, acceptedTypes?: string[]) => (item: DropItem) => {
-    if (acceptedTypes && !acceptedTypes.includes(item.type)) {
-      console.log(`${item.type} not accepted in ${zoneId}`);
-      return;
-    }
+  const handleDrop =
+    (zoneId: string, acceptedTypes?: string[]) => (item: DropItem) => {
+      if (acceptedTypes && !acceptedTypes.includes(item.type)) {
+        console.log(`${item.type} not accepted in ${zoneId}`);
+        return;
+      }
 
-    setDroppedItems(prev => ({
-      ...prev,
-      [zoneId]: [...prev[zoneId], item]
-    }));
-  };
+      setDroppedItems((prev) => ({
+        ...prev,
+        [zoneId]: [...prev[zoneId], item],
+      }));
+    };
 
   return (
     <GestureHandlerRootView style={styles.container}>
       <DropProvider>
         <View style={styles.content}>
           <Text style={styles.title}>Drop Zones</Text>
-          
+
           {/* Draggable Items */}
           <View style={styles.itemsContainer}>
             {items.map((item) => (
-              <Draggable
-                key={item.id}
-                data={item}
-                style={styles.draggable}
-              >
-                <View style={[styles.draggableContent, { backgroundColor: item.color }]}>
+              <Draggable key={item.id} data={item} style={styles.draggable}>
+                <View
+                  style={[
+                    styles.draggableContent,
+                    { backgroundColor: item.color },
+                  ]}
+                >
                   <Text style={styles.draggableText}>{item.label}</Text>
                   <Text style={styles.typeText}>{item.type}</Text>
                 </View>
@@ -86,7 +94,7 @@ export function DropZonesExample() {
             {/* Images Only Zone */}
             <Droppable
               droppableId="images"
-              onDrop={handleDrop('images', ['image'])}
+              onDrop={handleDrop("images", ["image"])}
               style={styles.dropZone}
             >
               <View style={[styles.zoneContent, styles.imageZone]}>
@@ -100,7 +108,7 @@ export function DropZonesExample() {
             {/* Text Only Zone */}
             <Droppable
               droppableId="text"
-              onDrop={handleDrop('text', ['text'])}
+              onDrop={handleDrop("text", ["text"])}
               style={styles.dropZone}
             >
               <View style={[styles.zoneContent, styles.textZone]}>
@@ -114,7 +122,7 @@ export function DropZonesExample() {
             {/* Trash Zone (accepts all) */}
             <Droppable
               droppableId="trash"
-              onDrop={handleDrop('trash')}
+              onDrop={handleDrop("trash")}
               style={styles.dropZone}
             >
               <View style={[styles.zoneContent, styles.trashZone]}>
@@ -134,7 +142,7 @@ export function DropZonesExample() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000000',
+    backgroundColor: "#000000",
   },
   content: {
     flex: 1,
@@ -142,14 +150,14 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-    textAlign: 'center',
+    fontWeight: "bold",
+    color: "#FFFFFF",
+    textAlign: "center",
     marginBottom: 30,
   },
   itemsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
     marginBottom: 30,
     gap: 16,
   },
@@ -160,21 +168,21 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#000',
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 6,
     elevation: 8,
   },
   draggableText: {
-    color: '#FFFFFF',
-    fontWeight: 'bold',
+    color: "#FFFFFF",
+    fontWeight: "bold",
     fontSize: 14,
   },
   typeText: {
-    color: 'rgba(255, 255, 255, 0.8)',
+    color: "rgba(255, 255, 255, 0.8)",
     fontSize: 10,
     marginTop: 2,
   },
@@ -190,31 +198,31 @@ const styles = StyleSheet.create({
     flex: 1,
     borderRadius: 16,
     borderWidth: 2,
-    borderStyle: 'dashed',
-    justifyContent: 'center',
-    alignItems: 'center',
+    borderStyle: "dashed",
+    justifyContent: "center",
+    alignItems: "center",
     padding: 20,
   },
   imageZone: {
-    backgroundColor: 'rgba(255, 107, 107, 0.1)',
-    borderColor: '#ff6b6b',
+    backgroundColor: "rgba(255, 107, 107, 0.1)",
+    borderColor: "#ff6b6b",
   },
   textZone: {
-    backgroundColor: 'rgba(78, 205, 196, 0.1)',
-    borderColor: '#4ecdc4',
+    backgroundColor: "rgba(78, 205, 196, 0.1)",
+    borderColor: "#4ecdc4",
   },
   trashZone: {
-    backgroundColor: 'rgba(136, 136, 136, 0.1)',
-    borderColor: '#888888',
+    backgroundColor: "rgba(136, 136, 136, 0.1)",
+    borderColor: "#888888",
   },
   zoneTitle: {
-    color: '#FFFFFF',
+    color: "#FFFFFF",
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 8,
   },
   zoneSubtitle: {
-    color: '#8E8E93',
+    color: "#8E8E93",
     fontSize: 14,
   },
 });
@@ -226,7 +234,7 @@ const styles = StyleSheet.create({
 
 ```tsx
 function ConditionalDropZone({ maxSize }) {
-  const [rejectionMessage, setRejectionMessage] = useState('');
+  const [rejectionMessage, setRejectionMessage] = useState("");
 
   return (
     <View>
@@ -234,14 +242,14 @@ function ConditionalDropZone({ maxSize }) {
         droppableId="conditional-zone"
         onDrop={(item) => {
           if (item.size > maxSize) {
-            setRejectionMessage('File too large');
-            setTimeout(() => setRejectionMessage(''), 3000);
+            setRejectionMessage("File too large");
+            setTimeout(() => setRejectionMessage(""), 3000);
             return; // Don't process the item
           }
-          
+
           // Process the valid drop
           processDroppedItem(item);
-          setRejectionMessage('');
+          setRejectionMessage("");
         }}
       >
         <View style={styles.dropZone}>
@@ -249,7 +257,7 @@ function ConditionalDropZone({ maxSize }) {
           <Text>Max size: {formatFileSize(maxSize)}</Text>
         </View>
       </Droppable>
-      
+
       {rejectionMessage && (
         <Text style={styles.errorMessage}>{rejectionMessage}</Text>
       )}
@@ -278,8 +286,8 @@ function AnimatedDropZone({ children, onDrop }) {
       onDrop={onDrop}
       onActiveChange={(active) => setIsActive(active)}
       activeStyle={{
-        backgroundColor: 'rgba(88, 166, 255, 0.1)',
-        borderColor: '#58a6ff',
+        backgroundColor: "rgba(88, 166, 255, 0.1)",
+        borderColor: "#58a6ff",
         borderWidth: 2,
       }}
     >
@@ -322,7 +330,7 @@ function FileUploadZone() {
   return (
     <Droppable
       droppableId="upload"
-      acceptedTypes={['image', 'document']}
+      acceptedTypes={["image", "document"]}
       onDrop={(file) => uploadFile(file)}
     >
       <View style={styles.uploadZone}>
@@ -339,15 +347,10 @@ function FileUploadZone() {
 ```tsx
 function ShoppingCartZone({ items, onAddItem }) {
   return (
-    <Droppable
-      droppableId="cart"
-      onDrop={onAddItem}
-    >
+    <Droppable droppableId="cart" onDrop={onAddItem}>
       <View style={styles.cartZone}>
         <Text style={styles.cartIcon}>🛒</Text>
-        <Text style={styles.cartText}>
-          Cart ({items.length} items)
-        </Text>
+        <Text style={styles.cartText}>Cart ({items.length} items)</Text>
       </View>
     </Droppable>
   );
@@ -389,13 +392,10 @@ const [isHovered, setIsHovered] = useState(false);
 <Droppable
   onDragEnter={() => setIsHovered(true)}
   onDragLeave={() => setIsHovered(false)}
-  style={[
-    styles.dropZone,
-    isHovered && styles.hoveredZone
-  ]}
+  style={[styles.dropZone, isHovered && styles.hoveredZone]}
 >
   {/* Zone content */}
-</Droppable>
+</Droppable>;
 ```
 
 ### Loading States

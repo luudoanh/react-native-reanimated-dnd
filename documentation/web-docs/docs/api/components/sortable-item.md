@@ -13,7 +13,7 @@ The `SortableItem` component handles the drag-and-drop functionality for individ
 ## Import
 
 ```tsx
-import { SortableItem } from 'react-native-reanimated-dnd';
+import { SortableItem } from "react-native-reanimated-dnd";
 ```
 
 ## Props
@@ -21,6 +21,7 @@ import { SortableItem } from 'react-native-reanimated-dnd';
 ### Core Props
 
 #### id
+
 - **Type**: `string`
 - **Required**: Yes
 - **Description**: Unique identifier for this sortable item. Used for tracking position and reordering.
@@ -32,11 +33,13 @@ import { SortableItem } from 'react-native-reanimated-dnd';
 ```
 
 #### positions
+
 - **Type**: `SharedValue<{ [id: string]: number }>`
 - **Required**: Yes
 - **Description**: Shared value containing the position mapping for all items in the sortable list.
 
 #### children
+
 - **Type**: `React.ReactNode`
 - **Required**: Yes
 - **Description**: The content to render inside the sortable item.
@@ -44,16 +47,19 @@ import { SortableItem } from 'react-native-reanimated-dnd';
 ### Layout Props
 
 #### itemHeight
+
 - **Type**: `number`
 - **Required**: Yes
 - **Description**: Height of this item in pixels. Used for position calculations and animations.
 
 #### itemsCount
+
 - **Type**: `number`
 - **Required**: Yes
 - **Description**: Total number of items in the sortable list.
 
 #### containerHeight
+
 - **Type**: `number`
 - **Required**: Yes
 - **Description**: Height of the container holding the sortable list.
@@ -61,11 +67,13 @@ import { SortableItem } from 'react-native-reanimated-dnd';
 ### Scroll Props
 
 #### lowerBound
+
 - **Type**: `SharedValue<number>`
 - **Required**: Yes
 - **Description**: Lower boundary for auto-scrolling calculations.
 
 #### autoScrollDirection
+
 - **Type**: `SharedValue<ScrollDirection>`
 - **Required**: Yes
 - **Description**: Current auto-scroll direction state.
@@ -73,16 +81,19 @@ import { SortableItem } from 'react-native-reanimated-dnd';
 ### Optional Props
 
 #### data
+
 - **Type**: `T`
 - **Required**: No
 - **Description**: Data payload associated with this item. Passed to callback functions.
 
 #### style
+
 - **Type**: `StyleProp<ViewStyle>`
 - **Required**: No
 - **Description**: Style applied to the item container.
 
 #### animatedStyle
+
 - **Type**: `AnimatedStyle<ViewStyle>`
 - **Required**: No
 - **Description**: Custom animated styles applied to the item.
@@ -90,6 +101,7 @@ import { SortableItem } from 'react-native-reanimated-dnd';
 ### Callback Props
 
 #### onMove
+
 - **Type**: `(id: string, from: number, to: number) => void`
 - **Required**: No
 - **Description**: Callback fired when the item is moved to a new position.
@@ -109,6 +121,7 @@ import { SortableItem } from 'react-native-reanimated-dnd';
 ```
 
 #### onDragStart
+
 - **Type**: `(id: string, position: number) => void`
 - **Required**: No
 - **Description**: Callback fired when dragging starts.
@@ -128,11 +141,13 @@ import { SortableItem } from 'react-native-reanimated-dnd';
 ```
 
 #### onDrop
+
 - **Type**: `(id: string, position: number) => void`
 - **Required**: No
 - **Description**: Callback fired when dragging ends.
 
 #### onDragging
+
 - **Type**: `(id: string, overItemId: string | null, yPosition: number) => void`
 - **Required**: No
 - **Description**: Callback fired continuously while dragging. Provides information about which item is being hovered over.
@@ -144,11 +159,13 @@ A handle component that creates a specific draggable area within the sortable it
 ### Props
 
 #### children
+
 - **Type**: `React.ReactNode`
 - **Required**: Yes
 - **Description**: The content to render inside the handle.
 
 #### style
+
 - **Type**: `StyleProp<ViewStyle>`
 - **Required**: No
 - **Description**: Style applied to the handle container.
@@ -158,7 +175,7 @@ A handle component that creates a specific draggable area within the sortable it
 ### Basic Sortable Item
 
 ```tsx
-import { SortableItem } from 'react-native-reanimated-dnd';
+import { SortableItem } from "react-native-reanimated-dnd";
 
 function TaskItem({ task, positions, ...sortableProps }) {
   return (
@@ -175,7 +192,7 @@ function TaskItem({ task, positions, ...sortableProps }) {
       <View style={styles.taskContainer}>
         <Text style={styles.taskTitle}>{task.title}</Text>
         <Text style={styles.taskStatus}>
-          {task.completed ? 'Done' : 'Pending'}
+          {task.completed ? "Done" : "Pending"}
         </Text>
       </View>
     </SortableItem>
@@ -184,11 +201,11 @@ function TaskItem({ task, positions, ...sortableProps }) {
 
 const styles = StyleSheet.create({
   taskContainer: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     padding: 16,
     marginVertical: 4,
     borderRadius: 8,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -196,12 +213,12 @@ const styles = StyleSheet.create({
   },
   taskTitle: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
     marginBottom: 4,
   },
   taskStatus: {
     fontSize: 14,
-    color: '#666',
+    color: "#666",
   },
 });
 ```
@@ -238,9 +255,9 @@ function TaskItemWithHandle({ task, positions, ...sortableProps }) {
 
 const styles = StyleSheet.create({
   taskContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#fff',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#fff",
     padding: 16,
     marginVertical: 4,
     borderRadius: 8,
@@ -250,12 +267,12 @@ const styles = StyleSheet.create({
   },
   taskTitle: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
     marginBottom: 4,
   },
   taskDescription: {
     fontSize: 14,
-    color: '#666',
+    color: "#666",
   },
   dragHandle: {
     padding: 8,
@@ -264,11 +281,11 @@ const styles = StyleSheet.create({
   handleIcon: {
     width: 20,
     height: 16,
-    justifyContent: 'space-between',
+    justifyContent: "space-between",
   },
   handleLine: {
     height: 2,
-    backgroundColor: '#999',
+    backgroundColor: "#999",
     borderRadius: 1,
   },
 });
@@ -290,11 +307,11 @@ function AdvancedTaskItem({ task, positions, ...sortableProps }) {
       onDragStart={(id, position) => {
         setIsDragging(true);
         hapticFeedback();
-        analytics.track('drag_start', { taskId: id, position });
+        analytics.track("drag_start", { taskId: id, position });
       }}
       onDrop={(id, position) => {
         setIsDragging(false);
-        analytics.track('drag_end', { taskId: id, position });
+        analytics.track("drag_end", { taskId: id, position });
       }}
       onDragging={(id, overItemId, yPosition) => {
         if (overItemId) {
@@ -308,15 +325,13 @@ function AdvancedTaskItem({ task, positions, ...sortableProps }) {
       style={[
         styles.taskItem,
         isDragging && styles.draggingItem,
-        isHovered && styles.hoveredItem
+        isHovered && styles.hoveredItem,
       ]}
     >
       <View style={styles.taskContent}>
         <Text style={styles.taskTitle}>{task.title}</Text>
         <Text style={styles.taskPriority}>Priority: {task.priority}</Text>
-        {isDragging && (
-          <Text style={styles.dragIndicator}>Dragging...</Text>
-        )}
+        {isDragging && <Text style={styles.dragIndicator}>Dragging...</Text>}
       </View>
     </SortableItem>
   );
@@ -324,42 +339,42 @@ function AdvancedTaskItem({ task, positions, ...sortableProps }) {
 
 const styles = StyleSheet.create({
   taskItem: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     padding: 16,
     marginVertical: 4,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#e0e0e0',
+    borderColor: "#e0e0e0",
   },
   draggingItem: {
     opacity: 0.8,
     transform: [{ scale: 1.05 }],
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.3,
     shadowRadius: 12,
     elevation: 8,
   },
   hoveredItem: {
-    borderColor: '#007AFF',
-    backgroundColor: '#f0f8ff',
+    borderColor: "#007AFF",
+    backgroundColor: "#f0f8ff",
   },
   taskContent: {
     flex: 1,
   },
   taskTitle: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
     marginBottom: 4,
   },
   taskPriority: {
     fontSize: 14,
-    color: '#666',
+    color: "#666",
   },
   dragIndicator: {
     fontSize: 12,
-    color: '#007AFF',
-    fontStyle: 'italic',
+    color: "#007AFF",
+    fontStyle: "italic",
     marginTop: 4,
   },
 });
@@ -380,20 +395,25 @@ function FileListItem({ file, positions, ...sortableProps }) {
   const [isSelected, setIsSelected] = useState(false);
 
   const formatFileSize = (bytes: number) => {
-    if (bytes === 0) return '0 Bytes';
+    if (bytes === 0) return "0 Bytes";
     const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const sizes = ["Bytes", "KB", "MB", "GB"];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
   };
 
   const getFileIcon = (type: string) => {
     switch (type) {
-      case 'pdf': return '📄';
-      case 'image': return '🖼️';
-      case 'video': return '🎥';
-      case 'audio': return '🎵';
-      default: return '📁';
+      case "pdf":
+        return "📄";
+      case "image":
+        return "🖼️";
+      case "video":
+        return "🎥";
+      case "audio":
+        return "🎵";
+      default:
+        return "📁";
     }
   };
 
@@ -415,11 +435,12 @@ function FileListItem({ file, positions, ...sortableProps }) {
         <View style={styles.fileIcon}>
           <Text style={styles.iconText}>{getFileIcon(file.type)}</Text>
         </View>
-        
+
         <View style={styles.fileInfo}>
           <Text style={styles.fileName}>{file.name}</Text>
           <Text style={styles.fileDetails}>
-            {formatFileSize(file.size)} • {file.lastModified.toLocaleDateString()}
+            {formatFileSize(file.size)} •{" "}
+            {file.lastModified.toLocaleDateString()}
           </Text>
         </View>
 
@@ -440,24 +461,24 @@ function FileListItem({ file, positions, ...sortableProps }) {
 
 const styles = StyleSheet.create({
   fileItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#fff',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#fff",
     padding: 12,
     marginVertical: 2,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#e0e0e0',
+    borderColor: "#e0e0e0",
   },
   selectedFile: {
-    backgroundColor: '#e3f2fd',
-    borderColor: '#2196f3',
+    backgroundColor: "#e3f2fd",
+    borderColor: "#2196f3",
   },
   fileIcon: {
     width: 40,
     height: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     marginRight: 12,
   },
   iconText: {
@@ -468,26 +489,26 @@ const styles = StyleSheet.create({
   },
   fileName: {
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: "500",
     marginBottom: 2,
   },
   fileDetails: {
     fontSize: 12,
-    color: '#666',
+    color: "#666",
   },
   fileHandle: {
     padding: 8,
   },
   handleDots: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    flexWrap: "wrap",
     width: 12,
     height: 12,
   },
   dot: {
     width: 2,
     height: 2,
-    backgroundColor: '#999',
+    backgroundColor: "#999",
     borderRadius: 1,
     margin: 1,
   },
@@ -555,16 +576,16 @@ function PhotoGalleryItem({ photo, positions, ...sortableProps }) {
           style={styles.photoImage}
           onLoad={() => setImageLoaded(true)}
         />
-        
+
         {!imageLoaded && (
           <View style={styles.photoPlaceholder}>
             <ActivityIndicator size="small" color="#666" />
           </View>
         )}
-        
+
         <View style={styles.photoOverlay}>
           <Text style={styles.photoTitle}>{photo.title}</Text>
-          
+
           <SortableItem.Handle style={styles.photoHandle}>
             <View style={styles.handleIcon}>
               <Icon name="drag-handle" size={20} color="#fff" />
@@ -578,42 +599,42 @@ function PhotoGalleryItem({ photo, positions, ...sortableProps }) {
 
 const styles = StyleSheet.create({
   photoItem: {
-    position: 'relative',
-    backgroundColor: '#f0f0f0',
+    position: "relative",
+    backgroundColor: "#f0f0f0",
     borderRadius: 8,
-    overflow: 'hidden',
+    overflow: "hidden",
     marginVertical: 4,
   },
   photoImage: {
-    width: '100%',
+    width: "100%",
     height: 120,
-    resizeMode: 'cover',
+    resizeMode: "cover",
   },
   photoPlaceholder: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#f0f0f0',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#f0f0f0",
   },
   photoOverlay: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
     padding: 8,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   photoTitle: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: "500",
     flex: 1,
   },
   photoHandle: {
@@ -633,7 +654,7 @@ The component is fully typed with generic support:
 interface TaskData {
   id: string;
   title: string;
-  priority: 'low' | 'medium' | 'high';
+  priority: "low" | "medium" | "high";
   completed: boolean;
 }
 

@@ -13,7 +13,7 @@ The `useSortableList` hook provides the foundational state management and utilit
 ## Import
 
 ```tsx
-import { useSortableList } from 'react-native-reanimated-dnd';
+import { useSortableList } from "react-native-reanimated-dnd";
 ```
 
 ## Parameters
@@ -21,16 +21,19 @@ import { useSortableList } from 'react-native-reanimated-dnd';
 ### UseSortableListOptions\<TData\>
 
 #### data
+
 - **Type**: `TData[]` (where `TData extends { id: string }`)
 - **Required**: Yes
 - **Description**: Array of data items to manage in the sortable list. Each item must have an `id` property.
 
 #### itemHeight
+
 - **Type**: `number`
 - **Required**: Yes
 - **Description**: Height of each item in pixels. Used for position calculations and auto-scrolling.
 
 #### itemKeyExtractor
+
 - **Type**: `(item: TData, index: number) => string`
 - **Default**: `(item) => item.id`
 - **Description**: Function to extract unique keys from items. Useful when your data doesn't use `id` as the key field.
@@ -39,7 +42,7 @@ import { useSortableList } from 'react-native-reanimated-dnd';
 const sortableProps = useSortableList({
   data: tasks,
   itemHeight: 60,
-  itemKeyExtractor: (item) => item.uuid // Use uuid instead of id
+  itemKeyExtractor: (item) => item.uuid, // Use uuid instead of id
 });
 ```
 
@@ -48,38 +51,47 @@ const sortableProps = useSortableList({
 ### UseSortableListReturn\<TData\>
 
 #### positions
+
 - **Type**: `SharedValue<{ [id: string]: number }>`
 - **Description**: Shared value containing the position mapping for all items in the list.
 
 #### scrollY
+
 - **Type**: `SharedValue<number>`
 - **Description**: Shared value tracking the current scroll position.
 
 #### autoScroll
+
 - **Type**: `SharedValue<ScrollDirection>`
 - **Description**: Shared value controlling auto-scroll direction during dragging.
 
 #### scrollViewRef
+
 - **Type**: `ReturnType<typeof useAnimatedRef<Animated.ScrollView>>`
 - **Description**: Animated ref for the scroll view container.
 
 #### dropProviderRef
+
 - **Type**: `React.RefObject<DropProviderRef>`
 - **Description**: Ref for the DropProvider context.
 
 #### handleScroll
+
 - **Type**: `any`
 - **Description**: Scroll handler to attach to the ScrollView's `onScroll` prop.
 
 #### handleScrollEnd
+
 - **Type**: `() => void`
 - **Description**: Handler for scroll end events. Attach to `onScrollEndDrag` and `onMomentumScrollEnd`.
 
 #### contentHeight
+
 - **Type**: `number`
 - **Description**: Calculated height of the scroll view content based on item count and height.
 
 #### getItemProps
+
 - **Type**: `(item: TData, index: number) => { id: string; positions: SharedValue<{[id: string]: number}>; lowerBound: SharedValue<number>; autoScrollDirection: SharedValue<ScrollDirection>; itemsCount: number; itemHeight: number; }`
 - **Description**: Function that returns core props needed for each sortable item. These props should be spread onto SortableItem components along with additional props like data, children, and callbacks.
 
@@ -91,13 +103,9 @@ const itemProps = getItemProps(task, index);
 // Returns: { id, positions, lowerBound, autoScrollDirection, itemsCount, itemHeight }
 
 // Use with SortableItem
-<SortableItem 
-  {...itemProps}
-  data={task}
-  onMove={handleMove}
->
+<SortableItem {...itemProps} data={task} onMove={handleMove}>
   <TaskContent task={task} />
-</SortableItem>
+</SortableItem>;
 ```
 
 ## Usage Examples
@@ -105,10 +113,10 @@ const itemProps = getItemProps(task, index);
 ### Basic Sortable List
 
 ```tsx
-import { useSortableList } from 'react-native-reanimated-dnd';
-import { SortableItem } from 'react-native-reanimated-dnd';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import Animated from 'react-native-reanimated';
+import { useSortableList } from "react-native-reanimated-dnd";
+import { SortableItem } from "react-native-reanimated-dnd";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import Animated from "react-native-reanimated";
 
 interface Task {
   id: string;
@@ -118,9 +126,9 @@ interface Task {
 
 function TaskList() {
   const [tasks, setTasks] = useState<Task[]>([
-    { id: '1', title: 'Learn React Native', completed: false },
-    { id: '2', title: 'Build an app', completed: false },
-    { id: '3', title: 'Deploy to store', completed: false }
+    { id: "1", title: "Learn React Native", completed: false },
+    { id: "2", title: "Build an app", completed: false },
+    { id: "3", title: "Deploy to store", completed: false },
   ]);
 
   const {
@@ -154,7 +162,7 @@ function TaskList() {
                 <View style={styles.taskItem}>
                   <Text style={styles.taskTitle}>{task.title}</Text>
                   <Text style={styles.taskStatus}>
-                    {task.completed ? 'Done' : 'Pending'}
+                    {task.completed ? "Done" : "Pending"}
                   </Text>
                 </View>
               </SortableItem>
@@ -169,28 +177,28 @@ function TaskList() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   scrollView: {
     flex: 1,
     paddingHorizontal: 16,
   },
   taskItem: {
-    backgroundColor: '#f8f9fa',
+    backgroundColor: "#f8f9fa",
     padding: 16,
     marginVertical: 4,
     borderRadius: 8,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   taskTitle: {
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   taskStatus: {
     fontSize: 14,
-    color: '#666',
+    color: "#666",
   },
 });
 ```
@@ -201,25 +209,28 @@ const styles = StyleSheet.create({
 function ReorderableTaskList() {
   const [tasks, setTasks] = useState(initialTasks);
 
-  const handleReorder = useCallback((id: string, from: number, to: number) => {
-    setTasks(prevTasks => {
-      const newTasks = [...prevTasks];
-      const [movedTask] = newTasks.splice(from, 1);
-      newTasks.splice(to, 0, movedTask);
-      return newTasks;
-    });
+  const handleReorder = useCallback(
+    (id: string, from: number, to: number) => {
+      setTasks((prevTasks) => {
+        const newTasks = [...prevTasks];
+        const [movedTask] = newTasks.splice(from, 1);
+        newTasks.splice(to, 0, movedTask);
+        return newTasks;
+      });
 
-    // Optional: Save to backend
-    saveTasks(newTasks);
-    
-    // Optional: Analytics
-    analytics.track('task_reordered', {
-      taskId: id,
-      from,
-      to,
-      totalTasks: tasks.length
-    });
-  }, [tasks.length]);
+      // Optional: Save to backend
+      saveTasks(newTasks);
+
+      // Optional: Analytics
+      analytics.track("task_reordered", {
+        taskId: id,
+        from,
+        to,
+        totalTasks: tasks.length,
+      });
+    },
+    [tasks.length]
+  );
 
   const sortableProps = useSortableList({
     data: tasks,
@@ -256,7 +267,9 @@ function ReorderableTaskList() {
                 onMove={handleReorder}
                 onDragStart={(id, position) => {
                   hapticFeedback();
-                  console.log(`Started dragging task ${id} at position ${position}`);
+                  console.log(
+                    `Started dragging task ${id} at position ${position}`
+                  );
                 }}
                 onDrop={(id, position) => {
                   console.log(`Dropped task ${id} at position ${position}`);
@@ -339,7 +352,7 @@ interface FileItem {
   id: string;
   name: string;
   size: number;
-  type: 'file' | 'folder';
+  type: "file" | "folder";
   lastModified: Date;
 }
 
@@ -347,16 +360,19 @@ function FileManagerList() {
   const [files, setFiles] = useState<FileItem[]>(fileData);
   const [selectedFiles, setSelectedFiles] = useState<Set<string>>(new Set());
 
-  const handleFileReorder = useCallback((id: string, from: number, to: number) => {
-    setFiles(prevFiles => {
-      const newFiles = [...prevFiles];
-      const [movedFile] = newFiles.splice(from, 1);
-      newFiles.splice(to, 0, movedFile);
-      return newFiles;
-    });
+  const handleFileReorder = useCallback(
+    (id: string, from: number, to: number) => {
+      setFiles((prevFiles) => {
+        const newFiles = [...prevFiles];
+        const [movedFile] = newFiles.splice(from, 1);
+        newFiles.splice(to, 0, movedFile);
+        return newFiles;
+      });
 
-    showToast(`${files.find(f => f.id === id)?.name} moved`);
-  }, [files]);
+      showToast(`${files.find((f) => f.id === id)?.name} moved`);
+    },
+    [files]
+  );
 
   const sortableProps = useSortableList({
     data: files,
@@ -373,20 +389,18 @@ function FileManagerList() {
   } = sortableProps;
 
   const formatFileSize = (bytes: number) => {
-    if (bytes === 0) return '0 Bytes';
+    if (bytes === 0) return "0 Bytes";
     const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const sizes = ["Bytes", "KB", "MB", "GB"];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
   };
 
   return (
     <GestureHandlerRootView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Files ({files.length})</Text>
-        <Text style={styles.selectedCount}>
-          {selectedFiles.size} selected
-        </Text>
+        <Text style={styles.selectedCount}>{selectedFiles.size} selected</Text>
       </View>
 
       <DropProvider ref={dropProviderRef}>
@@ -423,14 +437,15 @@ function FileManagerList() {
                 >
                   <View style={styles.fileIcon}>
                     <Text style={styles.iconText}>
-                      {file.type === 'folder' ? '📁' : '📄'}
+                      {file.type === "folder" ? "📁" : "📄"}
                     </Text>
                   </View>
-                  
+
                   <View style={styles.fileInfo}>
                     <Text style={styles.fileName}>{file.name}</Text>
                     <Text style={styles.fileDetails}>
-                      {file.type === 'file' && `${formatFileSize(file.size)} • `}
+                      {file.type === "file" &&
+                        `${formatFileSize(file.size)} • `}
                       {file.lastModified.toLocaleDateString()}
                     </Text>
                   </View>
@@ -470,14 +485,17 @@ interface Photo {
 function PhotoGalleryList() {
   const [photos, setPhotos] = useState<Photo[]>(photoData);
 
-  const handlePhotoReorder = useCallback((id: string, from: number, to: number) => {
-    setPhotos(prevPhotos => {
-      const newPhotos = [...prevPhotos];
-      const [movedPhoto] = newPhotos.splice(from, 1);
-      newPhotos.splice(to, 0, movedPhoto);
-      return newPhotos;
-    });
-  }, []);
+  const handlePhotoReorder = useCallback(
+    (id: string, from: number, to: number) => {
+      setPhotos((prevPhotos) => {
+        const newPhotos = [...prevPhotos];
+        const [movedPhoto] = newPhotos.splice(from, 1);
+        newPhotos.splice(to, 0, movedPhoto);
+        return newPhotos;
+      });
+    },
+    []
+  );
 
   const sortableProps = useSortableList({
     data: photos,
@@ -526,7 +544,7 @@ function PhotoGalleryList() {
                     style={styles.photoThumbnail}
                     resizeMode="cover"
                   />
-                  
+
                   <View style={styles.photoInfo}>
                     <Text style={styles.photoTitle}>{photo.title}</Text>
                     <Text style={styles.photoDimensions}>
@@ -558,10 +576,10 @@ function PhotoGalleryList() {
 ```tsx
 function LargeSortableList() {
   const [items, setItems] = useState(generateLargeDataset(1000));
-  
+
   // Memoize the reorder handler
   const handleReorder = useCallback((id: string, from: number, to: number) => {
-    setItems(prevItems => {
+    setItems((prevItems) => {
       const newItems = [...prevItems];
       const [movedItem] = newItems.splice(from, 1);
       newItems.splice(to, 0, movedItem);
@@ -584,19 +602,18 @@ function LargeSortableList() {
   } = sortableProps;
 
   // Memoize item rendering
-  const renderItem = useCallback((item: any, index: number) => {
-    const itemProps = getItemProps(item, index);
-    
-    return (
-      <SortableItem
-        key={item.id}
-        {...itemProps}
-        onMove={handleReorder}
-      >
-        <MemoizedListItem item={item} />
-      </SortableItem>
-    );
-  }, [getItemProps, handleReorder]);
+  const renderItem = useCallback(
+    (item: any, index: number) => {
+      const itemProps = getItemProps(item, index);
+
+      return (
+        <SortableItem key={item.id} {...itemProps} onMove={handleReorder}>
+          <MemoizedListItem item={item} />
+        </SortableItem>
+      );
+    },
+    [getItemProps, handleReorder]
+  );
 
   return (
     <GestureHandlerRootView style={styles.container}>
@@ -637,19 +654,22 @@ const MemoizedListItem = React.memo(({ item }) => (
 function ConditionalSortableList({ canReorder, userRole }) {
   const [tasks, setTasks] = useState(taskData);
 
-  const handleReorder = useCallback((id: string, from: number, to: number) => {
-    if (!canReorder) {
-      showError('Reordering is disabled');
-      return;
-    }
+  const handleReorder = useCallback(
+    (id: string, from: number, to: number) => {
+      if (!canReorder) {
+        showError("Reordering is disabled");
+        return;
+      }
 
-    setTasks(prevTasks => {
-      const newTasks = [...prevTasks];
-      const [movedTask] = newTasks.splice(from, 1);
-      newTasks.splice(to, 0, movedTask);
-      return newTasks;
-    });
-  }, [canReorder]);
+      setTasks((prevTasks) => {
+        const newTasks = [...prevTasks];
+        const [movedTask] = newTasks.splice(from, 1);
+        newTasks.splice(to, 0, movedTask);
+        return newTasks;
+      });
+    },
+    [canReorder]
+  );
 
   const sortableProps = useSortableList({
     data: tasks,
@@ -670,7 +690,7 @@ function ConditionalSortableList({ canReorder, userRole }) {
       <View style={styles.header}>
         <Text style={styles.title}>Tasks</Text>
         <Text style={styles.permission}>
-          Role: {userRole} | Reorder: {canReorder ? 'Enabled' : 'Disabled'}
+          Role: {userRole} | Reorder: {canReorder ? "Enabled" : "Disabled"}
         </Text>
       </View>
 
@@ -694,16 +714,15 @@ function ConditionalSortableList({ canReorder, userRole }) {
                 onMove={canReorder ? handleReorder : undefined}
                 onDragStart={(id, position) => {
                   if (!canReorder) {
-                    showError('Reordering is disabled');
+                    showError("Reordering is disabled");
                     return;
                   }
                   hapticFeedback();
                 }}
               >
-                <View style={[
-                  styles.taskItem,
-                  !canReorder && styles.disabledItem
-                ]}>
+                <View
+                  style={[styles.taskItem, !canReorder && styles.disabledItem]}
+                >
                   <Text style={styles.taskTitle}>{task.title}</Text>
                   {task.locked && <Icon name="lock" size={16} />}
                   {!canReorder && (
@@ -728,7 +747,7 @@ The hook is fully typed with generic support:
 interface TaskData {
   id: string;
   title: string;
-  priority: 'low' | 'medium' | 'high';
+  priority: "low" | "medium" | "high";
   completed: boolean;
 }
 
@@ -745,7 +764,7 @@ function TypedSortableList() {
   } = useSortableList<TaskData>({
     data: tasks,
     itemHeight: 60,
-    itemKeyExtractor: (item: TaskData) => item.id // Properly typed
+    itemKeyExtractor: (item: TaskData) => item.id, // Properly typed
   });
 
   return (
@@ -831,11 +850,14 @@ function SortableListContainer({ children, ...sortableProps }) {
 // Usage
 function MyList() {
   const sortableProps = useSortableList({ data, itemHeight: 60 });
-  
+
   return (
     <SortableListContainer {...sortableProps}>
       {data.map((item, index) => (
-        <SortableItem key={item.id} {...sortableProps.getItemProps(item, index)}>
+        <SortableItem
+          key={item.id}
+          {...sortableProps.getItemProps(item, index)}
+        >
           <ItemContent item={item} />
         </SortableItem>
       ))}
@@ -851,4 +873,4 @@ function MyList() {
 - [useSortable Hook](./useSortable) - Individual item hook
 - [DropProvider](../../context/DropProvider) - Drag-and-drop context
 - [ScrollDirection Enum](../types/enums#scrolldirection) - Auto-scroll direction values
-- [UseSortableListOptions Type](../types/sortable-types#usesortablelistoptionstdata) - Complete type definitions 
+- [UseSortableListOptions Type](../types/sortable-types#usesortablelistoptionstdata) - Complete type definitions

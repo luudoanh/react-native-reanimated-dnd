@@ -7,7 +7,7 @@ Restrict dragging to specific axes for controlled directional movement.
 Axis constraints limit draggable items to move only along specific directions (horizontal or vertical). This example demonstrates:
 
 - Horizontal-only dragging
-- Vertical-only dragging  
+- Vertical-only dragging
 - Free movement (both axes)
 - Dynamic axis switching
 
@@ -21,36 +21,42 @@ Axis constraints limit draggable items to move only along specific directions (h
 ## Basic Implementation
 
 ```tsx
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { DropProvider, Draggable } from 'react-native-reanimated-dnd';
+import React, { useState } from "react";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { DropProvider, Draggable } from "react-native-reanimated-dnd";
 
 export function AxisConstraintsExample() {
-  const [constraint, setConstraint] = useState<'x' | 'y' | 'both'>('x');
+  const [constraint, setConstraint] = useState<"x" | "y" | "both">("x");
 
   return (
     <GestureHandlerRootView style={styles.container}>
       <DropProvider>
         <View style={styles.content}>
           <Text style={styles.title}>Axis Constraints</Text>
-          
+
           {/* Constraint Controls */}
           <View style={styles.controlsContainer}>
-            {['x', 'y', 'both'].map((axis) => (
+            {["x", "y", "both"].map((axis) => (
               <TouchableOpacity
                 key={axis}
                 style={[
                   styles.controlButton,
-                  constraint === axis && styles.activeButton
+                  constraint === axis && styles.activeButton,
                 ]}
                 onPress={() => setConstraint(axis as any)}
               >
-                <Text style={[
-                  styles.controlText,
-                  constraint === axis && styles.activeText
-                ]}>
-                  {axis === 'x' ? 'Horizontal' : axis === 'y' ? 'Vertical' : 'Free'}
+                <Text
+                  style={[
+                    styles.controlText,
+                    constraint === axis && styles.activeText,
+                  ]}
+                >
+                  {axis === "x"
+                    ? "Horizontal"
+                    : axis === "y"
+                      ? "Vertical"
+                      : "Free"}
                 </Text>
               </TouchableOpacity>
             ))}
@@ -59,21 +65,25 @@ export function AxisConstraintsExample() {
           {/* Drag Area */}
           <View style={styles.dragArea}>
             <Text style={styles.areaLabel}>Drag Area</Text>
-            
+
             {/* Constraint Guides */}
-            {constraint === 'x' && <View style={styles.horizontalGuide} />}
-            {constraint === 'y' && <View style={styles.verticalGuide} />}
-            
+            {constraint === "x" && <View style={styles.horizontalGuide} />}
+            {constraint === "y" && <View style={styles.verticalGuide} />}
+
             {/* Constrained Draggable */}
             <Draggable
-              data={{ id: 'constrained-item', constraint }}
+              data={{ id: "constrained-item", constraint }}
               dragAxis={constraint}
               style={styles.draggable}
             >
               <View style={styles.draggableContent}>
                 <Text style={styles.draggableText}>Drag Me</Text>
                 <Text style={styles.constraintText}>
-                  {constraint === 'x' ? '← →' : constraint === 'y' ? '↑ ↓' : '↗'}
+                  {constraint === "x"
+                    ? "← →"
+                    : constraint === "y"
+                      ? "↑ ↓"
+                      : "↗"}
                 </Text>
               </View>
             </Draggable>
@@ -82,8 +92,12 @@ export function AxisConstraintsExample() {
           {/* Info */}
           <View style={styles.infoContainer}>
             <Text style={styles.infoText}>
-              Current constraint: {constraint === 'x' ? 'Horizontal only' : 
-                                 constraint === 'y' ? 'Vertical only' : 'No constraints'}
+              Current constraint:{" "}
+              {constraint === "x"
+                ? "Horizontal only"
+                : constraint === "y"
+                  ? "Vertical only"
+                  : "No constraints"}
             </Text>
           </View>
         </View>
@@ -95,7 +109,7 @@ export function AxisConstraintsExample() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000000',
+    backgroundColor: "#000000",
   },
   content: {
     flex: 1,
@@ -103,14 +117,14 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-    textAlign: 'center',
+    fontWeight: "bold",
+    color: "#FFFFFF",
+    textAlign: "center",
     marginBottom: 30,
   },
   controlsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
     marginBottom: 30,
     gap: 12,
   },
@@ -118,96 +132,96 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 20,
-    backgroundColor: '#1a1a1a',
+    backgroundColor: "#1a1a1a",
     borderWidth: 1,
-    borderColor: '#333333',
+    borderColor: "#333333",
   },
   activeButton: {
-    backgroundColor: '#58a6ff',
-    borderColor: '#58a6ff',
+    backgroundColor: "#58a6ff",
+    borderColor: "#58a6ff",
   },
   controlText: {
-    color: '#8E8E93',
+    color: "#8E8E93",
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   activeText: {
-    color: '#FFFFFF',
+    color: "#FFFFFF",
   },
   dragArea: {
     height: 300,
-    backgroundColor: '#1a1a1a',
+    backgroundColor: "#1a1a1a",
     borderRadius: 16,
     borderWidth: 2,
-    borderColor: '#333333',
+    borderColor: "#333333",
     marginBottom: 20,
-    position: 'relative',
-    justifyContent: 'center',
-    alignItems: 'center',
+    position: "relative",
+    justifyContent: "center",
+    alignItems: "center",
   },
   areaLabel: {
-    position: 'absolute',
+    position: "absolute",
     top: -12,
     left: 20,
-    backgroundColor: '#000000',
-    color: '#8E8E93',
+    backgroundColor: "#000000",
+    color: "#8E8E93",
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: "600",
     paddingHorizontal: 8,
   },
   horizontalGuide: {
-    position: 'absolute',
-    top: '50%',
+    position: "absolute",
+    top: "50%",
     left: 20,
     right: 20,
     height: 2,
-    backgroundColor: '#58a6ff',
+    backgroundColor: "#58a6ff",
     opacity: 0.5,
   },
   verticalGuide: {
-    position: 'absolute',
-    left: '50%',
+    position: "absolute",
+    left: "50%",
     top: 20,
     bottom: 20,
     width: 2,
-    backgroundColor: '#58a6ff',
+    backgroundColor: "#58a6ff",
     opacity: 0.5,
   },
   draggable: {
-    position: 'absolute',
+    position: "absolute",
   },
   draggableContent: {
     width: 80,
     height: 80,
-    backgroundColor: '#a2d2ff',
+    backgroundColor: "#a2d2ff",
     borderRadius: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#000',
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 6,
     elevation: 8,
   },
   draggableText: {
-    color: '#000000',
-    fontWeight: 'bold',
+    color: "#000000",
+    fontWeight: "bold",
     fontSize: 14,
   },
   constraintText: {
-    color: '#333333',
+    color: "#333333",
     fontSize: 16,
     marginTop: 4,
   },
   infoContainer: {
-    backgroundColor: '#1a1a1a',
+    backgroundColor: "#1a1a1a",
     borderRadius: 12,
     padding: 16,
     borderLeftWidth: 4,
-    borderLeftColor: '#58a6ff',
+    borderLeftColor: "#58a6ff",
   },
   infoText: {
-    color: '#8E8E93',
+    color: "#8E8E93",
     fontSize: 14,
     lineHeight: 20,
   },
@@ -219,10 +233,7 @@ const styles = StyleSheet.create({
 ### Horizontal Constraint
 
 ```tsx
-<Draggable
-  data={itemData}
-  dragAxis="x"
->
+<Draggable data={itemData} dragAxis="x">
   {/* Can only move left and right */}
 </Draggable>
 ```
@@ -230,10 +241,7 @@ const styles = StyleSheet.create({
 ### Vertical Constraint
 
 ```tsx
-<Draggable
-  data={itemData}
-  dragAxis="y"
->
+<Draggable data={itemData} dragAxis="y">
   {/* Can only move up and down */}
 </Draggable>
 ```
@@ -241,10 +249,7 @@ const styles = StyleSheet.create({
 ### Free Movement
 
 ```tsx
-<Draggable
-  data={itemData}
-  dragAxis="both"
->
+<Draggable data={itemData} dragAxis="both">
   {/* Can move in any direction (default) */}
 </Draggable>
 ```
@@ -255,18 +260,18 @@ const styles = StyleSheet.create({
 
 ```tsx
 function DynamicConstraintDraggable() {
-  const [constraint, setConstraint] = useState<'x' | 'y' | 'both'>('x');
+  const [constraint, setConstraint] = useState<"x" | "y" | "both">("x");
 
   return (
     <View style={styles.container}>
       <View style={styles.controls}>
-        {['x', 'y', 'both'].map((axis) => (
+        {["x", "y", "both"].map((axis) => (
           <TouchableOpacity
             key={axis}
             onPress={() => setConstraint(axis as any)}
             style={[
               styles.controlButton,
-              constraint === axis && styles.activeButton
+              constraint === axis && styles.activeButton,
             ]}
           >
             <Text>{axis}</Text>
@@ -274,10 +279,7 @@ function DynamicConstraintDraggable() {
         ))}
       </View>
 
-      <Draggable
-        data={itemData}
-        dragAxis={constraint}
-      >
+      <Draggable data={itemData} dragAxis={constraint}>
         <View style={styles.draggableItem}>
           <Text>Constraint: {constraint}</Text>
         </View>
@@ -292,12 +294,9 @@ function DynamicConstraintDraggable() {
 ```tsx
 function ConditionalConstraintDraggable({ isLocked }) {
   return (
-    <Draggable
-      data={itemData}
-      dragAxis={isLocked ? 'x' : 'both'}
-    >
+    <Draggable data={itemData} dragAxis={isLocked ? "x" : "both"}>
       <View style={styles.draggableItem}>
-        <Text>{isLocked ? 'Horizontal Only' : 'Free Movement'}</Text>
+        <Text>{isLocked ? "Horizontal Only" : "Free Movement"}</Text>
       </View>
     </Draggable>
   );

@@ -97,9 +97,7 @@ Add the Reanimated plugin to your `app.json` or `app.config.js`:
 ```json
 {
   "expo": {
-    "plugins": [
-      "react-native-reanimated/plugin"
-    ]
+    "plugins": ["react-native-reanimated/plugin"]
   }
 }
 ```
@@ -109,10 +107,8 @@ Or if using `app.config.js`:
 ```javascript
 export default {
   expo: {
-    plugins: [
-      'react-native-reanimated/plugin'
-    ]
-  }
+    plugins: ["react-native-reanimated/plugin"],
+  },
 };
 ```
 
@@ -122,9 +118,9 @@ Add the Reanimated plugin to your `babel.config.js`:
 
 ```javascript
 module.exports = {
-  presets: ['module:metro-react-native-babel-preset'],
+  presets: ["module:metro-react-native-babel-preset"],
   plugins: [
-    'react-native-reanimated/plugin', // This must be last
+    "react-native-reanimated/plugin", // This must be last
   ],
 };
 ```
@@ -138,7 +134,7 @@ module.exports = {
 Add the following to the top of your `index.js` (or `App.js`):
 
 ```javascript
-import 'react-native-gesture-handler';
+import "react-native-gesture-handler";
 ```
 
 #### For Expo
@@ -146,7 +142,7 @@ import 'react-native-gesture-handler';
 The gesture handler import is handled automatically in Expo projects, but you still need to ensure `GestureHandlerRootView` wraps your app:
 
 ```tsx
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export default function App() {
   return (
@@ -162,14 +158,14 @@ export default function App() {
 To verify the installation, create a simple test component:
 
 ```tsx
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { 
+import React from "react";
+import { View, Text, StyleSheet } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import {
   DropProvider,
-  Draggable, 
-  Droppable 
-} from 'react-native-reanimated-dnd';
+  Draggable,
+  Droppable,
+} from "react-native-reanimated-dnd";
 
 export default function InstallationTest() {
   return (
@@ -177,14 +173,14 @@ export default function InstallationTest() {
       <DropProvider>
         <View style={styles.content}>
           <Text style={styles.title}>Installation Test</Text>
-          
-          <Draggable data={{ id: '1', name: 'Test Item' }}>
+
+          <Draggable data={{ id: "1", name: "Test Item" }}>
             <View style={styles.draggable}>
               <Text>Drag me!</Text>
             </View>
           </Draggable>
-          
-          <Droppable onDrop={(data) => console.log('Dropped:', data)}>
+
+          <Droppable onDrop={(data) => console.log("Dropped:", data)}>
             <View style={styles.droppable}>
               <Text>Drop here!</Text>
             </View>
@@ -198,39 +194,39 @@ export default function InstallationTest() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: "#f5f5f5",
   },
   content: {
     flex: 1,
     padding: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 40,
-    color: '#333',
+    color: "#333",
   },
   draggable: {
     width: 100,
     height: 100,
-    backgroundColor: '#4CAF50',
+    backgroundColor: "#4CAF50",
     borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     marginBottom: 40,
   },
   droppable: {
     width: 200,
     height: 100,
-    backgroundColor: '#2196F3',
+    backgroundColor: "#2196F3",
     borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     borderWidth: 2,
-    borderStyle: 'dashed',
-    borderColor: '#1976D2',
+    borderStyle: "dashed",
+    borderColor: "#1976D2",
   },
 });
 ```
@@ -244,6 +240,7 @@ If you can drag the green box and drop it on the blue area, your installation is
 #### 1. "Cannot read property 'install' of undefined"
 
 This usually means React Native Reanimated is not properly installed. Ensure you:
+
 - Added the Reanimated plugin to `babel.config.js`
 - Restarted your Metro bundler
 - Rebuilt your app
@@ -251,6 +248,7 @@ This usually means React Native Reanimated is not properly installed. Ensure you
 #### 2. "RNGestureHandlerModule is null"
 
 This indicates React Native Gesture Handler is not properly linked:
+
 - For iOS: Run `cd ios && pod install`
 - For Android: Ensure the package is properly linked
 - For Expo: Make sure you're using a development build, not Expo Go
@@ -279,6 +277,7 @@ npm install @types/react @types/react-native
 #### 5. Expo Go Limitations
 
 This library requires native code and cannot run in Expo Go. You must:
+
 - Use a development build (`npx expo run:ios` or `npx expo run:android`)
 - Or eject to a bare workflow
 - Or use EAS Build for production apps
@@ -308,7 +307,7 @@ This library requires native code and cannot run in Expo Go. You must:
 ## Version Compatibility
 
 | React Native Reanimated DnD | React Native | Reanimated | Gesture Handler | Expo SDK |
-|------------------------------|--------------|------------|-----------------|----------|
+| --------------------------- | ------------ | ---------- | --------------- | -------- |
 | 1.x.x                       | 0.64+        | 3.x.x      | 2.x.x           | 46+      |
 
 ## Next Steps
@@ -331,4 +330,4 @@ If you encounter issues during installation:
    - Your platform (iOS/Android)
    - Whether you're using Expo or React Native CLI
    - Complete error messages
-   - Steps to reproduce 
+   - Steps to reproduce

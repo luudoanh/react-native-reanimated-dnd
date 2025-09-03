@@ -17,13 +17,15 @@ The library provides three collision detection algorithms that determine when a 
 The most permissive algorithm that detects collision when any part of the draggable overlaps with any part of the droppable.
 
 #### Behavior
+
 - **Collision detected**: When any pixel of the draggable overlaps with any pixel of the droppable
 - **Use case**: Easy dropping, forgiving user experience
 - **Best for**: Large drop zones, mobile interfaces, quick interactions
 
 #### Example
+
 ```tsx
-<Draggable 
+<Draggable
   data={data}
   collisionAlgorithm="intersect" // Default
 >
@@ -32,6 +34,7 @@ The most permissive algorithm that detects collision when any part of the dragga
 ```
 
 #### Visual Representation
+
 ```
 Draggable:     [====]
 Droppable: [----------]
@@ -43,21 +46,21 @@ Result:    ✅ Collision (any overlap)
 A precise algorithm that detects collision only when the center point of the draggable is over the droppable.
 
 #### Behavior
+
 - **Collision detected**: When the center point of the draggable is within the droppable bounds
 - **Use case**: Precise dropping, intentional placement
 - **Best for**: Small drop zones, precise positioning, desktop interfaces
 
 #### Example
+
 ```tsx
-<Draggable 
-  data={data}
-  collisionAlgorithm="center"
->
+<Draggable data={data} collisionAlgorithm="center">
   <Text>Precise dropping</Text>
 </Draggable>
 ```
 
 #### Visual Representation
+
 ```
 Draggable:     [==•==]  (• = center)
 Droppable: [----------]
@@ -73,21 +76,21 @@ Result:    ❌ No collision (center outside)
 The most restrictive algorithm that requires the entire draggable to be contained within the droppable.
 
 #### Behavior
+
 - **Collision detected**: When the entire draggable is completely inside the droppable bounds
 - **Use case**: Strict containment, no partial overlaps allowed
 - **Best for**: Container-like drop zones, strict placement requirements
 
 #### Example
+
 ```tsx
-<Draggable 
-  data={data}
-  collisionAlgorithm="contain"
->
+<Draggable data={data} collisionAlgorithm="contain">
   <Text>Must fit completely</Text>
 </Draggable>
 ```
 
 #### Visual Representation
+
 ```
 Draggable:   [====]
 Droppable: [----------]
@@ -100,11 +103,11 @@ Result:    ❌ No collision (not fully contained)
 
 ## Algorithm Comparison
 
-| Algorithm | Precision | Ease of Use | Best For |
-|-----------|-----------|-------------|----------|
-| `intersect` | Low | High | Mobile, large zones, quick interactions |
-| `center` | Medium | Medium | Precise placement, medium zones |
-| `contain` | High | Low | Strict containment, container zones |
+| Algorithm   | Precision | Ease of Use | Best For                                |
+| ----------- | --------- | ----------- | --------------------------------------- |
+| `intersect` | Low       | High        | Mobile, large zones, quick interactions |
+| `center`    | Medium    | Medium      | Precise placement, medium zones         |
+| `contain`   | High      | Low         | Strict containment, container zones     |
 
 ## Usage Examples
 
@@ -112,39 +115,36 @@ Result:    ❌ No collision (not fully contained)
 
 ```tsx
 function AdaptiveDropZone() {
-  const [algorithm, setAlgorithm] = useState('intersect');
-  const [dropZoneSize, setDropZoneSize] = useState('large');
+  const [algorithm, setAlgorithm] = useState("intersect");
+  const [dropZoneSize, setDropZoneSize] = useState("large");
 
   // Automatically adjust algorithm based on drop zone size
   useEffect(() => {
     switch (dropZoneSize) {
-      case 'small':
-        setAlgorithm('intersect'); // More forgiving for small zones
+      case "small":
+        setAlgorithm("intersect"); // More forgiving for small zones
         break;
-      case 'medium':
-        setAlgorithm('center'); // Balanced precision
+      case "medium":
+        setAlgorithm("center"); // Balanced precision
         break;
-      case 'large':
-        setAlgorithm('contain'); // Strict for large zones
+      case "large":
+        setAlgorithm("contain"); // Strict for large zones
         break;
     }
   }, [dropZoneSize]);
 
   return (
     <View>
-      <Draggable 
-        data={{ id: '1', name: 'Adaptive Item' }}
+      <Draggable
+        data={{ id: "1", name: "Adaptive Item" }}
         collisionAlgorithm={algorithm}
       >
         <Text>Algorithm: {algorithm}</Text>
       </Draggable>
 
-      <Droppable 
-        onDrop={(data) => console.log('Dropped with', algorithm)}
-        style={[
-          styles.dropZone,
-          styles[`${dropZoneSize}Zone`]
-        ]}
+      <Droppable
+        onDrop={(data) => console.log("Dropped with", algorithm)}
+        style={[styles.dropZone, styles[`${dropZoneSize}Zone`]]}
       >
         <Text>Drop Zone ({dropZoneSize})</Text>
       </Droppable>
@@ -157,28 +157,28 @@ function AdaptiveDropZone() {
 
 ```tsx
 function CollisionTester() {
-  const [selectedAlgorithm, setSelectedAlgorithm] = useState('intersect');
+  const [selectedAlgorithm, setSelectedAlgorithm] = useState("intersect");
   const [collisionCount, setCollisionCount] = useState({
     intersect: 0,
     center: 0,
-    contain: 0
+    contain: 0,
   });
 
-  const algorithms = ['intersect', 'center', 'contain'];
+  const algorithms = ["intersect", "center", "contain"];
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Collision Algorithm Tester</Text>
-      
+
       {/* Algorithm Selector */}
       <View style={styles.algorithmSelector}>
-        {algorithms.map(algorithm => (
+        {algorithms.map((algorithm) => (
           <TouchableOpacity
             key={algorithm}
             onPress={() => setSelectedAlgorithm(algorithm)}
             style={[
               styles.algorithmButton,
-              selectedAlgorithm === algorithm && styles.selectedButton
+              selectedAlgorithm === algorithm && styles.selectedButton,
             ]}
           >
             <Text>{algorithm}</Text>
@@ -188,8 +188,8 @@ function CollisionTester() {
 
       {/* Test Area */}
       <View style={styles.testArea}>
-        <Draggable 
-          data={{ id: 'test-item', algorithm: selectedAlgorithm }}
+        <Draggable
+          data={{ id: "test-item", algorithm: selectedAlgorithm }}
           collisionAlgorithm={selectedAlgorithm}
           onDragStart={() => console.log(`Testing ${selectedAlgorithm}`)}
         >
@@ -199,11 +199,11 @@ function CollisionTester() {
           </View>
         </Draggable>
 
-        <Droppable 
+        <Droppable
           onDrop={(data) => {
-            setCollisionCount(prev => ({
+            setCollisionCount((prev) => ({
               ...prev,
-              [data.algorithm]: prev[data.algorithm] + 1
+              [data.algorithm]: prev[data.algorithm] + 1,
             }));
           }}
           style={styles.testDroppable}
@@ -226,25 +226,22 @@ function SmartDraggable({ item, context }) {
   // Select algorithm based on context
   const getAlgorithm = () => {
     if (context.isMobile) {
-      return 'intersect'; // More forgiving on mobile
+      return "intersect"; // More forgiving on mobile
     }
-    
+
     if (context.isTouch) {
-      return 'center'; // Balanced for touch interfaces
+      return "center"; // Balanced for touch interfaces
     }
-    
+
     if (context.isPrecisionRequired) {
-      return 'contain'; // Strict for precision tasks
+      return "contain"; // Strict for precision tasks
     }
-    
-    return 'intersect'; // Default fallback
+
+    return "intersect"; // Default fallback
   };
 
   return (
-    <Draggable 
-      data={item}
-      collisionAlgorithm={getAlgorithm()}
-    >
+    <Draggable data={item} collisionAlgorithm={getAlgorithm()}>
       <Text>{item.name}</Text>
     </Draggable>
   );
@@ -254,7 +251,7 @@ function SmartDraggable({ item, context }) {
 ### Multi-Zone with Different Algorithms
 
 ```tsx
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 function MultiZoneExample() {
   return (
@@ -262,16 +259,16 @@ function MultiZoneExample() {
       <DropProvider>
         <View style={styles.content}>
           {/* Single draggable item */}
-          <Draggable 
-            data={{ id: '1', name: 'Multi-zone item' }}
+          <Draggable
+            data={{ id: "1", name: "Multi-zone item" }}
             collisionAlgorithm="intersect" // Will work with all zones
           >
             <Text>Drag me to different zones</Text>
           </Draggable>
 
           {/* Easy drop zone */}
-          <Droppable 
-            onDrop={(data) => console.log('Easy drop:', data.name)}
+          <Droppable
+            onDrop={(data) => console.log("Easy drop:", data.name)}
             style={[styles.dropZone, styles.easyZone]}
           >
             <Text>Easy Zone</Text>
@@ -279,8 +276,8 @@ function MultiZoneExample() {
           </Droppable>
 
           {/* Precise drop zone */}
-          <Droppable 
-            onDrop={(data) => console.log('Precise drop:', data.name)}
+          <Droppable
+            onDrop={(data) => console.log("Precise drop:", data.name)}
             style={[styles.dropZone, styles.preciseZone]}
           >
             <Text>Precise Zone</Text>
@@ -288,8 +285,8 @@ function MultiZoneExample() {
           </Droppable>
 
           {/* Strict drop zone */}
-          <Droppable 
-            onDrop={(data) => console.log('Strict drop:', data.name)}
+          <Droppable
+            onDrop={(data) => console.log("Strict drop:", data.name)}
             style={[styles.dropZone, styles.strictZone]}
           >
             <Text>Strict Zone</Text>
@@ -316,15 +313,15 @@ function MultiZoneExample() {
 // Use intersect for frequently moving items
 const fastMovingItem = useDraggable({
   data: item,
-  collisionAlgorithm: 'intersect', // Fastest
-  onDragging: throttle(handleDragging, 16) // Throttle for performance
+  collisionAlgorithm: "intersect", // Fastest
+  onDragging: throttle(handleDragging, 16), // Throttle for performance
 });
 
 // Use contain only when necessary
 const precisionItem = useDraggable({
   data: item,
-  collisionAlgorithm: 'contain', // Only when precision is required
-  onDragging: throttle(handleDragging, 32) // Less frequent updates
+  collisionAlgorithm: "contain", // Only when precision is required
+  onDragging: throttle(handleDragging, 32), // Less frequent updates
 });
 ```
 
@@ -342,23 +339,27 @@ function CustomCollisionDroppable() {
     const customCollisionCheck = (itemData, droppableLayout) => {
       // Access custom properties from your data
       if (itemData.customRect && droppableLayout) {
-        const overlapArea = calculateOverlapArea(itemData.customRect, droppableLayout);
-        const draggableArea = itemData.customRect.width * itemData.customRect.height;
+        const overlapArea = calculateOverlapArea(
+          itemData.customRect,
+          droppableLayout
+        );
+        const draggableArea =
+          itemData.customRect.width * itemData.customRect.height;
         const overlapPercentage = overlapArea / draggableArea;
-        
+
         return overlapPercentage > 0.5; // Require 50% overlap
       }
       return true; // Default to accepting the drop
     };
 
     if (customCollisionCheck(data, droppableLayout)) {
-      console.log('Custom collision detected');
+      console.log("Custom collision detected");
       // Handle the drop
       processDroppedItem(data);
     } else {
-      console.log('Custom collision failed');
+      console.log("Custom collision failed");
       // You can show an error message, but the drop has already occurred
-      showErrorMessage('Drop not allowed in this area');
+      showErrorMessage("Drop not allowed in this area");
     }
   };
 
@@ -368,10 +369,7 @@ function CustomCollisionDroppable() {
   };
 
   return (
-    <Droppable 
-      onDrop={handleDrop}
-      style={styles.customDropZone}
-    >
+    <Droppable onDrop={handleDrop} style={styles.customDropZone}>
       <View ref={droppableRef} onLayout={handleLayout}>
         <Text>Custom Collision Zone</Text>
         <Text>Requires 50% overlap</Text>
@@ -386,7 +384,7 @@ function calculateOverlapArea(rect1, rect2) {
   const right = Math.min(rect1.x + rect1.width, rect2.x + rect2.width);
   const top = Math.max(rect1.y, rect2.y);
   const bottom = Math.min(rect1.y + rect1.height, rect2.y + rect2.height);
-  
+
   if (left < right && top < bottom) {
     return (right - left) * (bottom - top);
   }
@@ -413,20 +411,17 @@ function calculateOverlapArea(rect1, rect2) {
 function FeedbackDraggable({ algorithm }) {
   const getFeedbackStyle = () => {
     switch (algorithm) {
-      case 'intersect':
-        return { borderColor: 'green', borderWidth: 2 }; // Easy
-      case 'center':
-        return { borderColor: 'orange', borderWidth: 2 }; // Medium
-      case 'contain':
-        return { borderColor: 'red', borderWidth: 2 }; // Hard
+      case "intersect":
+        return { borderColor: "green", borderWidth: 2 }; // Easy
+      case "center":
+        return { borderColor: "orange", borderWidth: 2 }; // Medium
+      case "contain":
+        return { borderColor: "red", borderWidth: 2 }; // Hard
     }
   };
 
   return (
-    <Draggable 
-      data={{ algorithm }}
-      collisionAlgorithm={algorithm}
-    >
+    <Draggable data={{ algorithm }} collisionAlgorithm={algorithm}>
       <View style={[styles.item, getFeedbackStyle()]}>
         <Text>{algorithm} mode</Text>
       </View>

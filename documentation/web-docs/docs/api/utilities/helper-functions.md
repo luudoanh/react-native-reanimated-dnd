@@ -17,21 +17,25 @@ The library provides several helper functions that are used internally but can a
 Constrains a value between a minimum and maximum bound.
 
 #### Signature
+
 ```tsx
-function clamp(value: number, lowerBound: number, upperBound: number): number
+function clamp(value: number, lowerBound: number, upperBound: number): number;
 ```
 
 #### Parameters
+
 - `value`: The value to constrain
 - `lowerBound`: The minimum allowed value
 - `upperBound`: The maximum allowed value
 
 #### Returns
+
 The constrained value between lowerBound and upperBound
 
 #### Example
+
 ```tsx
-import { clamp } from 'react-native-reanimated-dnd';
+import { clamp } from "react-native-reanimated-dnd";
 
 // Basic usage
 const constrainedValue = clamp(150, 0, 100); // Returns 100
@@ -41,18 +45,14 @@ const negativeValue = clamp(-10, 0, 100); // Returns 0
 // In a draggable context
 function BoundedSlider() {
   const [value, setValue] = useState(50);
-  
+
   const handleDrag = ({ tx }) => {
     const newValue = clamp(value + tx, 0, 100);
     setValue(newValue);
   };
 
   return (
-    <Draggable 
-      data={{ value }}
-      onDragging={handleDrag}
-      dragAxis="x"
-    >
+    <Draggable data={{ value }} onDragging={handleDrag} dragAxis="x">
       <Text>Value: {value}</Text>
     </Draggable>
   );
@@ -64,6 +64,7 @@ function BoundedSlider() {
 Updates the position of an item in a sortable list based on its Y coordinate.
 
 #### Signature
+
 ```tsx
 function setPosition(
   positionY: number,
@@ -71,10 +72,11 @@ function setPosition(
   positions: SharedValue<{ [id: string]: number }>,
   id: string,
   itemHeight: number
-): void
+): void;
 ```
 
 #### Parameters
+
 - `positionY`: Current Y position of the dragged item
 - `itemsCount`: Total number of items in the list
 - `positions`: Shared value containing position mapping
@@ -82,17 +84,18 @@ function setPosition(
 - `itemHeight`: Height of each item in pixels
 
 #### Example
+
 ```tsx
-import { setPosition } from 'react-native-reanimated-dnd';
+import { setPosition } from "react-native-reanimated-dnd";
 
 function CustomSortableItem({ id, itemHeight, positions, itemsCount }) {
   const { animatedViewProps, gesture } = useDraggable({
     data: { id },
     onDragging: ({ y, ty }) => {
-      'worklet';
+      "worklet";
       const currentY = y + ty;
       setPosition(currentY, itemsCount, positions, id, itemHeight);
-    }
+    },
   });
 
   return (
@@ -112,37 +115,41 @@ function CustomSortableItem({ id, itemHeight, positions, itemsCount }) {
 Swaps the positions of two items in a position mapping object.
 
 #### Signature
+
 ```tsx
 function objectMove(
   object: { [id: string]: number },
   from: number,
   to: number
-): { [id: string]: number }
+): { [id: string]: number };
 ```
 
 #### Parameters
+
 - `object`: Position mapping object
 - `from`: Source position index
 - `to`: Target position index
 
 #### Returns
+
 New object with swapped positions
 
 #### Example
+
 ```tsx
-import { objectMove } from 'react-native-reanimated-dnd';
+import { objectMove } from "react-native-reanimated-dnd";
 
 // Basic usage
-const positions = { 'item1': 0, 'item2': 1, 'item3': 2 };
+const positions = { item1: 0, item2: 1, item3: 2 };
 const newPositions = objectMove(positions, 0, 2);
 // Result: { 'item1': 2, 'item2': 1, 'item3': 0 }
 
 // In a sortable context
 function CustomSortableList() {
   const [positions, setPositions] = useState({
-    'task1': 0,
-    'task2': 1,
-    'task3': 2
+    task1: 0,
+    task2: 1,
+    task3: 2,
   });
 
   const handleMove = (fromIndex, toIndex) => {
@@ -155,11 +162,7 @@ function CustomSortableList() {
       {Object.entries(positions)
         .sort(([, a], [, b]) => a - b)
         .map(([id, position]) => (
-          <SortableItem 
-            key={id} 
-            id={id} 
-            onMove={handleMove}
-          />
+          <SortableItem key={id} id={id} onMove={handleMove} />
         ))}
     </View>
   );
@@ -171,25 +174,31 @@ function CustomSortableList() {
 Converts an array of items with `id` properties to a position mapping object.
 
 #### Signature
+
 ```tsx
-function listToObject<T extends { id: string }>(list: T[]): { [id: string]: number }
+function listToObject<T extends { id: string }>(
+  list: T[]
+): { [id: string]: number };
 ```
 
 #### Parameters
+
 - `list`: Array of items with `id` properties
 
 #### Returns
+
 Object mapping item IDs to their array indices
 
 #### Example
+
 ```tsx
-import { listToObject } from 'react-native-reanimated-dnd';
+import { listToObject } from "react-native-reanimated-dnd";
 
 // Basic usage
 const tasks = [
-  { id: 'task1', title: 'First Task' },
-  { id: 'task2', title: 'Second Task' },
-  { id: 'task3', title: 'Third Task' }
+  { id: "task1", title: "First Task" },
+  { id: "task2", title: "Second Task" },
+  { id: "task3", title: "Third Task" },
 ];
 
 const positions = listToObject(tasks);
@@ -208,7 +217,7 @@ function TaskList() {
   return (
     <View>
       {tasks.map((task, index) => (
-        <SortableItem 
+        <SortableItem
           key={task.id}
           id={task.id}
           positions={positions}
@@ -227,6 +236,7 @@ function TaskList() {
 Determines the auto-scroll direction based on the current drag position.
 
 #### Signature
+
 ```tsx
 function setAutoScroll(
   positionY: number,
@@ -234,10 +244,11 @@ function setAutoScroll(
   upperBound: number,
   scrollThreshold: number,
   autoScroll: SharedValue<ScrollDirection>
-): void
+): void;
 ```
 
 #### Parameters
+
 - `positionY`: Current Y position of the dragged item
 - `lowerBound`: Top boundary of the scroll container
 - `upperBound`: Bottom boundary of the scroll container
@@ -245,8 +256,9 @@ function setAutoScroll(
 - `autoScroll`: Shared value to store the scroll direction
 
 #### Example
+
 ```tsx
-import { setAutoScroll, ScrollDirection } from 'react-native-reanimated-dnd';
+import { setAutoScroll, ScrollDirection } from "react-native-reanimated-dnd";
 
 function AutoScrollContainer() {
   const scrollY = useSharedValue(0);
@@ -255,11 +267,11 @@ function AutoScrollContainer() {
   const scrollThreshold = 50;
 
   const handleDrag = ({ y, ty }) => {
-    'worklet';
+    "worklet";
     const currentY = y + ty;
     const lowerBound = scrollY.value;
     const upperBound = scrollY.value + containerHeight;
-    
+
     setAutoScroll(
       currentY,
       lowerBound,
@@ -270,14 +282,8 @@ function AutoScrollContainer() {
   };
 
   return (
-    <Animated.ScrollView
-      onScroll={scrollHandler}
-      scrollEventThrottle={16}
-    >
-      <Draggable 
-        data={{ id: '1' }}
-        onDragging={handleDrag}
-      >
+    <Animated.ScrollView onScroll={scrollHandler} scrollEventThrottle={16}>
+      <Draggable data={{ id: "1" }} onDragging={handleDrag}>
         <Text>Auto-scrolling item</Text>
       </Draggable>
     </Animated.ScrollView>
@@ -290,14 +296,18 @@ function AutoScrollContainer() {
 ### Custom Position Manager
 
 ```tsx
-import { clamp, objectMove, listToObject } from 'react-native-reanimated-dnd';
+import { clamp, objectMove, listToObject } from "react-native-reanimated-dnd";
 
 class PositionManager {
   private positions: { [id: string]: number } = {};
   private itemHeight: number;
   private containerHeight: number;
 
-  constructor(items: Array<{ id: string }>, itemHeight: number, containerHeight: number) {
+  constructor(
+    items: Array<{ id: string }>,
+    itemHeight: number,
+    containerHeight: number
+  ) {
     this.positions = listToObject(items);
     this.itemHeight = itemHeight;
     this.containerHeight = containerHeight;
@@ -305,11 +315,7 @@ class PositionManager {
 
   updatePosition(id: string, y: number): boolean {
     const maxItems = Math.floor(this.containerHeight / this.itemHeight);
-    const newIndex = clamp(
-      Math.floor(y / this.itemHeight),
-      0,
-      maxItems - 1
-    );
+    const newIndex = clamp(Math.floor(y / this.itemHeight), 0, maxItems - 1);
 
     const currentIndex = this.positions[id];
     if (newIndex !== currentIndex) {
@@ -343,8 +349,8 @@ function ManagedSortableList() {
 
   return (
     <View>
-      {items.map(item => (
-        <Draggable 
+      {items.map((item) => (
+        <Draggable
           key={item.id}
           data={item}
           onDragging={({ y, ty }) => handleDrag(item.id, y + ty)}
@@ -360,7 +366,7 @@ function ManagedSortableList() {
 ### Smooth Scroll Controller
 
 ```tsx
-import { setAutoScroll, ScrollDirection } from 'react-native-reanimated-dnd';
+import { setAutoScroll, ScrollDirection } from "react-native-reanimated-dnd";
 
 function SmoothScrollController() {
   const scrollY = useSharedValue(0);
@@ -373,14 +379,15 @@ function SmoothScrollController() {
     (direction) => {
       if (direction !== ScrollDirection.None) {
         const scrollSpeed = 5; // pixels per frame
-        const newScrollY = direction === ScrollDirection.Up 
-          ? Math.max(0, scrollY.value - scrollSpeed)
-          : scrollY.value + scrollSpeed;
+        const newScrollY =
+          direction === ScrollDirection.Up
+            ? Math.max(0, scrollY.value - scrollSpeed)
+            : scrollY.value + scrollSpeed;
 
         runOnJS(() => {
-          scrollViewRef.current?.scrollTo({ 
-            y: newScrollY, 
-            animated: false 
+          scrollViewRef.current?.scrollTo({
+            y: newScrollY,
+            animated: false,
           });
         })();
       }
@@ -390,11 +397,11 @@ function SmoothScrollController() {
   const handleScroll = useAnimatedScrollHandler({
     onScroll: (event) => {
       scrollY.value = event.contentOffset.y;
-    }
+    },
   });
 
   const handleDrag = ({ y, ty }) => {
-    'worklet';
+    "worklet";
     setAutoScroll(
       y + ty,
       scrollY.value,
@@ -410,10 +417,7 @@ function SmoothScrollController() {
       onScroll={handleScroll}
       scrollEventThrottle={16}
     >
-      <Draggable 
-        data={{ id: '1' }}
-        onDragging={handleDrag}
-      >
+      <Draggable data={{ id: "1" }} onDragging={handleDrag}>
         <Text>Smooth scrolling item</Text>
       </Draggable>
     </Animated.ScrollView>
@@ -424,7 +428,7 @@ function SmoothScrollController() {
 ### Data Synchronization Helper
 
 ```tsx
-import { listToObject, objectMove } from 'react-native-reanimated-dnd';
+import { listToObject, objectMove } from "react-native-reanimated-dnd";
 
 function useDataSync<T extends { id: string }>(initialData: T[]) {
   const [data, setData] = useState(initialData);
@@ -438,9 +442,9 @@ function useDataSync<T extends { id: string }>(initialData: T[]) {
   const moveItem = useCallback((fromIndex: number, toIndex: number) => {
     // Update positions
     positions.value = objectMove(positions.value, fromIndex, toIndex);
-    
+
     // Update data array
-    setData(prevData => {
+    setData((prevData) => {
       const newData = [...prevData];
       const [movedItem] = newData.splice(fromIndex, 1);
       newData.splice(toIndex, 0, movedItem);
@@ -453,9 +457,7 @@ function useDataSync<T extends { id: string }>(initialData: T[]) {
   }, []);
 
   const getSortedData = useCallback(() => {
-    return data.sort((a, b) => 
-      positions.value[a.id] - positions.value[b.id]
-    );
+    return data.sort((a, b) => positions.value[a.id] - positions.value[b.id]);
   }, [data]);
 
   return {
@@ -464,18 +466,14 @@ function useDataSync<T extends { id: string }>(initialData: T[]) {
     moveItem,
     getItemPosition,
     getSortedData,
-    setData
+    setData,
   };
 }
 
 // Usage
 function SyncedSortableList() {
-  const { 
-    data, 
-    positions, 
-    moveItem, 
-    getSortedData 
-  } = useDataSync(initialTasks);
+  const { data, positions, moveItem, getSortedData } =
+    useDataSync(initialTasks);
 
   return (
     <View>
@@ -502,8 +500,8 @@ All position calculation functions are marked with `'worklet'` and can run on th
 ```tsx
 // These functions can be used in worklets
 const optimizedDragHandler = ({ y, ty }) => {
-  'worklet';
-  
+  "worklet";
+
   // All these functions run on UI thread
   const constrainedY = clamp(y + ty, 0, maxY);
   setPosition(constrainedY, itemCount, positions, itemId, itemHeight);
@@ -516,18 +514,18 @@ const optimizedDragHandler = ({ y, ty }) => {
 ```tsx
 function BatchedPositionUpdater() {
   const pendingUpdates = useRef<Array<() => void>>([]);
-  
+
   const batchUpdate = (updateFn: () => void) => {
     pendingUpdates.current.push(updateFn);
-    
+
     // Process all updates in next frame
     requestAnimationFrame(() => {
-      pendingUpdates.current.forEach(fn => fn());
+      pendingUpdates.current.forEach((fn) => fn());
       pendingUpdates.current = [];
     });
   };
 
-  const handleMultipleDrags = (items: Array<{ id: string, y: number }>) => {
+  const handleMultipleDrags = (items: Array<{ id: string; y: number }>) => {
     items.forEach(({ id, y }) => {
       batchUpdate(() => {
         setPosition(y, itemCount, positions, id, itemHeight);
@@ -552,8 +550,8 @@ interface TaskItem {
 }
 
 const tasks: TaskItem[] = [
-  { id: '1', title: 'Task 1', priority: 1 },
-  { id: '2', title: 'Task 2', priority: 2 }
+  { id: "1", title: "Task 1", priority: 1 },
+  { id: "2", title: "Task 2", priority: 2 },
 ];
 
 // TypeScript infers the correct types

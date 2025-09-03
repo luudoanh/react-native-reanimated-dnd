@@ -11,9 +11,9 @@ Learn how to configure the DropProvider for your application.
 The `DropProvider` is the foundation of the drag-and-drop system. It must wrap all draggable and droppable components to enable communication between them.
 
 ```tsx
-import React from 'react';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { DropProvider } from 'react-native-reanimated-dnd';
+import React from "react";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { DropProvider } from "react-native-reanimated-dnd";
 
 function App() {
   return (
@@ -44,17 +44,17 @@ interface DropProviderProps {
 ### Basic Provider with Callbacks
 
 ```tsx
-import React from 'react';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { DropProvider } from 'react-native-reanimated-dnd';
+import React from "react";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { DropProvider } from "react-native-reanimated-dnd";
 
 function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <DropProvider
-        onDragStart={(data) => console.log('Drag started:', data)}
-        onDragEnd={(data) => console.log('Drag ended:', data)}
-        onDroppedItemsUpdate={(items) => console.log('Items updated:', items)}
+        onDragStart={(data) => console.log("Drag started:", data)}
+        onDragEnd={(data) => console.log("Drag ended:", data)}
+        onDroppedItemsUpdate={(items) => console.log("Items updated:", items)}
       >
         <YourComponents />
       </DropProvider>
@@ -66,9 +66,9 @@ function App() {
 ### Advanced Provider Configuration
 
 ```tsx
-import React, { useState } from 'react';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { DropProvider } from 'react-native-reanimated-dnd';
+import React, { useState } from "react";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { DropProvider } from "react-native-reanimated-dnd";
 
 function AdvancedApp() {
   const [droppedItems, setDroppedItems] = useState({});
@@ -79,21 +79,21 @@ function AdvancedApp() {
       <DropProvider
         onDragStart={(data) => {
           setIsDragging(true);
-          console.log('Started dragging:', data);
+          console.log("Started dragging:", data);
         }}
         onDragEnd={(data) => {
           setIsDragging(false);
-          console.log('Finished dragging:', data);
+          console.log("Finished dragging:", data);
         }}
         onDragging={({ x, y, tx, ty, itemData }) => {
           console.log(`Dragging ${itemData.name} at (${x + tx}, ${y + ty})`);
         }}
         onDroppedItemsUpdate={(items) => {
           setDroppedItems(items);
-          console.log('Dropped items updated:', items);
+          console.log("Dropped items updated:", items);
         }}
         onLayoutUpdateComplete={() => {
-          console.log('Layout update complete');
+          console.log("Layout update complete");
         }}
       >
         <YourComponents isDragging={isDragging} droppedItems={droppedItems} />
@@ -108,9 +108,9 @@ function AdvancedApp() {
 You can use a ref to access provider methods imperatively:
 
 ```tsx
-import React, { useRef } from 'react';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { DropProvider, DropProviderRef } from 'react-native-reanimated-dnd';
+import React, { useRef } from "react";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { DropProvider, DropProviderRef } from "react-native-reanimated-dnd";
 
 function AppWithRef() {
   const dropProviderRef = useRef<DropProviderRef>(null);
@@ -122,14 +122,14 @@ function AppWithRef() {
 
   const getDroppedItems = () => {
     const items = dropProviderRef.current?.getDroppedItems();
-    console.log('Current dropped items:', items);
+    console.log("Current dropped items:", items);
   };
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <DropProvider
         ref={dropProviderRef}
-        onLayoutUpdateComplete={() => console.log('Layout updated')}
+        onLayoutUpdateComplete={() => console.log("Layout updated")}
       >
         <ScrollView onLayout={handleLayoutChange}>
           <YourComponents />
@@ -145,16 +145,16 @@ function AppWithRef() {
 ### Task Management App
 
 ```tsx
-import React, { useState, useCallback } from 'react';
-import { View, ScrollView } from 'react-native';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { DropProvider } from 'react-native-reanimated-dnd';
+import React, { useState, useCallback } from "react";
+import { View, ScrollView } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { DropProvider } from "react-native-reanimated-dnd";
 
 interface Task {
   id: string;
   title: string;
-  status: 'todo' | 'in-progress' | 'done';
-  priority: 'low' | 'medium' | 'high';
+  status: "todo" | "in-progress" | "done";
+  priority: "low" | "medium" | "high";
 }
 
 function TaskManagementApp() {
@@ -172,19 +172,22 @@ function TaskManagementApp() {
     // Clean up visual feedback
   }, []);
 
-  const handleDroppedItemsUpdate = useCallback((droppedItems) => {
-    // Sync dropped items with your state management
-    syncTasksWithDroppedItems(droppedItems);
-    
-    // Save to backend
-    saveTasks(tasks);
-    
-    // Analytics
-    analytics.track('tasks_reordered', {
-      totalTasks: tasks.length,
-      droppedCount: Object.keys(droppedItems).length
-    });
-  }, [tasks]);
+  const handleDroppedItemsUpdate = useCallback(
+    (droppedItems) => {
+      // Sync dropped items with your state management
+      syncTasksWithDroppedItems(droppedItems);
+
+      // Save to backend
+      saveTasks(tasks);
+
+      // Analytics
+      analytics.track("tasks_reordered", {
+        totalTasks: tasks.length,
+        droppedCount: Object.keys(droppedItems).length,
+      });
+    },
+    [tasks]
+  );
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -209,14 +212,14 @@ function TaskManagementApp() {
 ### File Manager with Drag & Drop
 
 ```tsx
-import React, { useState, useRef } from 'react';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { DropProvider, DropProviderRef } from 'react-native-reanimated-dnd';
+import React, { useState, useRef } from "react";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { DropProvider, DropProviderRef } from "react-native-reanimated-dnd";
 
 interface FileItem {
   id: string;
   name: string;
-  type: 'file' | 'folder';
+  type: "file" | "folder";
   size: number;
 }
 
@@ -225,12 +228,15 @@ function FileManager() {
   const [selectedFiles, setSelectedFiles] = useState<Set<string>>(new Set());
   const dropProviderRef = useRef<DropProviderRef>(null);
 
-  const handleFileOperation = useCallback((operation: string, fileId: string) => {
-    // Trigger position update after file operations
-    setTimeout(() => {
-      dropProviderRef.current?.requestPositionUpdate();
-    }, 100);
-  }, []);
+  const handleFileOperation = useCallback(
+    (operation: string, fileId: string) => {
+      // Trigger position update after file operations
+      setTimeout(() => {
+        dropProviderRef.current?.requestPositionUpdate();
+      }, 100);
+    },
+    []
+  );
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -248,8 +254,8 @@ function FileManager() {
           updateFileStructure(droppedItems);
         }}
       >
-        <FileExplorer 
-          files={files} 
+        <FileExplorer
+          files={files}
           selectedFiles={selectedFiles}
           onFileOperation={handleFileOperation}
         />
@@ -262,9 +268,9 @@ function FileManager() {
 ### E-commerce Product Catalog
 
 ```tsx
-import React, { useState } from 'react';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { DropProvider } from 'react-native-reanimated-dnd';
+import React, { useState } from "react";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { DropProvider } from "react-native-reanimated-dnd";
 
 interface Product {
   id: string;
@@ -281,9 +287,9 @@ function ProductCatalog() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <DropProvider
         onDragStart={(product: Product) => {
-          analytics.track('product_drag_start', {
+          analytics.track("product_drag_start", {
             productId: product.id,
-            category: product.category
+            category: product.category,
           });
         }}
         onDroppedItemsUpdate={(droppedItems) => {
@@ -328,7 +334,7 @@ function ComponentWithProviderAccess() {
 
   const logDroppedItems = () => {
     const items = providerRef.current?.getDroppedItems();
-    console.log('Currently dropped items:', items);
+    console.log("Currently dropped items:", items);
   };
 
   const handleOrientationChange = () => {
@@ -382,7 +388,7 @@ Always trigger position updates after layout changes:
     ref={providerRef}
     onLayoutUpdateComplete={() => {
       // Layout update completed
-      console.log('Positions updated');
+      console.log("Positions updated");
     }}
   >
     <ScrollView
@@ -403,7 +409,7 @@ Use `useCallback` to prevent unnecessary re-renders:
 
 ```tsx
 const handleDragStart = useCallback((data) => {
-  console.log('Drag started:', data);
+  console.log("Drag started:", data);
 }, []);
 
 const handleDroppedItemsUpdate = useCallback((items) => {
@@ -417,7 +423,7 @@ const handleDroppedItemsUpdate = useCallback((items) => {
   >
     <YourComponents />
   </DropProvider>
-</GestureHandlerRootView>
+</GestureHandlerRootView>;
 ```
 
 ## Common Patterns
@@ -432,9 +438,9 @@ function StateSyncExample() {
     // Convert dropped items to your app state format
     const newState = convertDroppedItemsToState(droppedItems);
     setAppState(newState);
-    
+
     // Persist to storage
-    AsyncStorage.setItem('appState', JSON.stringify(newState));
+    AsyncStorage.setItem("appState", JSON.stringify(newState));
   }, []);
 
   return (
@@ -451,4 +457,4 @@ function StateSyncExample() {
 
 - [Basic Concepts](./basic-concepts) - Understanding the core concepts
 - [DropProvider API](../api/context/DropProvider) - Complete API reference
-- [Performance Guide](../guides/performance) - Optimization tips 
+- [Performance Guide](../guides/performance) - Optimization tips

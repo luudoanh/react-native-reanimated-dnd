@@ -22,19 +22,25 @@ Visual feedback provides users with immediate responses to their drag and drop a
 ## Basic Implementation
 
 ```tsx
-import React, { useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import React, { useState } from "react";
+import { View, Text, StyleSheet } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withSpring,
   withTiming,
-} from 'react-native-reanimated';
-import { DropProvider, Draggable, Droppable } from 'react-native-reanimated-dnd';
+} from "react-native-reanimated";
+import {
+  DropProvider,
+  Draggable,
+  Droppable,
+} from "react-native-reanimated-dnd";
 
 export function VisualFeedbackExample() {
-  const [dragState, setDragState] = useState<'idle' | 'dragging' | 'success' | 'error'>('idle');
+  const [dragState, setDragState] = useState<
+    "idle" | "dragging" | "success" | "error"
+  >("idle");
   const [activeZone, setActiveZone] = useState<string | null>(null);
 
   return (
@@ -42,23 +48,23 @@ export function VisualFeedbackExample() {
       <DropProvider>
         <View style={styles.content}>
           <Text style={styles.title}>Visual Feedback</Text>
-          
+
           {/* Status Indicator */}
           <View style={styles.statusContainer}>
             <View style={[styles.statusDot, styles[`${dragState}Dot`]]} />
             <Text style={styles.statusText}>
-              {dragState === 'idle' && 'Ready to drag'}
-              {dragState === 'dragging' && 'Dragging...'}
-              {dragState === 'success' && 'Drop successful!'}
-              {dragState === 'error' && 'Drop failed'}
+              {dragState === "idle" && "Ready to drag"}
+              {dragState === "dragging" && "Dragging..."}
+              {dragState === "success" && "Drop successful!"}
+              {dragState === "error" && "Drop failed"}
             </Text>
           </View>
 
           {/* Draggable with Feedback */}
           <FeedbackDraggable
-            data={{ id: 'feedback-item', label: 'Drag Me' }}
-            onDragStart={() => setDragState('dragging')}
-            onDragEnd={() => setDragState('idle')}
+            data={{ id: "feedback-item", label: "Drag Me" }}
+            onDragStart={() => setDragState("dragging")}
+            onDragEnd={() => setDragState("idle")}
           />
 
           {/* Drop Zones with Feedback */}
@@ -66,24 +72,24 @@ export function VisualFeedbackExample() {
             <FeedbackDropZone
               id="success-zone"
               title="✅ Success Zone"
-              isActive={activeZone === 'success-zone'}
-              onDragEnter={() => setActiveZone('success-zone')}
+              isActive={activeZone === "success-zone"}
+              onDragEnter={() => setActiveZone("success-zone")}
               onDragLeave={() => setActiveZone(null)}
               onDrop={() => {
-                setDragState('success');
-                setTimeout(() => setDragState('idle'), 2000);
+                setDragState("success");
+                setTimeout(() => setDragState("idle"), 2000);
               }}
             />
 
             <FeedbackDropZone
               id="error-zone"
               title="❌ Error Zone"
-              isActive={activeZone === 'error-zone'}
-              onDragEnter={() => setActiveZone('error-zone')}
+              isActive={activeZone === "error-zone"}
+              onDragEnter={() => setActiveZone("error-zone")}
               onDragLeave={() => setActiveZone(null)}
               onDrop={() => {
-                setDragState('error');
-                setTimeout(() => setDragState('idle'), 2000);
+                setDragState("error");
+                setTimeout(() => setDragState("idle"), 2000);
               }}
             />
           </View>
@@ -99,10 +105,7 @@ function FeedbackDraggable({ data, onDragStart, onDragEnd }) {
   const opacity = useSharedValue(1);
 
   const animatedStyle = useAnimatedStyle(() => ({
-    transform: [
-      { scale: scale.value },
-      { rotate: `${rotation.value}deg` }
-    ],
+    transform: [{ scale: scale.value }, { rotate: `${rotation.value}deg` }],
     opacity: opacity.value,
   }));
 
@@ -135,7 +138,14 @@ function FeedbackDraggable({ data, onDragStart, onDragEnd }) {
   );
 }
 
-function FeedbackDropZone({ id, title, isActive, onDragEnter, onDragLeave, onDrop }) {
+function FeedbackDropZone({
+  id,
+  title,
+  isActive,
+  onDragEnter,
+  onDragLeave,
+  onDrop,
+}) {
   const scale = useSharedValue(1);
   const borderWidth = useSharedValue(2);
   const backgroundColor = useSharedValue(0);
@@ -168,7 +178,7 @@ function FeedbackDropZone({ id, title, isActive, onDragEnter, onDragLeave, onDro
       <Animated.View style={[styles.dropZone, animatedStyle]}>
         <Text style={styles.zoneTitle}>{title}</Text>
         <Text style={styles.zoneSubtitle}>
-          {isActive ? 'Release to drop' : 'Drag items here'}
+          {isActive ? "Release to drop" : "Drag items here"}
         </Text>
       </Animated.View>
     </Droppable>
@@ -178,7 +188,7 @@ function FeedbackDropZone({ id, title, isActive, onDragEnter, onDragLeave, onDro
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000000',
+    backgroundColor: "#000000",
   },
   content: {
     flex: 1,
@@ -186,18 +196,18 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-    textAlign: 'center',
+    fontWeight: "bold",
+    color: "#FFFFFF",
+    textAlign: "center",
     marginBottom: 30,
   },
   statusContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     marginBottom: 30,
     padding: 16,
-    backgroundColor: '#1a1a1a',
+    backgroundColor: "#1a1a1a",
     borderRadius: 12,
   },
   statusDot: {
@@ -207,47 +217,47 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   idleDot: {
-    backgroundColor: '#8E8E93',
+    backgroundColor: "#8E8E93",
   },
   draggingDot: {
-    backgroundColor: '#58a6ff',
+    backgroundColor: "#58a6ff",
   },
   successDot: {
-    backgroundColor: '#32d74b',
+    backgroundColor: "#32d74b",
   },
   errorDot: {
-    backgroundColor: '#ff453a',
+    backgroundColor: "#ff453a",
   },
   statusText: {
-    color: '#FFFFFF',
+    color: "#FFFFFF",
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   draggableContainer: {
-    alignSelf: 'center',
+    alignSelf: "center",
     marginBottom: 40,
   },
   draggable: {
     width: 120,
     height: 120,
-    backgroundColor: '#a2d2ff',
+    backgroundColor: "#a2d2ff",
     borderRadius: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#000',
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 6,
     elevation: 8,
   },
   draggableText: {
-    color: '#000000',
-    fontWeight: 'bold',
+    color: "#000000",
+    fontWeight: "bold",
     fontSize: 16,
     marginBottom: 4,
   },
   dragHint: {
-    color: '#333333',
+    color: "#333333",
     fontSize: 12,
   },
   dropZonesContainer: {
@@ -257,22 +267,22 @@ const styles = StyleSheet.create({
   dropZone: {
     height: 120,
     borderRadius: 16,
-    borderColor: '#58a6ff',
-    borderStyle: 'dashed',
-    justifyContent: 'center',
-    alignItems: 'center',
+    borderColor: "#58a6ff",
+    borderStyle: "dashed",
+    justifyContent: "center",
+    alignItems: "center",
     padding: 20,
   },
   zoneTitle: {
-    color: '#FFFFFF',
+    color: "#FFFFFF",
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 8,
   },
   zoneSubtitle: {
-    color: '#8E8E93',
+    color: "#8E8E93",
     fontSize: 14,
-    textAlign: 'center',
+    textAlign: "center",
   },
 });
 ```
@@ -284,12 +294,11 @@ const styles = StyleSheet.create({
 ```tsx
 function DragStateFeedback({ isDragging }) {
   return (
-    <View style={[
-      styles.dragIndicator,
-      isDragging && styles.activeDragIndicator
-    ]}>
+    <View
+      style={[styles.dragIndicator, isDragging && styles.activeDragIndicator]}
+    >
       <Text style={styles.indicatorText}>
-        {isDragging ? 'Dragging...' : 'Ready'}
+        {isDragging ? "Dragging..." : "Ready"}
       </Text>
     </View>
   );
@@ -300,13 +309,12 @@ function DragStateFeedback({ isDragging }) {
 
 ```tsx
 function HighlightDropZone({ isActive, canDrop }) {
-  const borderColor = canDrop ? '#32d74b' : '#ff453a';
-  
+  const borderColor = canDrop ? "#32d74b" : "#ff453a";
+
   return (
-    <View style={[
-      styles.dropZone,
-      isActive && { borderColor, borderWidth: 3 }
-    ]}>
+    <View
+      style={[styles.dropZone, isActive && { borderColor, borderWidth: 3 }]}
+    >
       {/* Zone content */}
     </View>
   );
@@ -326,12 +334,12 @@ function FeedbackAnimation({ type }) {
   }));
 
   React.useEffect(() => {
-    if (type === 'success') {
+    if (type === "success") {
       scale.value = withSequence(
         withTiming(1.2, { duration: 200 }),
         withSpring(1)
       );
-    } else if (type === 'error') {
+    } else if (type === "error") {
       scale.value = withSequence(
         withTiming(0.9, { duration: 100 }),
         withTiming(1.1, { duration: 100 }),
@@ -343,7 +351,7 @@ function FeedbackAnimation({ type }) {
   return (
     <Animated.View style={[styles.feedback, animatedStyle]}>
       <Text style={styles.feedbackText}>
-        {type === 'success' ? '✅' : '❌'}
+        {type === "success" ? "✅" : "❌"}
       </Text>
     </Animated.View>
   );
@@ -357,12 +365,14 @@ function FeedbackAnimation({ type }) {
 ```tsx
 function ProximityFeedback({ distance, threshold = 50 }) {
   const intensity = Math.max(0, 1 - distance / threshold);
-  
+
   return (
-    <View style={[
-      styles.proximityIndicator,
-      { opacity: intensity, transform: [{ scale: 0.8 + intensity * 0.2 }] }
-    ]}>
+    <View
+      style={[
+        styles.proximityIndicator,
+        { opacity: intensity, transform: [{ scale: 0.8 + intensity * 0.2 }] },
+      ]}
+    >
       <Text style={styles.proximityText}>Drop Zone Near</Text>
     </View>
   );
@@ -374,17 +384,15 @@ function ProximityFeedback({ distance, threshold = 50 }) {
 ```tsx
 function DirectionalIndicator({ direction }) {
   const arrows = {
-    up: '↑',
-    down: '↓',
-    left: '←',
-    right: '→'
+    up: "↑",
+    down: "↓",
+    left: "←",
+    right: "→",
   };
 
   return (
     <View style={styles.directionIndicator}>
-      <Text style={styles.directionArrow}>
-        {arrows[direction]}
-      </Text>
+      <Text style={styles.directionArrow}>{arrows[direction]}</Text>
     </View>
   );
 }
@@ -423,10 +431,7 @@ function ProgressFeedback({ progress }) {
 ```tsx
 function AccessibleDropZone({ isHighContrast }) {
   return (
-    <View style={[
-      styles.dropZone,
-      isHighContrast && styles.highContrastZone
-    ]}>
+    <View style={[styles.dropZone, isHighContrast && styles.highContrastZone]}>
       {/* Zone content */}
     </View>
   );
@@ -436,23 +441,19 @@ function AccessibleDropZone({ isHighContrast }) {
 ### Haptic Feedback
 
 ```tsx
-import { HapticFeedback } from 'react-native';
+import { HapticFeedback } from "react-native";
 
 function HapticDraggable({ data }) {
   const handleDragStart = () => {
-    HapticFeedback.trigger('impactLight');
+    HapticFeedback.trigger("impactLight");
   };
 
   const handleDrop = () => {
-    HapticFeedback.trigger('notificationSuccess');
+    HapticFeedback.trigger("notificationSuccess");
   };
 
   return (
-    <Draggable
-      data={data}
-      onDragStart={handleDragStart}
-      onDrop={handleDrop}
-    >
+    <Draggable data={data} onDragStart={handleDragStart} onDrop={handleDrop}>
       {/* Content */}
     </Draggable>
   );
@@ -466,7 +467,7 @@ function HapticDraggable({ data }) {
 ```tsx
 // Use worklets for better performance
 const animatedStyle = useAnimatedStyle(() => {
-  'worklet';
+  "worklet";
   return {
     transform: [{ scale: scale.value }],
     opacity: opacity.value,

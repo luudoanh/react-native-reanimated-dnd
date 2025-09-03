@@ -18,6 +18,26 @@ The Sortable component provides a complete solution for both **vertical and hori
 - **Gap Support**: Built-in spacing for horizontal layouts
 - **Data Hashing**: Optimized re-rendering with automatic data change detection
 
+## Important: State Management
+
+**DO NOT** update external state directly in response to sortable operations. The Sortable component maintains its own internal state for optimal performance and animation consistency. Updating external state (like calling `setTasks()` in `onMove`) will break the internal state management and cause issues.
+
+### Correct Approach
+
+- Use `onMove` for logging, analytics, or side effects
+- Use `onDrop` with `allPositions` parameter for read-only tracking
+- Let the Sortable component manage its own internal state
+
+### Incorrect Approach
+
+- Never call `setItems()`, `setTasks()`, or similar in `onMove`
+- Never manually splice/reorder external arrays in drag callbacks
+- Never update Redux/Zustand stores directly from drag events
+
+### Future Releases
+
+Programmatic operations (add, update, delete, reorder) that work correctly with internal state will be added in future releases.
+
 ## Basic Usage
 
 ```tsx
@@ -34,7 +54,7 @@ interface Task {
 }
 
 function TaskList() {
-  const [tasks, setTasks] = useState<Task[]>([
+  const [tasks] = useState<Task[]>([
     { id: "1", title: "Learn React Native", completed: false },
     { id: "2", title: "Build an app", completed: false },
     { id: "3", title: "Deploy to store", completed: false },
@@ -59,10 +79,13 @@ function TaskList() {
       itemsCount={itemsCount}
       itemHeight={itemHeight}
       onMove={(itemId, from, to) => {
-        const newTasks = [...tasks];
-        const [movedTask] = newTasks.splice(from, 1);
-        newTasks.splice(to, 0, movedTask);
-        setTasks(newTasks);
+        console.log(`Task ${itemId} moved from ${from} to ${to}`);
+      }}
+      onDrop={(itemId, position, allPositions) => {
+        if (allPositions) {
+          console.log("Current positions:", allPositions);
+          // Use for tracking, analytics, etc. - NOT for updating state
+        }
       }}
     >
       <View style={styles.taskItem}>
@@ -133,7 +156,7 @@ type RenderItemFunction<TData> = (
 
 ```tsx
 function HorizontalTagList() {
-  const [tags, setTags] = useState([
+  const [tags] = useState([
     { id: "1", label: "React", color: "#61dafb" },
     { id: "2", label: "TypeScript", color: "#3178c6" },
     { id: "3", label: "React Native", color: "#0fa5e9" },
@@ -165,10 +188,12 @@ function HorizontalTagList() {
       gap={gap}
       paddingHorizontal={paddingHorizontal}
       onMove={(itemId, from, to) => {
-        const newTags = [...tags];
-        const [movedTag] = newTags.splice(from, 1);
-        newTags.splice(to, 0, movedTag);
-        setTags(newTags);
+        console.log(`Tag ${itemId} moved from ${from} to ${to}`);
+      }}
+      onDrop={(itemId, position, allPositions) => {
+        if (allPositions) {
+          console.log("Current positions:", allPositions);
+        }
       }}
     >
       <View style={[styles.tagItem, { backgroundColor: item.color }]}>
@@ -224,7 +249,7 @@ const styles = StyleSheet.create({
 
 ```tsx
 function BasicTaskList() {
-  const [tasks, setTasks] = useState([
+  const [tasks] = useState([
     { id: "1", title: "Design UI mockups", priority: "high", completed: false },
     {
       id: "2",
@@ -260,10 +285,7 @@ function BasicTaskList() {
       itemsCount={itemsCount}
       itemHeight={itemHeight}
       onMove={(itemId, from, to) => {
-        const newTasks = [...tasks];
-        const [movedTask] = newTasks.splice(from, 1);
-        newTasks.splice(to, 0, movedTask);
-        setTasks(newTasks);
+        console.log(`Task ${itemId} moved from ${from} to ${to}`);
       }}
     >
       <View
@@ -361,112 +383,6 @@ function getPriorityStyle(priority) {
     default:
       return {};
   }
-}
-```
-
-### Sortable List with Callbacks
-
-```tsx
-function AdvancedTaskList() {
-  const [tasks, setTasks] = useState(initialTasks);
-  const [draggedTask, setDraggedTask] = useState(null);
-
-  const renderTask = ({
-    item,
-    id,
-    positions,
-    lowerBound,
-    autoScrollDirection,
-    itemsCount,
-    itemHeight,
-  }) => (
-    <SortableItem
-      key={id}
-      id={id}
-      data={item}
-      positions={positions}
-      lowerBound={lowerBound}
-      autoScrollDirection={autoScrollDirection}
-      itemsCount={itemsCount}
-      itemHeight={itemHeight}
-      onMove={(itemId, from, to) => {
-        // Update data when items are reordered
-        const newTasks = [...tasks];
-        const [movedTask] = newTasks.splice(from, 1);
-        newTasks.splice(to, 0, movedTask);
-        setTasks(newTasks);
-
-        // Analytics
-        analytics.track("task_reordered", {
-          taskId: itemId,
-          from,
-          to,
-          taskTitle: movedTask.title,
-        });
-
-        // Auto-save to backend
-        saveTasks(newTasks);
-      }}
-      onDragStart={(itemId) => {
-        const task = tasks.find((t) => t.id === itemId);
-        setDraggedTask(task);
-        hapticFeedback();
-
-        // Show global drag feedback
-        showDragOverlay(task);
-      }}
-      onDrop={(itemId) => {
-        setDraggedTask(null);
-        hideDragOverlay();
-
-        // Success feedback
-        showToast("Task reordered successfully");
-      }}
-      onDragging={(itemId, overItemId, yPosition) => {
-        if (overItemId) {
-          // Highlight the item being hovered over
-          highlightItem(overItemId);
-        }
-
-        // Update drag position for global overlay
-        updateDragPosition(yPosition);
-      }}
-    >
-      <Animated.View
-        style={[
-          styles.taskItem,
-          item.priority === "high" && styles.highPriority,
-          draggedTask?.id === item.id && styles.draggingItem,
-        ]}
-      >
-        <View style={styles.taskContent}>
-          <Text style={styles.taskTitle}>{item.title}</Text>
-          <Text style={styles.taskDescription}>{item.description}</Text>
-          <Text style={styles.taskDue}>Due: {item.dueDate}</Text>
-        </View>
-        <View style={styles.taskMeta}>
-          <Text style={styles.taskPriority}>{item.priority}</Text>
-          <Text style={styles.taskAssignee}>{item.assignee}</Text>
-        </View>
-      </Animated.View>
-    </SortableItem>
-  );
-
-  return (
-    <View style={styles.container}>
-      <Text style={styles.header}>Project Tasks</Text>
-      {draggedTask && (
-        <Text style={styles.dragIndicator}>Dragging: {draggedTask.title}</Text>
-      )}
-      <Sortable
-        data={tasks}
-        renderItem={renderTask}
-        itemHeight={100}
-        style={styles.sortableList}
-        contentContainerStyle={styles.listContent}
-      />
-    </View>
-  );
 }
 ```
 
@@ -600,28 +516,13 @@ function CustomSortableList() {
 }
 ```
 
-### Sortable with State Management
+### External State Tracking (Read-Only)
 
 ```tsx
-function StateManagedSortable() {
-  const [items, setItems] = useState(initialItems);
+function ExternalStateTracking() {
+  const [items] = useState(initialItems);
+  const [externalPositions, setExternalPositions] = useState({});
   const [isReordering, setIsReordering] = useState(false);
-  const [lastReorder, setLastReorder] = useState(null);
-
-  const handleReorder = useCallback(
-    (itemId, from, to) => {
-      const newItems = [...items];
-      const [movedItem] = newItems.splice(from, 1);
-      newItems.splice(to, 0, movedItem);
-
-      setItems(newItems);
-      setLastReorder({ itemId, from, to, timestamp: Date.now() });
-
-      // Debounced save to prevent too many API calls
-      debouncedSave(newItems);
-    },
-    [items]
-  );
 
   const renderItem = ({ item, id, positions, ...props }) => (
     <SortableItem
@@ -629,15 +530,31 @@ function StateManagedSortable() {
       id={id}
       positions={positions}
       {...props}
-      onMove={handleReorder}
+      onMove={(itemId, from, to) => {
+        console.log(`Item ${itemId} moved from ${from} to ${to}`);
+        // Only log or track - do NOT update state here
+      }}
+      onDrop={(itemId, position, allPositions) => {
+        if (allPositions) {
+          // Correct: Use allPositions for external tracking only
+          setExternalPositions(allPositions);
+          console.log("Updated external positions:", allPositions);
+
+          // You can use this data for:
+          // - Analytics tracking
+          // - Saving to external store (not for reordering)
+          // - Logging/debugging
+          // - External state synchronization (read-only)
+        }
+        setIsReordering(false);
+      }}
       onDragStart={() => setIsReordering(true)}
-      onDrop={() => setIsReordering(false)}
     >
       <View style={[styles.item, isReordering && styles.reorderingMode]}>
         <Text>{item.title}</Text>
-        {lastReorder?.itemId === item.id && (
-          <Text style={styles.recentlyMoved}>Recently moved</Text>
-        )}
+        <Text style={styles.positionInfo}>
+          External position: {externalPositions[item.id] ?? "Unknown"}
+        </Text>
       </View>
     </SortableItem>
   );
@@ -808,18 +725,16 @@ interface TaskData {
 />;
 ```
 
-## Integration with State Management
+## External State Management Guidelines
 
-### Redux Integration
+**IMPORTANT**: Never update external state (Redux, Zustand, Context, etc.) directly from sortable callbacks like `onMove`. This breaks the internal state management.
+
+### Correct: Read-Only Position Tracking
 
 ```tsx
-function ReduxSortableList() {
+function CorrectStateIntegration() {
   const dispatch = useDispatch();
   const tasks = useSelector(selectTasks);
-
-  const handleReorder = (itemId, from, to) => {
-    dispatch(reorderTasks({ itemId, from, to }));
-  };
 
   const renderItem = ({ item, id, positions, ...props }) => (
     <SortableItem
@@ -827,7 +742,19 @@ function ReduxSortableList() {
       id={id}
       positions={positions}
       {...props}
-      onMove={handleReorder}
+      onMove={(itemId, from, to) => {
+        // Correct: Only log for analytics/debugging
+        console.log(`Task ${itemId} moved from ${from} to ${to}`);
+        // DO NOT: dispatch(reorderTasks({ itemId, from, to }));
+      }}
+      onDrop={(itemId, position, allPositions) => {
+        if (allPositions) {
+          // Correct: Use for external tracking only
+          console.log("Final positions:", allPositions);
+          // You can save this to external state for tracking purposes
+          dispatch(savePositionsForAnalytics(allPositions));
+        }
+      }}
     >
       <TaskItem task={item} />
     </SortableItem>
@@ -837,25 +764,32 @@ function ReduxSortableList() {
 }
 ```
 
-### Zustand Integration
+### Incorrect Examples
 
 ```tsx
-function ZustandSortableList() {
-  const { items, reorderItems } = useStore();
+// DO NOT DO THIS - This will break sortable functionality
+function IncorrectReduxExample() {
+  const renderItem = ({ item, id, positions, ...props }) => (
+    <SortableItem
+      onMove={(itemId, from, to) => {
+        // This breaks internal state management
+        dispatch(reorderTasks({ itemId, from, to }));
+      }}
+      // ... other props
+    />
+  );
+}
+
+// DO NOT DO THIS - This will break sortable functionality
+function IncorrectZustandExample() {
+  const { reorderItems } = useStore();
 
   const renderItem = ({ item, id, positions, ...props }) => (
     <SortableItem
-      key={id}
-      id={id}
-      positions={positions}
-      {...props}
-      onMove={reorderItems}
-    >
-      <ItemComponent item={item} />
-    </SortableItem>
+      onMove={reorderItems} // This breaks internal state
+      // ... other props
+    />
   );
-
-  return <Sortable data={items} renderItem={renderItem} itemHeight={60} />;
 }
 ```
 

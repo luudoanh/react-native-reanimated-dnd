@@ -13,7 +13,7 @@ The `useDroppable` hook handles the registration of drop zones, collision detect
 ## Import
 
 ```tsx
-import { useDroppable } from 'react-native-reanimated-dnd';
+import { useDroppable } from "react-native-reanimated-dnd";
 ```
 
 ## Parameters
@@ -23,6 +23,7 @@ import { useDroppable } from 'react-native-reanimated-dnd';
 #### Core Parameters
 
 ##### onDrop
+
 - **Type**: `(data: TData) => void`
 - **Required**: Yes
 - **Description**: Callback function fired when an item is successfully dropped on this droppable.
@@ -30,20 +31,22 @@ import { useDroppable } from 'react-native-reanimated-dnd';
 ```tsx
 const { viewProps, isActive } = useDroppable({
   onDrop: (data) => {
-    console.log('Item dropped:', data);
+    console.log("Item dropped:", data);
     addItemToList(data);
-  }
+  },
 });
 ```
 
 #### Optional Parameters
 
 ##### droppableId
+
 - **Type**: `string`
 - **Required**: No
 - **Description**: Unique identifier for this droppable. If not provided, one will be generated automatically.
 
 ##### dropDisabled
+
 - **Type**: `boolean`
 - **Default**: `false`
 - **Description**: Whether this droppable is disabled. When true, items cannot be dropped here.
@@ -51,11 +54,12 @@ const { viewProps, isActive } = useDroppable({
 ```tsx
 const { viewProps, isActive } = useDroppable({
   onDrop: handleDrop,
-  dropDisabled: !user.canDrop
+  dropDisabled: !user.canDrop,
 });
 ```
 
 ##### onActiveChange
+
 - **Type**: `(isActive: boolean) => void`
 - **Required**: No
 - **Description**: Callback fired when the active state changes (when items hover over or leave the droppable).
@@ -70,16 +74,18 @@ const { viewProps, isActive } = useDroppable({
     } else {
       setHighlighted(false);
     }
-  }
+  },
 });
 ```
 
 ##### dropAlignment
+
 - **Type**: `DropAlignment`
 - **Default**: `"center"`
 - **Description**: How dropped items should be aligned within this droppable area.
 
 Available alignments:
+
 - `center`: Center the item (default)
 - `top-left`: Align to top-left corner
 - `top-center`: Align to top edge, centered horizontally
@@ -93,11 +99,12 @@ Available alignments:
 ```tsx
 const { viewProps, isActive } = useDroppable({
   onDrop: handleDrop,
-  dropAlignment: 'top-left'
+  dropAlignment: "top-left",
 });
 ```
 
 ##### dropOffset
+
 - **Type**: `DropOffset`
 - **Required**: No
 - **Description**: Additional pixel offset to apply after alignment.
@@ -105,12 +112,13 @@ const { viewProps, isActive } = useDroppable({
 ```tsx
 const { viewProps, isActive } = useDroppable({
   onDrop: handleDrop,
-  dropAlignment: 'center',
-  dropOffset: { x: 10, y: 5 } // 10px right, 5px down from center
+  dropAlignment: "center",
+  dropOffset: { x: 10, y: 5 }, // 10px right, 5px down from center
 });
 ```
 
 ##### activeStyle
+
 - **Type**: `StyleProp<ViewStyle>`
 - **Required**: No
 - **Description**: Style to apply when a draggable item is hovering over this droppable.
@@ -119,15 +127,16 @@ const { viewProps, isActive } = useDroppable({
 const { viewProps, isActive } = useDroppable({
   onDrop: handleDrop,
   activeStyle: {
-    backgroundColor: 'rgba(0, 255, 0, 0.2)',
-    borderColor: '#00ff00',
+    backgroundColor: "rgba(0, 255, 0, 0.2)",
+    borderColor: "#00ff00",
     borderWidth: 2,
-    transform: [{ scale: 1.05 }]
-  }
+    transform: [{ scale: 1.05 }],
+  },
 });
 ```
 
 ##### capacity
+
 - **Type**: `number`
 - **Default**: `1`
 - **Description**: Maximum number of items that can be dropped on this droppable.
@@ -135,7 +144,7 @@ const { viewProps, isActive } = useDroppable({
 ```tsx
 const { viewProps, isActive } = useDroppable({
   onDrop: handleDrop,
-  capacity: 5 // Allow up to 5 items
+  capacity: 5, // Allow up to 5 items
 });
 ```
 
@@ -144,6 +153,7 @@ const { viewProps, isActive } = useDroppable({
 ### UseDroppableReturn
 
 #### viewProps
+
 - **Type**: `{ style: AnimatedStyle<ViewStyle>; onLayout: (event: LayoutChangeEvent) => void; }`
 - **Description**: Props to spread on the animated view that will be the droppable. Contains animated style and layout handler.
 
@@ -158,6 +168,7 @@ return (
 ```
 
 #### isActive
+
 - **Type**: `boolean`
 - **Description**: Whether a draggable item is currently hovering over this droppable.
 
@@ -166,12 +177,13 @@ const { viewProps, isActive } = useDroppable({ onDrop: handleDrop });
 
 return (
   <Animated.View {...viewProps}>
-    <Text>{isActive ? 'Release to drop' : 'Drag items here'}</Text>
+    <Text>{isActive ? "Release to drop" : "Drag items here"}</Text>
   </Animated.View>
 );
 ```
 
 #### animatedViewRef
+
 - **Type**: `ReturnType<typeof useAnimatedRef<Animated.View>>`
 - **Description**: Animated ref for the droppable view. Used internally for measurements.
 
@@ -180,15 +192,15 @@ return (
 ### Basic Drop Zone
 
 ```tsx
-import { useDroppable } from 'react-native-reanimated-dnd';
-import Animated from 'react-native-reanimated';
+import { useDroppable } from "react-native-reanimated-dnd";
+import Animated from "react-native-reanimated";
 
 function BasicDropZone() {
   const { viewProps, isActive } = useDroppable({
     onDrop: (data) => {
-      console.log('Item dropped:', data);
+      console.log("Item dropped:", data);
       addItemToList(data);
-    }
+    },
   });
 
   return (
@@ -197,10 +209,10 @@ function BasicDropZone() {
       style={[
         styles.dropZone,
         viewProps.style, // Important: include the active style
-        isActive && styles.highlighted
+        isActive && styles.highlighted,
       ]}
     >
-      <Text>{isActive ? 'Release to drop' : 'Drop items here'}</Text>
+      <Text>{isActive ? "Release to drop" : "Drop items here"}</Text>
     </Animated.View>
   );
 }
@@ -209,17 +221,17 @@ const styles = StyleSheet.create({
   dropZone: {
     width: 200,
     height: 150,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: "#f0f0f0",
     borderWidth: 2,
-    borderColor: '#ddd',
-    borderStyle: 'dashed',
+    borderColor: "#ddd",
+    borderStyle: "dashed",
     borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   highlighted: {
-    borderColor: '#007AFF',
-    backgroundColor: '#e3f2fd',
+    borderColor: "#007AFF",
+    backgroundColor: "#e3f2fd",
   },
 });
 ```
@@ -239,33 +251,33 @@ function TaskColumn({ status, tasks, onTaskDrop }) {
         updateTaskStatus(task.id, status);
       }
     },
-    dropAlignment: 'top-center',
+    dropAlignment: "top-center",
     dropOffset: { x: 0, y: 10 },
     capacity: maxTasks,
     dropDisabled: isFull,
     activeStyle: {
-      backgroundColor: 'rgba(59, 130, 246, 0.1)',
-      borderColor: '#3b82f6',
+      backgroundColor: "rgba(59, 130, 246, 0.1)",
+      borderColor: "#3b82f6",
       borderWidth: 2,
-      borderStyle: 'dashed'
+      borderStyle: "dashed",
     },
     onActiveChange: (active) => {
       if (active && !isFull) {
         hapticFeedback();
       }
-    }
+    },
   });
 
   return (
-    <Animated.View 
-      {...viewProps} 
+    <Animated.View
+      {...viewProps}
       style={[styles.column, viewProps.style, isFull && styles.fullColumn]}
     >
       <Text style={styles.columnTitle}>
         {status.toUpperCase()} ({tasks.length}/{maxTasks})
       </Text>
 
-      {tasks.map(task => (
+      {tasks.map((task) => (
         <TaskCard key={task.id} task={task} />
       ))}
 
@@ -277,9 +289,7 @@ function TaskColumn({ status, tasks, onTaskDrop }) {
         <Text style={styles.dropHint}>Release to add task</Text>
       )}
 
-      {isFull && (
-        <Text style={styles.fullText}>Column is full</Text>
-      )}
+      {isFull && <Text style={styles.fullText}>Column is full</Text>}
     </Animated.View>
   );
 }
@@ -295,23 +305,26 @@ function FileUploadZone() {
   const { viewProps, isActive } = useDroppable({
     onDrop: async (fileData) => {
       // Validate file
-      if (fileData.size > 10000000) { // 10MB limit
-        showError('File size must be under 10MB');
+      if (fileData.size > 10000000) {
+        // 10MB limit
+        showError("File size must be under 10MB");
         return;
       }
 
-      if (!['image/jpeg', 'image/png', 'application/pdf'].includes(fileData.type)) {
-        showError('Only JPEG, PNG, and PDF files allowed');
+      if (
+        !["image/jpeg", "image/png", "application/pdf"].includes(fileData.type)
+      ) {
+        showError("Only JPEG, PNG, and PDF files allowed");
         return;
       }
 
       setIsUploading(true);
       try {
         await uploadFile(fileData);
-        setUploadedFiles(prev => [...prev, fileData]);
+        setUploadedFiles((prev) => [...prev, fileData]);
         showSuccess(`${fileData.name} uploaded successfully`);
       } catch (error) {
-        showError('Upload failed');
+        showError("Upload failed");
       } finally {
         setIsUploading(false);
       }
@@ -319,38 +332,46 @@ function FileUploadZone() {
     dropDisabled: isUploading,
     capacity: 20,
     activeStyle: {
-      backgroundColor: 'rgba(59, 130, 246, 0.1)',
-      borderColor: '#3b82f6',
+      backgroundColor: "rgba(59, 130, 246, 0.1)",
+      borderColor: "#3b82f6",
       borderWidth: 2,
-      borderStyle: 'dashed',
-      transform: [{ scale: 1.02 }]
+      borderStyle: "dashed",
+      transform: [{ scale: 1.02 }],
     },
     onActiveChange: (active) => {
       if (active && isUploading) {
-        showTooltip('Upload in progress...');
+        showTooltip("Upload in progress...");
       }
-    }
+    },
   });
 
   return (
-    <Animated.View 
-      {...viewProps} 
-      style={[styles.uploadZone, viewProps.style, isUploading && styles.uploading]}
+    <Animated.View
+      {...viewProps}
+      style={[
+        styles.uploadZone,
+        viewProps.style,
+        isUploading && styles.uploading,
+      ]}
     >
       <View style={styles.uploadContent}>
-        <Icon 
-          name="cloud-upload" 
-          size={48} 
-          color={isUploading ? "#6b7280" : "#3b82f6"} 
+        <Icon
+          name="cloud-upload"
+          size={48}
+          color={isUploading ? "#6b7280" : "#3b82f6"}
         />
         <Text style={styles.uploadText}>
-          {isUploading ? 'Uploading...' : isActive ? 'Release to upload' : 'Drop files here'}
+          {isUploading
+            ? "Uploading..."
+            : isActive
+              ? "Release to upload"
+              : "Drop files here"}
         </Text>
         <Text style={styles.fileCount}>
           {uploadedFiles.length}/20 files uploaded
         </Text>
-        
-        {uploadedFiles.slice(-3).map(file => (
+
+        {uploadedFiles.slice(-3).map((file) => (
           <View key={file.id} style={styles.recentFile}>
             <Text>{file.name}</Text>
           </View>
@@ -371,34 +392,36 @@ function ShoppingCartDropZone() {
   const { viewProps, isActive } = useDroppable({
     onDrop: (product) => {
       // Check if item already in cart
-      const existingItem = cartItems.find(item => item.id === product.id);
-      
+      const existingItem = cartItems.find((item) => item.id === product.id);
+
       if (existingItem) {
         // Increase quantity
-        setCartItems(prev => prev.map(item => 
-          item.id === product.id 
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        ));
+        setCartItems((prev) =>
+          prev.map((item) =>
+            item.id === product.id
+              ? { ...item, quantity: item.quantity + 1 }
+              : item
+          )
+        );
       } else {
         // Add new item
-        setCartItems(prev => [...prev, { ...product, quantity: 1 }]);
+        setCartItems((prev) => [...prev, { ...product, quantity: 1 }]);
       }
 
       // Update total
-      setTotal(prev => prev + product.price);
-      
+      setTotal((prev) => prev + product.price);
+
       // Show feedback
       showToast(`${product.name} added to cart`);
       hapticFeedback();
     },
     capacity: 50,
     activeStyle: {
-      backgroundColor: 'rgba(34, 197, 94, 0.1)',
-      borderColor: '#22c55e',
+      backgroundColor: "rgba(34, 197, 94, 0.1)",
+      borderColor: "#22c55e",
       borderWidth: 2,
-      transform: [{ scale: 1.02 }]
-    }
+      transform: [{ scale: 1.02 }],
+    },
   });
 
   return (
@@ -407,22 +430,18 @@ function ShoppingCartDropZone() {
         <Icon name="shopping-cart" size={24} />
         <Text style={styles.cartTitle}>Shopping Cart</Text>
       </View>
-      
-      <Text style={styles.cartTotal}>
-        Total: ${total.toFixed(2)}
-      </Text>
-      
-      <Text style={styles.itemCount}>
-        {cartItems.length} items
-      </Text>
-      
+
+      <Text style={styles.cartTotal}>Total: ${total.toFixed(2)}</Text>
+
+      <Text style={styles.itemCount}>{cartItems.length} items</Text>
+
       {cartItems.length === 0 ? (
         <Text style={styles.emptyCart}>
-          {isActive ? 'Release to add to cart' : 'Drop products here'}
+          {isActive ? "Release to add to cart" : "Drop products here"}
         </Text>
       ) : (
         <ScrollView style={styles.cartItems}>
-          {cartItems.map(item => (
+          {cartItems.map((item) => (
             <CartItem key={item.id} item={item} />
           ))}
         </ScrollView>
@@ -448,19 +467,19 @@ function RestrictedDropZone({ allowedTypes, userRole }) {
       }
 
       // Validate user permissions
-      if (userRole !== 'admin' && data.restricted) {
-        showError('Insufficient permissions');
+      if (userRole !== "admin" && data.restricted) {
+        showError("Insufficient permissions");
         return;
       }
 
       handleValidDrop(data);
     },
     activeStyle: {
-      backgroundColor: validDrop 
-        ? 'rgba(34, 197, 94, 0.2)' 
-        : 'rgba(239, 68, 68, 0.2)',
-      borderColor: validDrop ? '#22c55e' : '#ef4444',
-      borderWidth: 2
+      backgroundColor: validDrop
+        ? "rgba(34, 197, 94, 0.2)"
+        : "rgba(239, 68, 68, 0.2)",
+      borderColor: validDrop ? "#22c55e" : "#ef4444",
+      borderWidth: 2,
     },
     onActiveChange: (active) => {
       if (active) {
@@ -468,7 +487,7 @@ function RestrictedDropZone({ allowedTypes, userRole }) {
         const currentItem = getCurrentHoveringItem();
         if (currentItem) {
           const isValidType = allowedTypes.includes(currentItem.type);
-          const hasPermission = userRole === 'admin' || !currentItem.restricted;
+          const hasPermission = userRole === "admin" || !currentItem.restricted;
           setValidDrop(isValidType && hasPermission);
           setHoveringItem(currentItem);
         }
@@ -476,20 +495,19 @@ function RestrictedDropZone({ allowedTypes, userRole }) {
         setHoveringItem(null);
         setValidDrop(true);
       }
-    }
+    },
   });
 
   return (
-    <Animated.View {...viewProps} style={[styles.conditionalZone, viewProps.style]}>
+    <Animated.View
+      {...viewProps}
+      style={[styles.conditionalZone, viewProps.style]}
+    >
       <View style={styles.zoneContent}>
         <Text style={styles.title}>Restricted Drop Zone</Text>
-        <Text style={styles.subtitle}>
-          Accepts: {allowedTypes.join(', ')}
-        </Text>
-        <Text style={styles.permission}>
-          Role: {userRole}
-        </Text>
-        
+        <Text style={styles.subtitle}>Accepts: {allowedTypes.join(", ")}</Text>
+        <Text style={styles.permission}>Role: {userRole}</Text>
+
         {isActive && hoveringItem && (
           <View style={styles.hoverInfo}>
             <Text style={styles.hoverItem}>
@@ -513,22 +531,28 @@ function RestrictedDropZone({ allowedTypes, userRole }) {
 ```tsx
 function AlignmentDemo() {
   const alignments = [
-    'top-left', 'top-center', 'top-right',
-    'center-left', 'center', 'center-right',
-    'bottom-left', 'bottom-center', 'bottom-right'
+    "top-left",
+    "top-center",
+    "top-right",
+    "center-left",
+    "center",
+    "center-right",
+    "bottom-left",
+    "bottom-center",
+    "bottom-right",
   ];
 
   return (
     <View style={styles.grid}>
-      {alignments.map(alignment => {
+      {alignments.map((alignment) => {
         const { viewProps, isActive } = useDroppable({
           onDrop: (data) => console.log(`Dropped at ${alignment}:`, data),
           dropAlignment: alignment,
           dropOffset: { x: 5, y: 5 },
           activeStyle: {
-            backgroundColor: 'rgba(59, 130, 246, 0.2)',
-            borderColor: '#3b82f6'
-          }
+            backgroundColor: "rgba(59, 130, 246, 0.2)",
+            borderColor: "#3b82f6",
+          },
         });
 
         return (
@@ -537,12 +561,8 @@ function AlignmentDemo() {
             {...viewProps}
             style={[styles.alignedZone, viewProps.style]}
           >
-            <Text style={styles.alignmentLabel}>
-              {alignment}
-            </Text>
-            {isActive && (
-              <Text style={styles.activeIndicator}>Active</Text>
-            )}
+            <Text style={styles.alignmentLabel}>{alignment}</Text>
+            {isActive && <Text style={styles.activeIndicator}>Active</Text>}
           </Animated.View>
         );
       })}
@@ -558,52 +578,57 @@ function AnalyticsDropZone() {
   const [analytics, setAnalytics] = useState({
     totalDrops: 0,
     hoverCount: 0,
-    averageHoverTime: 0
+    averageHoverTime: 0,
   });
   const hoverStartTime = useRef(null);
 
   const { viewProps, isActive } = useDroppable({
     onDrop: (data) => {
-      setAnalytics(prev => ({
+      setAnalytics((prev) => ({
         ...prev,
-        totalDrops: prev.totalDrops + 1
+        totalDrops: prev.totalDrops + 1,
       }));
-      
+
       // Track successful drop
-      analytics.track('item_dropped', {
+      analytics.track("item_dropped", {
         itemType: data.type,
-        dropZoneId: 'analytics-zone',
-        timestamp: Date.now()
+        dropZoneId: "analytics-zone",
+        timestamp: Date.now(),
       });
     },
     onActiveChange: (active) => {
       if (active) {
         hoverStartTime.current = Date.now();
-        setAnalytics(prev => ({
+        setAnalytics((prev) => ({
           ...prev,
-          hoverCount: prev.hoverCount + 1
+          hoverCount: prev.hoverCount + 1,
         }));
       } else if (hoverStartTime.current) {
         const hoverDuration = Date.now() - hoverStartTime.current;
-        setAnalytics(prev => {
-          const newAverage = (prev.averageHoverTime * (prev.hoverCount - 1) + hoverDuration) / prev.hoverCount;
+        setAnalytics((prev) => {
+          const newAverage =
+            (prev.averageHoverTime * (prev.hoverCount - 1) + hoverDuration) /
+            prev.hoverCount;
           return {
             ...prev,
-            averageHoverTime: newAverage
+            averageHoverTime: newAverage,
           };
         });
         hoverStartTime.current = null;
       }
     },
     activeStyle: {
-      backgroundColor: 'rgba(34, 197, 94, 0.1)',
-      borderColor: '#22c55e',
-      borderWidth: 2
-    }
+      backgroundColor: "rgba(34, 197, 94, 0.1)",
+      borderColor: "#22c55e",
+      borderWidth: 2,
+    },
   });
 
   return (
-    <Animated.View {...viewProps} style={[styles.analyticsZone, viewProps.style]}>
+    <Animated.View
+      {...viewProps}
+      style={[styles.analyticsZone, viewProps.style]}
+    >
       <Text style={styles.title}>Analytics Drop Zone</Text>
       <Text>Total Drops: {analytics.totalDrops}</Text>
       <Text>Hover Count: {analytics.hoverCount}</Text>
@@ -635,7 +660,7 @@ function TypedDropZone() {
     onActiveChange: (active: boolean) => {
       // active is properly typed
       console.log(`Drop zone active: ${active}`);
-    }
+    },
   });
 
   return (
@@ -670,23 +695,23 @@ const handleActiveChange = useCallback((active) => {
 
 ```tsx
 function StateMachineDropZone() {
-  const [state, setState] = useState('idle'); // idle, hovering, processing
+  const [state, setState] = useState("idle"); // idle, hovering, processing
 
   const { viewProps, isActive } = useDroppable({
     onDrop: async (data) => {
-      setState('processing');
+      setState("processing");
       try {
         await processItem(data);
-        setState('idle');
+        setState("idle");
       } catch (error) {
-        setState('error');
-        setTimeout(() => setState('idle'), 2000);
+        setState("error");
+        setTimeout(() => setState("idle"), 2000);
       }
     },
     onActiveChange: (active) => {
-      setState(active ? 'hovering' : 'idle');
+      setState(active ? "hovering" : "idle");
     },
-    dropDisabled: state === 'processing'
+    dropDisabled: state === "processing",
   });
 
   return (
@@ -702,4 +727,4 @@ function StateMachineDropZone() {
 - [Droppable Component](../../components/droppable) - High-level component using this hook
 - [useDraggable Hook](./useDraggable) - Draggable counterpart
 - [DropAlignment](../types/droppable-types#dropalignment) - Alignment options
-- [UseDroppableOptions](../types/droppable-types#usedroppableoptionstdata) - Complete type definitions 
+- [UseDroppableOptions](../types/droppable-types#usedroppableoptionstdata) - Complete type definitions

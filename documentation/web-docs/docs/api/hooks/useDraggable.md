@@ -13,7 +13,7 @@ The `useDraggable` hook provides the core functionality for drag-and-drop intera
 ## Import
 
 ```tsx
-import { useDraggable } from 'react-native-reanimated-dnd';
+import { useDraggable } from "react-native-reanimated-dnd";
 ```
 
 ## Parameters
@@ -23,22 +23,25 @@ import { useDraggable } from 'react-native-reanimated-dnd';
 #### Core Parameters
 
 ##### data
+
 - **Type**: `TData`
 - **Required**: Yes
 - **Description**: Data payload associated with this draggable item. This data is passed to drop handlers when the item is successfully dropped.
 
 ```tsx
 const { animatedViewProps, gesture } = useDraggable({
-  data: { id: '1', title: 'Task 1', priority: 'high' }
+  data: { id: "1", title: "Task 1", priority: "high" },
 });
 ```
 
 ##### draggableId
+
 - **Type**: `string`
 - **Required**: No
 - **Description**: Unique identifier for this draggable item. If not provided, one will be generated automatically.
 
 ##### dragDisabled
+
 - **Type**: `boolean`
 - **Default**: `false`
 - **Description**: Whether dragging is disabled for this item. When true, the item cannot be dragged.
@@ -46,13 +49,14 @@ const { animatedViewProps, gesture } = useDraggable({
 ```tsx
 const { animatedViewProps, gesture } = useDraggable({
   data: taskData,
-  dragDisabled: !user.canDrag
+  dragDisabled: !user.canDrag,
 });
 ```
 
 #### Callback Parameters
 
 ##### onDragStart
+
 - **Type**: `(data: TData) => void`
 - **Required**: No
 - **Description**: Callback fired when dragging starts.
@@ -61,13 +65,14 @@ const { animatedViewProps, gesture } = useDraggable({
 const { animatedViewProps, gesture } = useDraggable({
   data: taskData,
   onDragStart: (data) => {
-    console.log('Started dragging:', data.title);
+    console.log("Started dragging:", data.title);
     hapticFeedback();
-  }
+  },
 });
 ```
 
 ##### onDragEnd
+
 - **Type**: `(data: TData) => void`
 - **Required**: No
 - **Description**: Callback fired when dragging ends (regardless of whether it was dropped successfully).
@@ -76,13 +81,14 @@ const { animatedViewProps, gesture } = useDraggable({
 const { animatedViewProps, gesture } = useDraggable({
   data: taskData,
   onDragEnd: (data) => {
-    console.log('Finished dragging:', data.title);
+    console.log("Finished dragging:", data.title);
     setIsDragging(false);
-  }
+  },
 });
 ```
 
 ##### onDragging
+
 - **Type**: `(payload: DraggingPayload<TData>) => void`
 - **Required**: No
 - **Description**: Callback fired continuously while dragging. Useful for real-time feedback.
@@ -94,11 +100,12 @@ const { animatedViewProps, gesture } = useDraggable({
     const currentX = x + tx;
     const currentY = y + ty;
     console.log(`${itemData.title} is at (${currentX}, ${currentY})`);
-  }
+  },
 });
 ```
 
 ##### onStateChange
+
 - **Type**: `(state: DraggableState) => void`
 - **Required**: No
 - **Description**: Callback fired when the draggable state changes.
@@ -110,33 +117,35 @@ const { animatedViewProps, gesture, state } = useDraggable({
     if (state === DraggableState.DROPPED) {
       showSuccessMessage();
     }
-  }
+  },
 });
 ```
 
 #### Advanced Parameters
 
 ##### animationFunction
+
 - **Type**: `AnimationFunction`
 - **Required**: No
 - **Description**: Custom animation function for controlling how the item animates when dropped. If not provided, uses default spring animation.
 
 ```tsx
 const bounceAnimation = (toValue) => {
-  'worklet';
+  "worklet";
   return withTiming(toValue, {
     duration: 600,
-    easing: Easing.bounce
+    easing: Easing.bounce,
   });
 };
 
 const { animatedViewProps, gesture } = useDraggable({
   data: taskData,
-  animationFunction: bounceAnimation
+  animationFunction: bounceAnimation,
 });
 ```
 
 ##### dragBoundsRef
+
 - **Type**: `React.RefObject<Animated.View | View>`
 - **Required**: No
 - **Description**: Reference to a View that defines the dragging boundaries. The draggable item will be constrained within this view's bounds.
@@ -146,11 +155,12 @@ const boundsRef = useRef<View>(null);
 
 const { animatedViewProps, gesture } = useDraggable({
   data: taskData,
-  dragBoundsRef: boundsRef
+  dragBoundsRef: boundsRef,
 });
 ```
 
 ##### dragAxis
+
 - **Type**: `"x" | "y" | "both"`
 - **Default**: `"both"`
 - **Description**: Constrains dragging to a specific axis.
@@ -159,22 +169,24 @@ const { animatedViewProps, gesture } = useDraggable({
 // Horizontal only
 const { animatedViewProps, gesture } = useDraggable({
   data: taskData,
-  dragAxis: 'x'
+  dragAxis: "x",
 });
 
 // Vertical only
 const { animatedViewProps, gesture } = useDraggable({
   data: taskData,
-  dragAxis: 'y'
+  dragAxis: "y",
 });
 ```
 
 ##### collisionAlgorithm
+
 - **Type**: `CollisionAlgorithm`
 - **Default**: `"intersect"`
 - **Description**: Algorithm used for collision detection with drop zones.
 
 Available algorithms:
+
 - `intersect`: Collision when any part overlaps (default)
 - `center`: Collision when center point is over droppable
 - `contain`: Collision when entire draggable is contained
@@ -182,16 +194,18 @@ Available algorithms:
 ```tsx
 const { animatedViewProps, gesture } = useDraggable({
   data: taskData,
-  collisionAlgorithm: 'center'
+  collisionAlgorithm: "center",
 });
 ```
 
 ##### children
+
 - **Type**: `React.ReactNode`
 - **Required**: No
 - **Description**: Used internally for handle detection. Not typically used directly.
 
 ##### handleComponent
+
 - **Type**: `React.ComponentType<any>`
 - **Required**: No
 - **Description**: Used internally for handle detection. Not typically used directly.
@@ -201,6 +215,7 @@ const { animatedViewProps, gesture } = useDraggable({
 ### UseDraggableReturn
 
 #### animatedViewProps
+
 - **Type**: `{ style: AnimatedStyle<ViewStyle>; onLayout: (event: LayoutChangeEvent) => void; }`
 - **Description**: Props to spread on the animated view that will be draggable. Contains the animated style and layout handler.
 
@@ -217,10 +232,12 @@ return (
 ```
 
 #### gesture
+
 - **Type**: `GestureType`
 - **Description**: Gesture object to attach to GestureDetector for handling drag interactions. Only used when no handle is present (entire component is draggable).
 
 #### state
+
 - **Type**: `DraggableState`
 - **Description**: Current state of the draggable item (IDLE, DRAGGING, or DROPPED).
 
@@ -229,11 +246,11 @@ const { animatedViewProps, gesture, state } = useDraggable({ data: taskData });
 
 return (
   <GestureDetector gesture={gesture}>
-    <Animated.View 
+    <Animated.View
       {...animatedViewProps}
       style={[
         animatedViewProps.style,
-        { opacity: state === DraggableState.DRAGGING ? 0.7 : 1 }
+        { opacity: state === DraggableState.DRAGGING ? 0.7 : 1 },
       ]}
     >
       <Text>State: {state}</Text>
@@ -243,10 +260,12 @@ return (
 ```
 
 #### animatedViewRef
+
 - **Type**: `ReturnType<typeof useAnimatedRef<Animated.View>>`
 - **Description**: Animated ref for the draggable view. Used internally for measurements.
 
 #### hasHandle
+
 - **Type**: `boolean`
 - **Description**: Whether this draggable has a handle component. When true, only the handle can initiate dragging. When false, the entire component is draggable.
 
@@ -255,15 +274,15 @@ return (
 ### Basic Draggable
 
 ```tsx
-import { useDraggable, DraggableState } from 'react-native-reanimated-dnd';
-import { GestureDetector } from 'react-native-gesture-handler';
-import Animated from 'react-native-reanimated';
+import { useDraggable, DraggableState } from "react-native-reanimated-dnd";
+import { GestureDetector } from "react-native-gesture-handler";
+import Animated from "react-native-reanimated";
 
 function BasicDraggable() {
   const { animatedViewProps, gesture, state } = useDraggable({
-    data: { id: '1', name: 'Draggable Item' },
-    onDragStart: (data) => console.log('Started dragging:', data.name),
-    onDragEnd: (data) => console.log('Finished dragging:', data.name),
+    data: { id: "1", name: "Draggable Item" },
+    onDragStart: (data) => console.log("Started dragging:", data.name),
+    onDragEnd: (data) => console.log("Finished dragging:", data.name),
   });
 
   return (
@@ -284,14 +303,14 @@ function BoundedDraggable() {
   const boundsRef = useRef<View>(null);
 
   const { animatedViewProps, gesture } = useDraggable({
-    data: { id: '2', type: 'bounded' },
+    data: { id: "2", type: "bounded" },
     dragBoundsRef: boundsRef,
-    dragAxis: 'x', // Only horizontal movement
+    dragAxis: "x", // Only horizontal movement
     animationFunction: (toValue) => {
-      'worklet';
+      "worklet";
       return withTiming(toValue, { duration: 300 });
     },
-    collisionAlgorithm: 'center',
+    collisionAlgorithm: "center",
   });
 
   return (
@@ -314,7 +333,7 @@ function StatefulDraggable() {
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
   const { animatedViewProps, gesture } = useDraggable({
-    data: { id: '3', status: 'active' },
+    data: { id: "3", status: "active" },
     onStateChange: setDragState,
     onDragging: ({ x, y, tx, ty }) => {
       setPosition({ x: x + tx, y: y + ty });
@@ -327,11 +346,13 @@ function StatefulDraggable() {
         {...animatedViewProps}
         style={[
           animatedViewProps.style,
-          { opacity: dragState === DraggableState.DRAGGING ? 0.7 : 1 }
+          { opacity: dragState === DraggableState.DRAGGING ? 0.7 : 1 },
         ]}
       >
         <Text>State: {dragState}</Text>
-        <Text>Position: ({Math.round(position.x)}, {Math.round(position.y)})</Text>
+        <Text>
+          Position: ({Math.round(position.x)}, {Math.round(position.y)})
+        </Text>
       </Animated.View>
     </GestureDetector>
   );
@@ -341,11 +362,11 @@ function StatefulDraggable() {
 ### Custom Animation Draggable
 
 ```tsx
-import { withSpring, withTiming, Easing } from 'react-native-reanimated';
+import { withSpring, withTiming, Easing } from "react-native-reanimated";
 
 function CustomAnimationDraggable() {
   const customBounce = useCallback((toValue) => {
-    'worklet';
+    "worklet";
     return withSpring(toValue, {
       damping: 10,
       stiffness: 100,
@@ -354,7 +375,7 @@ function CustomAnimationDraggable() {
   }, []);
 
   const { animatedViewProps, gesture } = useDraggable({
-    data: { id: '4', type: 'bouncy' },
+    data: { id: "4", type: "bouncy" },
     animationFunction: customBounce,
     onDragStart: () => hapticFeedback(),
   });
@@ -376,16 +397,16 @@ function AnalyticsDraggable() {
   const [analytics, setAnalytics] = useState({
     dragCount: 0,
     totalDistance: 0,
-    averageDistance: 0
+    averageDistance: 0,
   });
 
   const startPosition = useRef({ x: 0, y: 0 });
 
   const { animatedViewProps, gesture } = useDraggable({
-    data: { id: '5', type: 'analytics' },
+    data: { id: "5", type: "analytics" },
     onDragStart: (data) => {
       startPosition.current = { x: 0, y: 0 }; // Will be updated in onDragging
-      setAnalytics(prev => ({ ...prev, dragCount: prev.dragCount + 1 }));
+      setAnalytics((prev) => ({ ...prev, dragCount: prev.dragCount + 1 }));
     },
     onDragging: ({ x, y, tx, ty }) => {
       if (startPosition.current.x === 0 && startPosition.current.y === 0) {
@@ -394,17 +415,17 @@ function AnalyticsDraggable() {
     },
     onDragEnd: (data) => {
       const distance = Math.sqrt(
-        Math.pow(startPosition.current.x, 2) + 
-        Math.pow(startPosition.current.y, 2)
+        Math.pow(startPosition.current.x, 2) +
+          Math.pow(startPosition.current.y, 2)
       );
-      
-      setAnalytics(prev => {
+
+      setAnalytics((prev) => {
         const newTotal = prev.totalDistance + distance;
         const newAverage = newTotal / prev.dragCount;
         return {
           ...prev,
           totalDistance: newTotal,
-          averageDistance: newAverage
+          averageDistance: newAverage,
         };
       });
     },
@@ -426,10 +447,10 @@ function AnalyticsDraggable() {
 
 ```tsx
 function CollisionDraggable() {
-  const [collisionAlgorithm, setCollisionAlgorithm] = useState('intersect');
+  const [collisionAlgorithm, setCollisionAlgorithm] = useState("intersect");
 
   const { animatedViewProps, gesture } = useDraggable({
-    data: { id: '6', type: 'collision-test' },
+    data: { id: "6", type: "collision-test" },
     collisionAlgorithm,
     onDragStart: () => {
       console.log(`Using ${collisionAlgorithm} collision detection`);
@@ -439,20 +460,20 @@ function CollisionDraggable() {
   return (
     <View>
       <View style={styles.controls}>
-        {['intersect', 'center', 'contain'].map(algorithm => (
+        {["intersect", "center", "contain"].map((algorithm) => (
           <TouchableOpacity
             key={algorithm}
             onPress={() => setCollisionAlgorithm(algorithm)}
             style={[
               styles.button,
-              collisionAlgorithm === algorithm && styles.activeButton
+              collisionAlgorithm === algorithm && styles.activeButton,
             ]}
           >
             <Text>{algorithm}</Text>
           </TouchableOpacity>
         ))}
       </View>
-      
+
       <GestureDetector gesture={gesture}>
         <Animated.View {...animatedViewProps}>
           <Text>Collision: {collisionAlgorithm}</Text>
@@ -467,28 +488,25 @@ function CollisionDraggable() {
 
 ```tsx
 function ConditionalDraggable({ item, userPermissions }) {
-  const canDrag = userPermissions.includes('drag') && !item.locked;
+  const canDrag = userPermissions.includes("drag") && !item.locked;
 
   const { animatedViewProps, gesture } = useDraggable({
     data: item,
     dragDisabled: !canDrag,
     onDragStart: (data) => {
-      if (data.sensitive && !userPermissions.includes('sensitive')) {
-        showError('Insufficient permissions');
+      if (data.sensitive && !userPermissions.includes("sensitive")) {
+        showError("Insufficient permissions");
         return;
       }
-      analytics.track('drag_start', { itemId: data.id });
+      analytics.track("drag_start", { itemId: data.id });
     },
   });
 
   return (
     <GestureDetector gesture={gesture}>
-      <Animated.View 
+      <Animated.View
         {...animatedViewProps}
-        style={[
-          animatedViewProps.style,
-          !canDrag && styles.disabled
-        ]}
+        style={[animatedViewProps.style, !canDrag && styles.disabled]}
       >
         <Text>{item.title}</Text>
         {item.locked && <Icon name="lock" size={16} />}
@@ -508,26 +526,26 @@ function PositionTracker() {
   const lastPosition = useRef({ x: 0, y: 0, timestamp: 0 });
 
   const { animatedViewProps, gesture } = useDraggable({
-    data: { id: '7', type: 'position-tracker' },
+    data: { id: "7", type: "position-tracker" },
     onDragging: ({ x, y, tx, ty }) => {
       const currentX = x + tx;
       const currentY = y + ty;
       const now = Date.now();
-      
+
       setRealTimePosition({ x: currentX, y: currentY });
-      
+
       // Calculate velocity
       if (lastPosition.current.timestamp > 0) {
         const deltaTime = now - lastPosition.current.timestamp;
         const deltaX = currentX - lastPosition.current.x;
         const deltaY = currentY - lastPosition.current.y;
-        
+
         setVelocity({
-          x: deltaX / deltaTime * 1000, // pixels per second
-          y: deltaY / deltaTime * 1000
+          x: (deltaX / deltaTime) * 1000, // pixels per second
+          y: (deltaY / deltaTime) * 1000,
         });
       }
-      
+
       lastPosition.current = { x: currentX, y: currentY, timestamp: now };
     },
     onDragEnd: () => {
@@ -539,10 +557,15 @@ function PositionTracker() {
   return (
     <View>
       <View style={styles.info}>
-        <Text>Position: ({Math.round(realTimePosition.x)}, {Math.round(realTimePosition.y)})</Text>
-        <Text>Velocity: ({Math.round(velocity.x)}, {Math.round(velocity.y)}) px/s</Text>
+        <Text>
+          Position: ({Math.round(realTimePosition.x)},{" "}
+          {Math.round(realTimePosition.y)})
+        </Text>
+        <Text>
+          Velocity: ({Math.round(velocity.x)}, {Math.round(velocity.y)}) px/s
+        </Text>
       </View>
-      
+
       <GestureDetector gesture={gesture}>
         <Animated.View {...animatedViewProps}>
           <Text>Position Tracker</Text>
@@ -561,13 +584,13 @@ The hook is fully typed with generic support:
 interface TaskData {
   id: string;
   title: string;
-  priority: 'low' | 'medium' | 'high';
+  priority: "low" | "medium" | "high";
   assignee?: string;
 }
 
 function TypedDraggable() {
   const { animatedViewProps, gesture, state } = useDraggable<TaskData>({
-    data: { id: '1', title: 'Task 1', priority: 'high' },
+    data: { id: "1", title: "Task 1", priority: "high" },
     onDragStart: (data: TaskData) => {
       // data is properly typed
       console.log(`Started dragging: ${data.title} (${data.priority})`);
@@ -575,7 +598,7 @@ function TypedDraggable() {
     onDragEnd: (data: TaskData) => {
       // data is properly typed
       console.log(`Finished dragging: ${data.title}`);
-    }
+    },
   });
 
   return (
@@ -603,9 +626,9 @@ function TypedDraggable() {
 ```tsx
 function DragHandlePattern() {
   const { animatedViewProps, gesture, hasHandle } = useDraggable({
-    data: { id: '1' },
+    data: { id: "1" },
     children: <DragHandle />, // Pass handle as children for detection
-    handleComponent: DragHandle
+    handleComponent: DragHandle,
   });
 
   return (
@@ -634,13 +657,16 @@ function StateMachineDraggable() {
   const [state, setState] = useState(DraggableState.IDLE);
 
   const { animatedViewProps, gesture } = useDraggable({
-    data: { id: '1' },
+    data: { id: "1" },
     onStateChange: (newState) => {
       // Validate state transitions
       const validTransitions = {
         [DraggableState.IDLE]: [DraggableState.DRAGGING],
-        [DraggableState.DRAGGING]: [DraggableState.DROPPED, DraggableState.IDLE],
-        [DraggableState.DROPPED]: [DraggableState.IDLE]
+        [DraggableState.DRAGGING]: [
+          DraggableState.DROPPED,
+          DraggableState.IDLE,
+        ],
+        [DraggableState.DROPPED]: [DraggableState.IDLE],
       };
 
       if (validTransitions[state].includes(newState)) {
@@ -648,7 +674,7 @@ function StateMachineDraggable() {
       } else {
         console.warn(`Invalid state transition: ${state} -> ${newState}`);
       }
-    }
+    },
   });
 
   return (
@@ -668,4 +694,4 @@ function StateMachineDraggable() {
 - [DraggableState](../types/enums#draggablestate) - State management
 - [CollisionAlgorithm](../types/draggable-types#collisionalgorithm) - Collision detection
 - [AnimationFunction](../types/draggable-types#animationfunction) - Custom animations
-- [useDraggable Types](../types/draggable-types#usedraggableoptionstdata) - Complete type definitions 
+- [useDraggable Types](../types/draggable-types#usedraggableoptionstdata) - Complete type definitions

@@ -9,7 +9,7 @@ Complete API reference for the `DropProvider` component.
 ## Import
 
 ```tsx
-import { DropProvider } from 'react-native-reanimated-dnd';
+import { DropProvider } from "react-native-reanimated-dnd";
 ```
 
 ## Component Signature
@@ -36,17 +36,20 @@ interface DropProviderProps {
 ```
 
 #### children
+
 - **Type**: `ReactNode`
 - **Required**: Yes
 - **Description**: Child components that will have access to the drag-and-drop context
 
 #### onLayoutUpdateComplete
+
 - **Type**: `() => void`
 - **Required**: No
 - **Description**: Callback fired when layout updates are complete
 - **Use Case**: Trigger additional UI updates after position recalculations
 
 #### onDroppedItemsUpdate
+
 - **Type**: `(droppedItems: DroppedItemsMap) => void`
 - **Required**: No
 - **Description**: Callback fired when the dropped items mapping changes
@@ -54,6 +57,7 @@ interface DropProviderProps {
   - `droppedItems`: Current mapping of draggable IDs to their drop locations
 
 #### onDragging
+
 - **Type**: `(payload: DraggingPayload) => void`
 - **Required**: No
 - **Description**: Global callback fired during drag operations
@@ -61,6 +65,7 @@ interface DropProviderProps {
   - `payload`: Position and data information for the dragging item
 
 #### onDragStart
+
 - **Type**: `(data: any) => void`
 - **Required**: No
 - **Description**: Global callback fired when any drag operation starts
@@ -68,6 +73,7 @@ interface DropProviderProps {
   - `data`: The data associated with the draggable item
 
 #### onDragEnd
+
 - **Type**: `(data: any) => void`
 - **Required**: No
 - **Description**: Global callback fired when any drag operation ends
@@ -86,11 +92,13 @@ interface DropProviderRef {
 ```
 
 #### requestPositionUpdate()
+
 - **Type**: `() => void`
 - **Description**: Manually trigger position updates for all registered components
 - **Use Case**: Call after layout changes or when positions may have become stale
 
 #### getDroppedItems()
+
 - **Type**: `() => DroppedItemsMap`
 - **Returns**: Object mapping draggable IDs to their drop information
 - **Description**: Get the current mapping of dropped items
@@ -101,11 +109,11 @@ interface DropProviderRef {
 
 ```tsx
 interface DraggingPayload {
-  x: number;        // Original X position
-  y: number;        // Original Y position  
-  tx: number;       // Current X translation
-  ty: number;       // Current Y translation
-  itemData: any;    // Data associated with the draggable item
+  x: number; // Original X position
+  y: number; // Original Y position
+  tx: number; // Current X translation
+  ty: number; // Current Y translation
+  itemData: any; // Data associated with the draggable item
 }
 ```
 
@@ -134,10 +142,17 @@ interface SlotsContextValue<TData = unknown> {
   isRegistered: (id: number) => boolean;
   setActiveHoverSlot: (id: number | null) => void;
   activeHoverSlotId: number | null;
-  registerPositionUpdateListener: (id: string, listener: PositionUpdateListener) => void;
+  registerPositionUpdateListener: (
+    id: string,
+    listener: PositionUpdateListener
+  ) => void;
   unregisterPositionUpdateListener: (id: string) => void;
   requestPositionUpdate: () => void;
-  registerDroppedItem: (draggableId: string, droppableId: string, itemData: any) => void;
+  registerDroppedItem: (
+    draggableId: string,
+    droppableId: string,
+    itemData: any
+  ) => void;
   unregisterDroppedItem: (draggableId: string) => void;
   getDroppedItems: () => DroppedItemsMap<any>;
   hasAvailableCapacity: (droppableId: string) => boolean;
@@ -152,8 +167,8 @@ interface SlotsContextValue<TData = unknown> {
 ### Basic Usage
 
 ```tsx
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { DropProvider } from 'react-native-reanimated-dnd';
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { DropProvider } from "react-native-reanimated-dnd";
 
 function App() {
   return (
@@ -169,9 +184,9 @@ function App() {
 ### With Ref
 
 ```tsx
-import { useRef } from 'react';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { DropProvider, DropProviderRef } from 'react-native-reanimated-dnd';
+import { useRef } from "react";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { DropProvider, DropProviderRef } from "react-native-reanimated-dnd";
 
 function App() {
   const dropProviderRef = useRef<DropProviderRef>(null);
@@ -195,19 +210,19 @@ function App() {
 ### With All Callbacks
 
 ```tsx
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 function App() {
   const handleDroppedItemsUpdate = (droppedItems: DroppedItemsMap) => {
-    console.log('Dropped items updated:', droppedItems);
+    console.log("Dropped items updated:", droppedItems);
   };
 
   const handleDragStart = (data: any) => {
-    console.log('Drag started:', data);
+    console.log("Drag started:", data);
   };
 
   const handleDragEnd = (data: any) => {
-    console.log('Drag ended:', data);
+    console.log("Drag ended:", data);
   };
 
   const handleDragging = ({ x, y, tx, ty, itemData }: DraggingPayload) => {
@@ -221,7 +236,7 @@ function App() {
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
         onDragging={handleDragging}
-        onLayoutUpdateComplete={() => console.log('Layout updated')}
+        onLayoutUpdateComplete={() => console.log("Layout updated")}
       >
         <YourDragDropComponents />
       </DropProvider>

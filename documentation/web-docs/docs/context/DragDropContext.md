@@ -34,12 +34,19 @@ interface SlotsContextValue<TData = unknown> {
   activeHoverSlotId: number | null;
 
   // Position updates
-  registerPositionUpdateListener: (id: string, listener: PositionUpdateListener) => void;
+  registerPositionUpdateListener: (
+    id: string,
+    listener: PositionUpdateListener
+  ) => void;
   unregisterPositionUpdateListener: (id: string) => void;
   requestPositionUpdate: () => void;
 
   // Dropped items management
-  registerDroppedItem: (draggableId: string, droppableId: string, itemData: any) => void;
+  registerDroppedItem: (
+    draggableId: string,
+    droppableId: string,
+    itemData: any
+  ) => void;
   unregisterDroppedItem: (draggableId: string) => void;
   getDroppedItems: () => DroppedItemsMap<any>;
 
@@ -74,28 +81,24 @@ interface DropSlot<TData = unknown> {
 ### Using useContext Hook
 
 ```tsx
-import { useContext } from 'react';
-import { SlotsContext } from 'react-native-reanimated-dnd';
+import { useContext } from "react";
+import { SlotsContext } from "react-native-reanimated-dnd";
 
 function CustomDragComponent() {
   const context = useContext(SlotsContext);
 
   if (!context) {
-    throw new Error('CustomDragComponent must be used within a DropProvider');
+    throw new Error("CustomDragComponent must be used within a DropProvider");
   }
 
-  const {
-    getSlots,
-    getDroppedItems,
-    hasAvailableCapacity,
-    activeHoverSlotId,
-  } = context;
+  const { getSlots, getDroppedItems, hasAvailableCapacity, activeHoverSlotId } =
+    context;
 
   return (
     <View>
       <Text>Active Slots: {Object.keys(getSlots()).length}</Text>
       <Text>Dropped Items: {Object.keys(getDroppedItems()).length}</Text>
-      <Text>Active Hover: {activeHoverSlotId || 'None'}</Text>
+      <Text>Active Hover: {activeHoverSlotId || "None"}</Text>
     </View>
   );
 }
@@ -104,30 +107,30 @@ function CustomDragComponent() {
 ### Custom Hook for Context Access
 
 ```tsx
-import { useContext } from 'react';
-import { SlotsContext } from 'react-native-reanimated-dnd';
+import { useContext } from "react";
+import { SlotsContext } from "react-native-reanimated-dnd";
 
 function useDragDropContext() {
   const context = useContext(SlotsContext);
-  
+
   if (!context) {
-    throw new Error('useDragDropContext must be used within a DropProvider');
+    throw new Error("useDragDropContext must be used within a DropProvider");
   }
-  
+
   return context;
 }
 
 // Usage
 function MyComponent() {
   const { getDroppedItems, hasAvailableCapacity } = useDragDropContext();
-  
+
   const droppedItems = getDroppedItems();
-  const canDrop = hasAvailableCapacity('my-drop-zone');
-  
+  const canDrop = hasAvailableCapacity("my-drop-zone");
+
   return (
     <View>
       <Text>Items: {Object.keys(droppedItems).length}</Text>
-      <Text>Can Drop: {canDrop ? 'Yes' : 'No'}</Text>
+      <Text>Can Drop: {canDrop ? "Yes" : "No"}</Text>
     </View>
   );
 }
@@ -151,13 +154,13 @@ function CustomDroppable({ children, onDrop }) {
     const measureAndRegister = () => {
       viewRef.current?.measure((x, y, width, height, pageX, pageY) => {
         context.register(slotId.current, {
-          id: 'custom-droppable',
+          id: "custom-droppable",
           x: pageX,
           y: pageY,
           width,
           height,
           onDrop,
-          dropAlignment: 'center',
+          dropAlignment: "center",
           capacity: 1,
         });
       });
@@ -183,7 +186,7 @@ Removes a drop zone from the context.
 useEffect(() => {
   // Register drop zone
   context.register(slotId, slotData);
-  
+
   // Cleanup on unmount
   return () => {
     context.unregister(slotId);
@@ -206,9 +209,13 @@ function DropZoneDebugger() {
       {Object.entries(slots).map(([id, slot]) => (
         <View key={id} style={styles.slotInfo}>
           <Text>ID: {slot.id}</Text>
-          <Text>Position: ({slot.x}, {slot.y})</Text>
-          <Text>Size: {slot.width}×{slot.height}</Text>
-          <Text>Capacity: {slot.capacity || 'Unlimited'}</Text>
+          <Text>
+            Position: ({slot.x}, {slot.y})
+          </Text>
+          <Text>
+            Size: {slot.width}×{slot.height}
+          </Text>
+          <Text>Capacity: {slot.capacity || "Unlimited"}</Text>
         </View>
       ))}
     </View>
@@ -261,7 +268,8 @@ Registers a listener for position updates.
 
 ```tsx
 function ResponsiveDroppable({ children }) {
-  const { registerPositionUpdateListener, unregisterPositionUpdateListener } = useDragDropContext();
+  const { registerPositionUpdateListener, unregisterPositionUpdateListener } =
+    useDragDropContext();
   const listenerId = useRef(`listener-${Math.random()}`);
 
   useEffect(() => {
@@ -271,7 +279,7 @@ function ResponsiveDroppable({ children }) {
     };
 
     registerPositionUpdateListener(listenerId.current, updatePosition);
-    
+
     return () => {
       unregisterPositionUpdateListener(listenerId.current);
     };
@@ -294,11 +302,7 @@ function LayoutChangeHandler() {
     requestPositionUpdate();
   }, [requestPositionUpdate]);
 
-  return (
-    <ScrollView onLayout={handleLayoutChange}>
-      {/* Content */}
-    </ScrollView>
-  );
+  return <ScrollView onLayout={handleLayoutChange}>{/* Content */}</ScrollView>;
 }
 ```
 
@@ -315,7 +319,7 @@ function CustomDropHandler() {
   const handleDrop = (draggableData, droppableId) => {
     // Register the drop
     registerDroppedItem(draggableData.id, droppableId, draggableData);
-    
+
     // Handle the drop in your app logic
     moveItemToZone(draggableData, droppableId);
   };
@@ -336,12 +340,14 @@ function DroppedItemsDisplay() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Dropped Items</Text>
-      {Object.entries(droppedItems).map(([draggableId, { droppableId, data }]) => (
-        <View key={draggableId} style={styles.item}>
-          <Text>Item: {data.name}</Text>
-          <Text>Zone: {droppableId}</Text>
-        </View>
-      ))}
+      {Object.entries(droppedItems).map(
+        ([draggableId, { droppableId, data }]) => (
+          <View key={draggableId} style={styles.item}>
+            <Text>Item: {data.name}</Text>
+            <Text>Zone: {droppableId}</Text>
+          </View>
+        )
+      )}
     </View>
   );
 }
@@ -369,14 +375,9 @@ function CapacityAwareDropZone({ droppableId, maxItems, children }) {
   }, [droppableId, hasAvailableCapacity]);
 
   return (
-    <View style={[
-      styles.dropZone,
-      !canAcceptDrop && styles.fullDropZone
-    ]}>
+    <View style={[styles.dropZone, !canAcceptDrop && styles.fullDropZone]}>
       {children}
-      {!canAcceptDrop && (
-        <Text style={styles.fullText}>Zone Full</Text>
-      )}
+      {!canAcceptDrop && <Text style={styles.fullText}>Zone Full</Text>}
     </View>
   );
 }
@@ -426,20 +427,20 @@ function DropZoneVisualizer() {
 
 const styles = StyleSheet.create({
   slotOverlay: {
-    position: 'absolute',
+    position: "absolute",
     borderWidth: 2,
-    borderColor: 'rgba(59, 130, 246, 0.5)',
-    borderStyle: 'dashed',
-    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+    borderColor: "rgba(59, 130, 246, 0.5)",
+    borderStyle: "dashed",
+    backgroundColor: "rgba(59, 130, 246, 0.1)",
   },
   activeSlotOverlay: {
-    borderColor: 'rgba(34, 197, 94, 0.8)',
-    backgroundColor: 'rgba(34, 197, 94, 0.2)',
+    borderColor: "rgba(34, 197, 94, 0.8)",
+    backgroundColor: "rgba(34, 197, 94, 0.2)",
   },
   slotLabel: {
     fontSize: 10,
-    color: '#3b82f6',
-    fontWeight: 'bold',
+    color: "#3b82f6",
+    fontWeight: "bold",
     padding: 2,
   },
 });
@@ -461,18 +462,18 @@ function DragDropAnalytics() {
     const updateAnalytics = () => {
       const slots = context.getSlots();
       const droppedItems = context.getDroppedItems();
-      
+
       const totalSlots = Object.keys(slots).length;
       const totalDroppedItems = Object.keys(droppedItems).length;
       const activeSlots = context.activeHoverSlotId ? 1 : 0;
-      
+
       // Calculate capacity utilization
       const totalCapacity = Object.values(slots).reduce(
-        (sum, slot) => sum + (slot.capacity || 1), 0
+        (sum, slot) => sum + (slot.capacity || 1),
+        0
       );
-      const capacityUtilization = totalCapacity > 0 
-        ? (totalDroppedItems / totalCapacity) * 100 
-        : 0;
+      const capacityUtilization =
+        totalCapacity > 0 ? (totalDroppedItems / totalCapacity) * 100 : 0;
 
       setAnalytics({
         totalSlots,
@@ -504,28 +505,31 @@ function DragDropAnalytics() {
 function CustomCollisionDetector() {
   const { getSlots, setActiveHoverSlot } = useDragDropContext();
 
-  const detectCollision = useCallback((dragX: number, dragY: number, dragWidth: number, dragHeight: number) => {
-    const slots = getSlots();
-    let collisionSlotId = null;
+  const detectCollision = useCallback(
+    (dragX: number, dragY: number, dragWidth: number, dragHeight: number) => {
+      const slots = getSlots();
+      let collisionSlotId = null;
 
-    Object.entries(slots).forEach(([id, slot]) => {
-      // Custom collision algorithm - center point must be within slot
-      const dragCenterX = dragX + dragWidth / 2;
-      const dragCenterY = dragY + dragHeight / 2;
+      Object.entries(slots).forEach(([id, slot]) => {
+        // Custom collision algorithm - center point must be within slot
+        const dragCenterX = dragX + dragWidth / 2;
+        const dragCenterY = dragY + dragHeight / 2;
 
-      if (
-        dragCenterX >= slot.x &&
-        dragCenterX <= slot.x + slot.width &&
-        dragCenterY >= slot.y &&
-        dragCenterY <= slot.y + slot.height
-      ) {
-        collisionSlotId = parseInt(id);
-      }
-    });
+        if (
+          dragCenterX >= slot.x &&
+          dragCenterX <= slot.x + slot.width &&
+          dragCenterY >= slot.y &&
+          dragCenterY <= slot.y + slot.height
+        ) {
+          collisionSlotId = parseInt(id);
+        }
+      });
 
-    setActiveHoverSlot(collisionSlotId);
-    return collisionSlotId;
-  }, [getSlots, setActiveHoverSlot]);
+      setActiveHoverSlot(collisionSlotId);
+      return collisionSlotId;
+    },
+    [getSlots, setActiveHoverSlot]
+  );
 
   return { detectCollision };
 }
@@ -542,7 +546,7 @@ function ContextStateSyncer() {
   useEffect(() => {
     const syncDroppedItems = () => {
       const droppedItems = context.getDroppedItems();
-      setGlobalState(prev => ({
+      setGlobalState((prev) => ({
         ...prev,
         droppedItems,
       }));
@@ -556,7 +560,7 @@ function ContextStateSyncer() {
   useEffect(() => {
     const syncSlots = () => {
       const slots = context.getSlots();
-      setGlobalState(prev => ({
+      setGlobalState((prev) => ({
         ...prev,
         availableSlots: Object.keys(slots).length,
         activeSlot: context.activeHoverSlotId,
@@ -576,23 +580,25 @@ function ContextStateSyncer() {
 ### Context Validation
 
 ```tsx
-function validateContext(context: SlotsContextValue | null): asserts context is SlotsContextValue {
+function validateContext(
+  context: SlotsContextValue | null
+): asserts context is SlotsContextValue {
   if (!context) {
     throw new Error(
-      'DragDropContext not found. Make sure your component is wrapped in a DropProvider.'
+      "DragDropContext not found. Make sure your component is wrapped in a DropProvider."
     );
   }
 }
 
 function SafeContextConsumer() {
   const context = useContext(SlotsContext);
-  
+
   try {
     validateContext(context);
-    
+
     // Safe to use context methods
     const slots = context.getSlots();
-    
+
     return <View>{/* Your component */}</View>;
   } catch (error) {
     return (
@@ -614,11 +620,11 @@ function SafeContextConsumer() {
 ```tsx
 function OptimizedContextConsumer() {
   const context = useDragDropContext();
-  
+
   // Cache frequently accessed values
   const slots = useMemo(() => context.getSlots(), [context]);
   const droppedItems = useMemo(() => context.getDroppedItems(), [context]);
-  
+
   // Throttle expensive operations
   const throttledPositionUpdate = useMemo(
     () => throttle(context.requestPositionUpdate, 100),
@@ -637,14 +643,14 @@ The context is fully typed with generic support:
 interface CustomData {
   id: string;
   name: string;
-  type: 'task' | 'file' | 'note';
+  type: "task" | "file" | "note";
 }
 
 function TypedContextConsumer() {
   const context = useContext(SlotsContext) as SlotsContextValue<CustomData>;
-  
+
   const droppedItems = context.getDroppedItems();
-  
+
   // droppedItems is typed with CustomData
   Object.entries(droppedItems).forEach(([id, { data }]) => {
     // data is typed as CustomData

@@ -13,7 +13,7 @@ The `Draggable` component provides a complete drag-and-drop solution that can be
 ## Import
 
 ```tsx
-import { Draggable } from 'react-native-reanimated-dnd';
+import { Draggable } from "react-native-reanimated-dnd";
 ```
 
 ## Props
@@ -21,32 +21,35 @@ import { Draggable } from 'react-native-reanimated-dnd';
 ### Core Props
 
 #### data
+
 - **Type**: `TData`
 - **Required**: Yes
 - **Description**: Data payload associated with this draggable item. This data is passed to drop handlers when the item is successfully dropped.
 
 ```tsx
-const taskData = { id: '1', title: 'Complete project', priority: 'high' };
+const taskData = { id: "1", title: "Complete project", priority: "high" };
 
 <Draggable data={taskData}>
   <Text>Drag me!</Text>
-</Draggable>
+</Draggable>;
 ```
 
 #### children
+
 - **Type**: `React.ReactNode`
 - **Required**: Yes
 - **Description**: The content to render inside the draggable component.
 
 #### style
+
 - **Type**: `StyleProp<ViewStyle>`
 - **Required**: No
 - **Description**: Style to apply to the draggable container.
 
 ```tsx
-<Draggable 
+<Draggable
   data={data}
-  style={[styles.draggableItem, { backgroundColor: '#f0f0f0' }]}
+  style={[styles.draggableItem, { backgroundColor: "#f0f0f0" }]}
 >
   <Text>Styled draggable</Text>
 </Draggable>
@@ -55,20 +58,19 @@ const taskData = { id: '1', title: 'Complete project', priority: 'high' };
 ### Interaction Props
 
 #### dragDisabled
+
 - **Type**: `boolean`
 - **Default**: `false`
 - **Description**: Whether dragging is disabled for this item. When true, the item cannot be dragged.
 
 ```tsx
-<Draggable 
-  data={data}
-  dragDisabled={!user.canDrag}
->
+<Draggable data={data} dragDisabled={!user.canDrag}>
   <Text>Conditionally draggable</Text>
 </Draggable>
 ```
 
 #### draggableId
+
 - **Type**: `string`
 - **Required**: No
 - **Description**: Unique identifier for this draggable item. If not provided, one will be generated automatically.
@@ -76,15 +78,16 @@ const taskData = { id: '1', title: 'Complete project', priority: 'high' };
 ### Callback Props
 
 #### onDragStart
+
 - **Type**: `(data: TData) => void`
 - **Required**: No
 - **Description**: Callback fired when dragging starts.
 
 ```tsx
-<Draggable 
+<Draggable
   data={data}
   onDragStart={(data) => {
-    console.log('Started dragging:', data.title);
+    console.log("Started dragging:", data.title);
     hapticFeedback();
   }}
 >
@@ -93,15 +96,16 @@ const taskData = { id: '1', title: 'Complete project', priority: 'high' };
 ```
 
 #### onDragEnd
+
 - **Type**: `(data: TData) => void`
 - **Required**: No
 - **Description**: Callback fired when dragging ends (regardless of whether it was dropped successfully).
 
 ```tsx
-<Draggable 
+<Draggable
   data={data}
   onDragEnd={(data) => {
-    console.log('Finished dragging:', data.title);
+    console.log("Finished dragging:", data.title);
     setIsDragging(false);
   }}
 >
@@ -110,12 +114,13 @@ const taskData = { id: '1', title: 'Complete project', priority: 'high' };
 ```
 
 #### onDragging
+
 - **Type**: `(payload: DraggingPayload<TData>) => void`
 - **Required**: No
 - **Description**: Callback fired continuously while dragging. Useful for real-time feedback.
 
 ```tsx
-<Draggable 
+<Draggable
   data={data}
   onDragging={({ x, y, tx, ty, itemData }) => {
     const currentX = x + tx;
@@ -128,12 +133,13 @@ const taskData = { id: '1', title: 'Complete project', priority: 'high' };
 ```
 
 #### onStateChange
+
 - **Type**: `(state: DraggableState) => void`
 - **Required**: No
 - **Description**: Callback fired when the draggable state changes.
 
 ```tsx
-<Draggable 
+<Draggable
   data={data}
   onStateChange={(state) => {
     if (state === DraggableState.DROPPED) {
@@ -148,28 +154,27 @@ const taskData = { id: '1', title: 'Complete project', priority: 'high' };
 ### Advanced Props
 
 #### animationFunction
+
 - **Type**: `AnimationFunction`
 - **Required**: No
 - **Description**: Custom animation function for controlling how the item animates when dropped. If not provided, uses default spring animation.
 
 ```tsx
 const bounceAnimation = (toValue) => {
-  'worklet';
+  "worklet";
   return withTiming(toValue, {
     duration: 600,
-    easing: Easing.bounce
+    easing: Easing.bounce,
   });
 };
 
-<Draggable 
-  data={data}
-  animationFunction={bounceAnimation}
->
+<Draggable data={data} animationFunction={bounceAnimation}>
   <Text>Bouncy draggable</Text>
-</Draggable>
+</Draggable>;
 ```
 
 #### dragBoundsRef
+
 - **Type**: `React.RefObject<Animated.View | View>`
 - **Required**: No
 - **Description**: Reference to a View that defines the dragging boundaries. The draggable item will be constrained within this view's bounds.
@@ -179,10 +184,7 @@ const boundsRef = useRef<View>(null);
 
 return (
   <View ref={boundsRef} style={styles.container}>
-    <Draggable 
-      data={data}
-      dragBoundsRef={boundsRef}
-    >
+    <Draggable data={data} dragBoundsRef={boundsRef}>
       <Text>Bounded draggable</Text>
     </Draggable>
   </View>
@@ -190,13 +192,14 @@ return (
 ```
 
 #### dragAxis
+
 - **Type**: `"x" | "y" | "both"`
 - **Default**: `"both"`
 - **Description**: Constrains dragging to a specific axis.
 
 ```tsx
 // Horizontal slider
-<Draggable 
+<Draggable
   data={data}
   dragAxis="x"
 >
@@ -204,7 +207,7 @@ return (
 </Draggable>
 
 // Vertical slider
-<Draggable 
+<Draggable
   data={data}
   dragAxis="y"
 >
@@ -213,20 +216,19 @@ return (
 ```
 
 #### collisionAlgorithm
+
 - **Type**: `CollisionAlgorithm`
 - **Default**: `"intersect"`
 - **Description**: Algorithm used for collision detection with drop zones.
 
 Available algorithms:
+
 - `intersect`: Collision when any part overlaps (default)
 - `center`: Collision when center point is over droppable
 - `contain`: Collision when entire draggable is contained
 
 ```tsx
-<Draggable 
-  data={data}
-  collisionAlgorithm="center"
->
+<Draggable data={data} collisionAlgorithm="center">
   <Text>Precise dropping</Text>
 </Draggable>
 ```
@@ -238,11 +240,13 @@ A handle component that can be used within `Draggable` to create a specific drag
 ### Props
 
 #### children
+
 - **Type**: `React.ReactNode`
 - **Required**: Yes
 - **Description**: The content to render inside the handle.
 
 #### style
+
 - **Type**: `StyleProp<ViewStyle>`
 - **Required**: No
 - **Description**: Optional style to apply to the handle.
@@ -254,7 +258,7 @@ A handle component that can be used within `Draggable` to create a specific drag
 <Draggable data={data}>
   <View style={styles.itemContent}>
     <Text>Item content (not draggable)</Text>
-    
+
     <Draggable.Handle style={styles.dragHandle}>
       <Icon name="drag-handle" size={20} />
     </Draggable.Handle>
@@ -266,7 +270,7 @@ A handle component that can be used within `Draggable` to create a specific drag
   <View style={styles.card}>
     <Text style={styles.title}>Card Title</Text>
     <Text style={styles.content}>Card content...</Text>
-    
+
     <Draggable.Handle style={styles.customHandle}>
       <View style={styles.handleDots}>
         <View style={styles.dot} />
@@ -283,14 +287,14 @@ A handle component that can be used within `Draggable` to create a specific drag
 ### Basic Draggable
 
 ```tsx
-import { Draggable, DraggableState } from 'react-native-reanimated-dnd';
+import { Draggable, DraggableState } from "react-native-reanimated-dnd";
 
 function TaskItem({ task }) {
   return (
     <Draggable
       data={task}
-      onDragStart={(data) => console.log('Started dragging:', data.title)}
-      onDragEnd={(data) => console.log('Finished dragging:', data.title)}
+      onDragStart={(data) => console.log("Started dragging:", data.title)}
+      onDragEnd={(data) => console.log("Finished dragging:", data.title)}
     >
       <View style={styles.taskItem}>
         <Text>{task.title}</Text>
@@ -311,7 +315,7 @@ function TaskCard({ task }) {
         <Draggable.Handle style={styles.handle}>
           <Icon name="drag-handle" size={20} />
         </Draggable.Handle>
-        
+
         <View style={styles.content}>
           <Text>{task.title}</Text>
           <Text>{task.description}</Text>
@@ -330,8 +334,8 @@ function BoundedDraggable() {
 
   return (
     <View ref={boundsRef} style={styles.container}>
-      <Draggable 
-        data={{ id: '1', name: 'Bounded Item' }}
+      <Draggable
+        data={{ id: "1", name: "Bounded Item" }}
         dragBoundsRef={boundsRef}
         dragAxis="x"
       >
@@ -357,7 +361,7 @@ function StatefulDraggable({ task }) {
       style={[
         styles.item,
         dragState === DraggableState.DRAGGING && styles.dragging,
-        dragState === DraggableState.DROPPED && styles.dropped
+        dragState === DraggableState.DROPPED && styles.dropped,
       ]}
     >
       <View style={styles.content}>
@@ -372,10 +376,10 @@ function StatefulDraggable({ task }) {
 ### Custom Animation
 
 ```tsx
-import { withSpring, withTiming, Easing } from 'react-native-reanimated';
+import { withSpring, withTiming, Easing } from "react-native-reanimated";
 
 const customBounce = (toValue) => {
-  'worklet';
+  "worklet";
   return withSpring(toValue, {
     damping: 10,
     stiffness: 100,
@@ -385,10 +389,7 @@ const customBounce = (toValue) => {
 
 function AnimatedDraggable() {
   return (
-    <Draggable 
-      data={{ id: '1' }}
-      animationFunction={customBounce}
-    >
+    <Draggable data={{ id: "1" }} animationFunction={customBounce}>
       <Text>Bouncy draggable</Text>
     </Draggable>
   );
@@ -398,7 +399,7 @@ function AnimatedDraggable() {
 ### File Drag and Drop
 
 ```tsx
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 function FileDragDrop() {
   return (
@@ -406,7 +407,7 @@ function FileDragDrop() {
       <DropProvider>
         <View style={styles.content}>
           <Draggable
-            data={{ id: '1', type: 'file', name: 'document.pdf' }}
+            data={{ id: "1", type: "file", name: "document.pdf" }}
             collisionAlgorithm="intersect"
             onDragStart={(data) => {
               hapticFeedback();
@@ -424,7 +425,7 @@ function FileDragDrop() {
 
           <Droppable
             onDrop={(data) => {
-              console.log('File dropped:', data.name);
+              console.log("File dropped:", data.name);
               moveToTrash(data.id);
             }}
           >
@@ -450,15 +451,12 @@ function ConditionalDraggable({ item, canDrag }) {
       dragDisabled={!canDrag}
       onDragStart={(data) => {
         if (data.locked) {
-          showError('This item is locked');
+          showError("This item is locked");
           return;
         }
-        analytics.track('drag_start', { itemId: data.id });
+        analytics.track("drag_start", { itemId: data.id });
       }}
-      style={[
-        styles.item,
-        !canDrag && styles.disabled
-      ]}
+      style={[styles.item, !canDrag && styles.disabled]}
     >
       <View style={styles.itemContent}>
         <Text style={styles.itemTitle}>{item.title}</Text>
@@ -478,13 +476,13 @@ The component is fully typed with generic support:
 interface TaskData {
   id: string;
   title: string;
-  priority: 'low' | 'medium' | 'high';
+  priority: "low" | "medium" | "high";
 }
 
 function TypedDraggable() {
   return (
     <Draggable<TaskData>
-      data={{ id: '1', title: 'Task 1', priority: 'high' }}
+      data={{ id: "1", title: "Task 1", priority: "high" }}
       onDragStart={(data: TaskData) => {
         // data is properly typed
         console.log(`Started dragging: ${data.title}`);

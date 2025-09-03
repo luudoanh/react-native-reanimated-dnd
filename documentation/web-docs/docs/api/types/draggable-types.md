@@ -17,7 +17,7 @@ enum DraggableState {
   /** Item is at rest in its original or dropped position */
   IDLE = "IDLE",
   /** Item is currently being dragged by the user */
-  DRAGGING = "DRAGGING", 
+  DRAGGING = "DRAGGING",
   /** Item has been successfully dropped on a valid drop zone */
   DROPPED = "DROPPED",
 }
@@ -26,18 +26,18 @@ enum DraggableState {
 #### Usage Example
 
 ```tsx
-import { DraggableState } from 'react-native-reanimated-dnd';
+import { DraggableState } from "react-native-reanimated-dnd";
 
 const handleStateChange = (state: DraggableState) => {
   switch (state) {
     case DraggableState.IDLE:
-      console.log('Item is at rest');
+      console.log("Item is at rest");
       break;
     case DraggableState.DRAGGING:
-      console.log('Item is being dragged');
+      console.log("Item is being dragged");
       break;
     case DraggableState.DROPPED:
-      console.log('Item was successfully dropped');
+      console.log("Item was successfully dropped");
       break;
   }
 };
@@ -54,21 +54,23 @@ type AnimationFunction = (toValue: number) => number;
 ```
 
 #### Parameters
+
 - `toValue` (`number`): The target value to animate to
 
 #### Returns
+
 - `number`: The animated value (typically from withSpring, withTiming, etc.)
 
 #### Example
 
 ```tsx
-import { withTiming, Easing } from 'react-native-reanimated';
+import { withTiming, Easing } from "react-native-reanimated";
 
 const customAnimation: AnimationFunction = (toValue) => {
-  'worklet';
-  return withTiming(toValue, { 
-    duration: 500, 
-    easing: Easing.bounce 
+  "worklet";
+  return withTiming(toValue, {
+    duration: 500,
+    easing: Easing.bounce,
   });
 };
 ```
@@ -93,19 +95,19 @@ type CollisionAlgorithm = "center" | "intersect" | "contain";
 // For precise dropping, use center collision
 const preciseDraggable = useDraggable({
   data: myData,
-  collisionAlgorithm: 'center'
+  collisionAlgorithm: "center",
 });
 
 // For easy dropping, use intersect (default)
 const easyDraggable = useDraggable({
   data: myData,
-  collisionAlgorithm: 'intersect'
+  collisionAlgorithm: "intersect",
 });
 
 // For strict containment, use contain
 const strictDraggable = useDraggable({
   data: myData,
-  collisionAlgorithm: 'contain'
+  collisionAlgorithm: "contain",
 });
 ```
 
@@ -136,49 +138,55 @@ interface UseDraggableOptions<TData = unknown> {
 #### Properties
 
 ##### data
+
 - **Type**: `TData`
 - **Required**: Yes
 - **Description**: Data payload associated with this draggable item. This data is passed to drop handlers when the item is successfully dropped.
 
 ```tsx
-const data = { id: '1', name: 'Task 1', priority: 'high' };
+const data = { id: "1", name: "Task 1", priority: "high" };
 ```
 
 ##### draggableId
+
 - **Type**: `string`
 - **Required**: No
 - **Description**: Unique identifier for this draggable item. If not provided, one will be generated automatically.
 
 ##### dragDisabled
+
 - **Type**: `boolean`
 - **Default**: `false`
 - **Description**: Whether dragging is disabled for this item. When true, the item cannot be dragged.
 
 ##### onDragStart
+
 - **Type**: `(data: TData) => void`
 - **Required**: No
 - **Description**: Callback fired when dragging starts.
 
 ```tsx
 const handleDragStart = (data) => {
-  console.log('Started dragging:', data.name);
+  console.log("Started dragging:", data.name);
   setIsDragging(true);
 };
 ```
 
 ##### onDragEnd
+
 - **Type**: `(data: TData) => void`
 - **Required**: No
 - **Description**: Callback fired when dragging ends (regardless of whether it was dropped successfully).
 
 ```tsx
 const handleDragEnd = (data) => {
-  console.log('Finished dragging:', data.name);
+  console.log("Finished dragging:", data.name);
   setIsDragging(false);
 };
 ```
 
 ##### onDragging
+
 - **Type**: `(payload: DraggingPayload<TData>) => void`
 - **Required**: No
 - **Description**: Callback fired continuously while dragging. Useful for real-time feedback.
@@ -192,6 +200,7 @@ const handleDragging = ({ x, y, tx, ty, itemData }) => {
 ```
 
 ##### onStateChange
+
 - **Type**: `(state: DraggableState) => void`
 - **Required**: No
 - **Description**: Callback fired when the draggable state changes.
@@ -205,21 +214,23 @@ const handleStateChange = (state) => {
 ```
 
 ##### animationFunction
+
 - **Type**: `AnimationFunction`
 - **Required**: No
 - **Description**: Custom animation function for controlling how the item animates when dropped. If not provided, uses default spring animation.
 
 ```tsx
 const bounceAnimation = (toValue) => {
-  'worklet';
+  "worklet";
   return withTiming(toValue, {
     duration: 600,
-    easing: Easing.bounce
+    easing: Easing.bounce,
   });
 };
 ```
 
 ##### dragBoundsRef
+
 - **Type**: `React.RefObject<Animated.View | View>`
 - **Required**: No
 - **Description**: Reference to a View that defines the dragging boundaries. The draggable item will be constrained within this view's bounds.
@@ -237,6 +248,7 @@ return (
 ```
 
 ##### dragAxis
+
 - **Type**: `"x" | "y" | "both"`
 - **Default**: `"both"`
 - **Description**: Constrains dragging to a specific axis.
@@ -245,17 +257,18 @@ return (
 // Horizontal slider
 const horizontalDraggable = useDraggable({
   data: sliderData,
-  dragAxis: 'x'
+  dragAxis: "x",
 });
 
 // Vertical slider
 const verticalDraggable = useDraggable({
   data: sliderData,
-  dragAxis: 'y'
+  dragAxis: "y",
 });
 ```
 
 ##### collisionAlgorithm
+
 - **Type**: `CollisionAlgorithm`
 - **Default**: `"intersect"`
 - **Description**: Algorithm used for collision detection with drop zones.
@@ -280,22 +293,27 @@ interface UseDraggableReturn {
 #### Properties
 
 ##### animatedViewProps
+
 - **Type**: `{ style: AnimatedStyle<ViewStyle>; onLayout: (event: LayoutChangeEvent) => void; }`
 - **Description**: Props to spread on the animated view that will be draggable. Contains the animated style and layout handler.
 
 ##### gesture
+
 - **Type**: `GestureType`
 - **Description**: Gesture object to attach to GestureDetector for handling drag interactions. Only used when no handle is present (entire component is draggable).
 
 ##### state
+
 - **Type**: `DraggableState`
 - **Description**: Current state of the draggable item.
 
 ##### animatedViewRef
+
 - **Type**: `ReturnType<typeof useAnimatedRef<Animated.View>>`
 - **Description**: Animated ref for the draggable view. Used internally for measurements.
 
 ##### hasHandle
+
 - **Type**: `boolean`
 - **Description**: Whether this draggable has a handle component. When true, only the handle can initiate dragging. When false, the entire component is draggable.
 
@@ -305,11 +323,11 @@ Payload object passed to the onDragging callback.
 
 ```tsx
 interface DraggingPayload<TData = unknown> {
-  x: number;        // Original X position
-  y: number;        // Original Y position  
-  tx: number;       // Current X translation
-  ty: number;       // Current Y translation
-  itemData: TData;  // Data associated with the draggable item
+  x: number; // Original X position
+  y: number; // Original Y position
+  tx: number; // Current X translation
+  ty: number; // Current Y translation
+  itemData: TData; // Data associated with the draggable item
 }
 ```
 
@@ -347,16 +365,19 @@ interface DraggableProps<TData = unknown> extends UseDraggableOptions<TData> {
 #### Properties
 
 ##### style
+
 - **Type**: `StyleProp<ViewStyle>`
 - **Required**: No
 - **Description**: Style to apply to the draggable container.
 
 ##### children
+
 - **Type**: `React.ReactNode`
 - **Required**: Yes
 - **Description**: The content to render inside the draggable.
 
 ##### onStateChange
+
 - **Type**: `(state: DraggableState) => void`
 - **Required**: No
 - **Description**: Callback fired when the draggable state changes.
@@ -375,11 +396,13 @@ interface DraggableHandleProps {
 #### Properties
 
 ##### children
+
 - **Type**: `React.ReactNode`
 - **Required**: Yes
 - **Description**: The content to render inside the handle.
 
 ##### style
+
 - **Type**: `StyleProp<ViewStyle>`
 - **Required**: No
 - **Description**: Optional style to apply to the handle.
@@ -389,24 +412,24 @@ interface DraggableHandleProps {
 ### Basic Draggable
 
 ```tsx
-import { useDraggable, DraggableState } from 'react-native-reanimated-dnd';
+import { useDraggable, DraggableState } from "react-native-reanimated-dnd";
 
 interface TaskData {
   id: string;
   title: string;
-  priority: 'low' | 'medium' | 'high';
+  priority: "low" | "medium" | "high";
 }
 
 function TaskItem({ task }: { task: TaskData }) {
   const { animatedViewProps, gesture, state } = useDraggable({
     data: task,
-    onDragStart: (data) => console.log('Started dragging:', data.title),
-    onDragEnd: (data) => console.log('Finished dragging:', data.title),
+    onDragStart: (data) => console.log("Started dragging:", data.title),
+    onDragEnd: (data) => console.log("Finished dragging:", data.title),
     onStateChange: (state) => {
       if (state === DraggableState.DROPPED) {
         showSuccessAnimation();
       }
-    }
+    },
   });
 
   return (
@@ -423,7 +446,7 @@ function TaskItem({ task }: { task: TaskData }) {
 ### Draggable with Handle
 
 ```tsx
-import { Draggable, DraggableHandle } from 'react-native-reanimated-dnd';
+import { Draggable, DraggableHandle } from "react-native-reanimated-dnd";
 
 function TaskCard({ task }: { task: TaskData }) {
   return (
@@ -450,8 +473,8 @@ function BoundedDraggable() {
 
   return (
     <View ref={boundsRef} style={styles.container}>
-      <Draggable 
-        data={{ id: '1', name: 'Bounded Item' }}
+      <Draggable
+        data={{ id: "1", name: "Bounded Item" }}
         dragBoundsRef={boundsRef}
         dragAxis="x"
       >
@@ -467,10 +490,10 @@ function BoundedDraggable() {
 ### Custom Animation
 
 ```tsx
-import { withSpring, withTiming, Easing } from 'react-native-reanimated';
+import { withSpring, withTiming, Easing } from "react-native-reanimated";
 
 const customBounce: AnimationFunction = (toValue) => {
-  'worklet';
+  "worklet";
   return withSpring(toValue, {
     damping: 10,
     stiffness: 100,
@@ -479,7 +502,7 @@ const customBounce: AnimationFunction = (toValue) => {
 };
 
 const customTiming: AnimationFunction = (toValue) => {
-  'worklet';
+  "worklet";
   return withTiming(toValue, {
     duration: 800,
     easing: Easing.elastic(2),
@@ -488,10 +511,7 @@ const customTiming: AnimationFunction = (toValue) => {
 
 function AnimatedDraggable() {
   return (
-    <Draggable 
-      data={{ id: '1' }}
-      animationFunction={customBounce}
-    >
+    <Draggable data={{ id: "1" }} animationFunction={customBounce}>
       <Text>Bouncy draggable</Text>
     </Draggable>
   );

@@ -22,10 +22,14 @@ Capacity limits restrict how many items can be placed in drop zones, providing c
 ## Basic Implementation
 
 ```tsx
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { DropProvider, Draggable, Droppable } from 'react-native-reanimated-dnd';
+import React, { useState } from "react";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import {
+  DropProvider,
+  Draggable,
+  Droppable,
+} from "react-native-reanimated-dnd";
 
 interface CapacityItem {
   id: string;
@@ -35,11 +39,11 @@ interface CapacityItem {
 
 export function CapacityLimitsExample() {
   const [items, setItems] = useState<CapacityItem[]>([
-    { id: '1', label: 'Item 1', color: '#ff6b6b' },
-    { id: '2', label: 'Item 2', color: '#4ecdc4' },
-    { id: '3', label: 'Item 3', color: '#45b7d1' },
-    { id: '4', label: 'Item 4', color: '#96ceb4' },
-    { id: '5', label: 'Item 5', color: '#feca57' },
+    { id: "1", label: "Item 1", color: "#ff6b6b" },
+    { id: "2", label: "Item 2", color: "#4ecdc4" },
+    { id: "3", label: "Item 3", color: "#45b7d1" },
+    { id: "4", label: "Item 4", color: "#96ceb4" },
+    { id: "5", label: "Item 5", color: "#feca57" },
   ]);
 
   const [zones, setZones] = useState({
@@ -50,7 +54,7 @@ export function CapacityLimitsExample() {
 
   const handleDrop = (zoneId: keyof typeof zones) => (item: CapacityItem) => {
     const zone = zones[zoneId];
-    
+
     if (zone.items.length >= zone.capacity) {
       console.log(`Zone ${zoneId} is full!`);
       // Show error message instead of returning false
@@ -58,32 +62,32 @@ export function CapacityLimitsExample() {
       return;
     }
 
-    setZones(prev => ({
+    setZones((prev) => ({
       ...prev,
       [zoneId]: {
         ...prev[zoneId],
-        items: [...prev[zoneId].items, item]
-      }
+        items: [...prev[zoneId].items, item],
+      },
     }));
 
     // Remove from available items
-    setItems(prev => prev.filter(i => i.id !== item.id));
+    setItems((prev) => prev.filter((i) => i.id !== item.id));
   };
 
   const removeFromZone = (zoneId: keyof typeof zones, itemId: string) => {
     const zone = zones[zoneId];
-    const item = zone.items.find(i => i.id === itemId);
-    
+    const item = zone.items.find((i) => i.id === itemId);
+
     if (item) {
-      setZones(prev => ({
+      setZones((prev) => ({
         ...prev,
         [zoneId]: {
           ...prev[zoneId],
-          items: prev[zoneId].items.filter(i => i.id !== itemId)
-        }
+          items: prev[zoneId].items.filter((i) => i.id !== itemId),
+        },
       }));
-      
-      setItems(prev => [...prev, item]);
+
+      setItems((prev) => [...prev, item]);
     }
   };
 
@@ -92,17 +96,13 @@ export function CapacityLimitsExample() {
       <DropProvider>
         <View style={styles.content}>
           <Text style={styles.title}>Capacity Limits</Text>
-          
+
           {/* Available Items */}
           <View style={styles.itemsContainer}>
             <Text style={styles.sectionTitle}>Available Items</Text>
             <View style={styles.itemsRow}>
               {items.map((item) => (
-                <Draggable
-                  key={item.id}
-                  data={item}
-                  style={styles.draggable}
-                >
+                <Draggable key={item.id} data={item} style={styles.draggable}>
                   <View style={[styles.item, { backgroundColor: item.color }]}>
                     <Text style={styles.itemText}>{item.label}</Text>
                   </View>
@@ -119,7 +119,9 @@ export function CapacityLimitsExample() {
                 id={zoneId}
                 zone={zone}
                 onDrop={handleDrop(zoneId as keyof typeof zones)}
-                onRemoveItem={(itemId) => removeFromZone(zoneId as keyof typeof zones, itemId)}
+                onRemoveItem={(itemId) =>
+                  removeFromZone(zoneId as keyof typeof zones, itemId)
+                }
               />
             ))}
           </View>
@@ -146,14 +148,14 @@ function CapacityZone({ id, zone, onDrop, onRemoveItem }) {
 
       {/* Capacity Bar */}
       <View style={styles.capacityBar}>
-        <View 
+        <View
           style={[
-            styles.capacityFill, 
-            { 
+            styles.capacityFill,
+            {
               width: `${fillPercentage}%`,
-              backgroundColor: isFull ? '#ff453a' : '#58a6ff'
-            }
-          ]} 
+              backgroundColor: isFull ? "#ff453a" : "#58a6ff",
+            },
+          ]}
         />
       </View>
 
@@ -166,7 +168,7 @@ function CapacityZone({ id, zone, onDrop, onRemoveItem }) {
         <View style={styles.zoneContent}>
           {zone.items.length === 0 ? (
             <Text style={styles.emptyText}>
-              {isFull ? 'Zone Full' : 'Drop items here'}
+              {isFull ? "Zone Full" : "Drop items here"}
             </Text>
           ) : (
             <View style={styles.zoneItems}>
@@ -190,7 +192,7 @@ function CapacityZone({ id, zone, onDrop, onRemoveItem }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000000',
+    backgroundColor: "#000000",
   },
   content: {
     flex: 1,
@@ -198,9 +200,9 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-    textAlign: 'center',
+    fontWeight: "bold",
+    color: "#FFFFFF",
+    textAlign: "center",
     marginBottom: 30,
   },
   itemsContainer: {
@@ -208,13 +210,13 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: '600',
-    color: '#FFFFFF',
+    fontWeight: "600",
+    color: "#FFFFFF",
     marginBottom: 16,
   },
   itemsRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    flexWrap: "wrap",
     gap: 12,
   },
   draggable: {
@@ -224,101 +226,101 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#000',
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 4,
     elevation: 5,
   },
   itemText: {
-    color: '#FFFFFF',
+    color: "#FFFFFF",
     fontSize: 12,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
   },
   zonesContainer: {
     flex: 1,
     gap: 20,
   },
   zoneContainer: {
-    backgroundColor: '#1a1a1a',
+    backgroundColor: "#1a1a1a",
     borderRadius: 16,
     padding: 16,
     borderWidth: 1,
-    borderColor: '#333333',
+    borderColor: "#333333",
   },
   zoneHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 12,
   },
   zoneTitle: {
     fontSize: 16,
-    fontWeight: '600',
-    color: '#FFFFFF',
+    fontWeight: "600",
+    color: "#FFFFFF",
   },
   capacityText: {
     fontSize: 14,
-    fontWeight: '500',
-    color: '#58a6ff',
+    fontWeight: "500",
+    color: "#58a6ff",
   },
   fullCapacityText: {
-    color: '#ff453a',
+    color: "#ff453a",
   },
   capacityBar: {
     height: 4,
-    backgroundColor: '#333333',
+    backgroundColor: "#333333",
     borderRadius: 2,
     marginBottom: 16,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   capacityFill: {
-    height: '100%',
+    height: "100%",
     borderRadius: 2,
   },
   dropZone: {
     minHeight: 80,
     borderRadius: 12,
     borderWidth: 2,
-    borderStyle: 'dashed',
-    borderColor: '#58a6ff',
+    borderStyle: "dashed",
+    borderColor: "#58a6ff",
   },
   fullDropZone: {
-    borderColor: '#ff453a',
-    backgroundColor: 'rgba(255, 69, 58, 0.1)',
+    borderColor: "#ff453a",
+    backgroundColor: "rgba(255, 69, 58, 0.1)",
   },
   zoneContent: {
     flex: 1,
     padding: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   emptyText: {
-    color: '#8E8E93',
+    color: "#8E8E93",
     fontSize: 14,
-    textAlign: 'center',
+    textAlign: "center",
   },
   zoneItems: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    flexWrap: "wrap",
     gap: 8,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   zoneItem: {
     width: 50,
     height: 50,
     borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   zoneItemText: {
-    color: '#FFFFFF',
+    color: "#FFFFFF",
     fontSize: 10,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
   },
 });
 ```
@@ -332,10 +334,10 @@ function DynamicCapacityZone({ initialCapacity = 3 }) {
   const [capacity, setCapacity] = useState(initialCapacity);
   const [items, setItems] = useState([]);
 
-  const increaseCapacity = () => setCapacity(prev => prev + 1);
+  const increaseCapacity = () => setCapacity((prev) => prev + 1);
   const decreaseCapacity = () => {
     if (capacity > items.length) {
-      setCapacity(prev => prev - 1);
+      setCapacity((prev) => prev - 1);
     }
   };
 
@@ -350,12 +352,12 @@ function DynamicCapacityZone({ initialCapacity = 3 }) {
           <Text style={styles.controlButton}>+</Text>
         </TouchableOpacity>
       </View>
-      
+
       <Droppable
         droppableId="dynamic"
         onDrop={(item) => {
           if (items.length < capacity) {
-            setItems(prev => [...prev, item]);
+            setItems((prev) => [...prev, item]);
             return true;
           }
           return false;
@@ -382,10 +384,12 @@ function OverflowZone({ capacity, items, onDrop, onOverflow }) {
 
   return (
     <Droppable onDrop={handleDrop}>
-      <View style={[
-        styles.dropZone,
-        items.length >= capacity && styles.overflowZone
-      ]}>
+      <View
+        style={[
+          styles.dropZone,
+          items.length >= capacity && styles.overflowZone,
+        ]}
+      >
         {/* Zone content */}
       </View>
     </Droppable>
@@ -400,9 +404,9 @@ function PriorityCapacityZone({ capacity, items, onDrop }) {
   const handleDrop = (item) => {
     if (items.length >= capacity) {
       // Remove lowest priority item if new item has higher priority
-      const lowestPriority = Math.min(...items.map(i => i.priority));
+      const lowestPriority = Math.min(...items.map((i) => i.priority));
       if (item.priority > lowestPriority) {
-        const itemToRemove = items.find(i => i.priority === lowestPriority);
+        const itemToRemove = items.find((i) => i.priority === lowestPriority);
         // Remove and add logic here
         return true;
       }
@@ -411,11 +415,7 @@ function PriorityCapacityZone({ capacity, items, onDrop }) {
     return onDrop(item);
   };
 
-  return (
-    <Droppable onDrop={handleDrop}>
-      {/* Zone content */}
-    </Droppable>
-  );
+  return <Droppable onDrop={handleDrop}>{/* Zone content */}</Droppable>;
 }
 ```
 
@@ -470,16 +470,13 @@ function CapacityRing({ current, max, size = 60 }) {
 ```tsx
 function CapacityWarning({ current, max, warningThreshold = 0.8 }) {
   const percentage = current / max;
-  
+
   if (percentage < warningThreshold) return null;
 
   return (
-    <View style={[
-      styles.warning,
-      percentage >= 1 && styles.errorWarning
-    ]}>
+    <View style={[styles.warning, percentage >= 1 && styles.errorWarning]}>
       <Text style={styles.warningText}>
-        {percentage >= 1 ? 'Zone Full!' : 'Almost Full'}
+        {percentage >= 1 ? "Zone Full!" : "Almost Full"}
       </Text>
     </View>
   );
@@ -506,4 +503,4 @@ function CapacityWarning({ current, max, warningThreshold = 0.8 }) {
 
 - Learn about [Drop Zones](./drop-zones) for zone management
 - Explore [Visual Feedback](./visual-feedback) for capacity indicators
-- Check out [Sortable Lists](./sortable-lists) for ordered capacity zones 
+- Check out [Sortable Lists](./sortable-lists) for ordered capacity zones

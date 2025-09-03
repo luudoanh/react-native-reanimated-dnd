@@ -13,7 +13,7 @@ The `Droppable` component provides visual feedback when draggable items hover ov
 ## Import
 
 ```tsx
-import { Droppable } from 'react-native-reanimated-dnd';
+import { Droppable } from "react-native-reanimated-dnd";
 ```
 
 ## Props
@@ -21,36 +21,39 @@ import { Droppable } from 'react-native-reanimated-dnd';
 ### Core Props
 
 #### onDrop
+
 - **Type**: `(data: TData) => void`
 - **Required**: Yes
 - **Description**: Callback function fired when an item is successfully dropped on this droppable. This is where you handle the drop logic for your application.
 
 ```tsx
 const handleDrop = (data) => {
-  console.log('Item dropped:', data.name);
-  moveItemToColumn(data.id, 'completed');
+  console.log("Item dropped:", data.name);
+  moveItemToColumn(data.id, "completed");
   showNotification(`${data.name} completed!`);
 };
 
 <Droppable onDrop={handleDrop}>
   <Text>Drop zone</Text>
-</Droppable>
+</Droppable>;
 ```
 
 #### children
+
 - **Type**: `React.ReactNode`
 - **Required**: Yes
 - **Description**: The content to render inside the droppable.
 
 #### style
+
 - **Type**: `StyleProp<ViewStyle>`
 - **Required**: No
 - **Description**: Style to apply to the droppable container.
 
 ```tsx
-<Droppable 
+<Droppable
   onDrop={handleDrop}
-  style={[styles.dropZone, { backgroundColor: '#f0f0f0' }]}
+  style={[styles.dropZone, { backgroundColor: "#f0f0f0" }]}
 >
   <Text>Styled drop zone</Text>
 </Droppable>
@@ -59,31 +62,27 @@ const handleDrop = (data) => {
 ### Interaction Props
 
 #### dropDisabled
+
 - **Type**: `boolean`
 - **Default**: `false`
 - **Description**: Whether this droppable is disabled. When true, items cannot be dropped here. Useful for conditionally enabling/disabling drop functionality.
 
 ```tsx
-const isDisabled = user.role !== 'admin';
+const isDisabled = user.role !== "admin";
 
-<Droppable 
-  onDrop={handleDrop}
-  dropDisabled={isDisabled}
->
+<Droppable onDrop={handleDrop} dropDisabled={isDisabled}>
   <Text>Admin only drop zone</Text>
-</Droppable>
+</Droppable>;
 ```
 
 #### droppableId
+
 - **Type**: `string`
 - **Required**: No
 - **Description**: Unique identifier for this droppable. If not provided, one will be generated automatically. Used for tracking which droppable items are dropped on.
 
 ```tsx
-<Droppable 
-  droppableId="todo-column"
-  onDrop={handleDrop}
->
+<Droppable droppableId="todo-column" onDrop={handleDrop}>
   <Text>Todo Column</Text>
 </Droppable>
 ```
@@ -91,6 +90,7 @@ const isDisabled = user.role !== 'admin';
 ### Callback Props
 
 #### onActiveChange
+
 - **Type**: `(isActive: boolean) => void`
 - **Required**: No
 - **Description**: Callback fired when the active state of this droppable changes. Active state indicates whether a draggable item is currently hovering over this droppable.
@@ -105,22 +105,21 @@ const handleActiveChange = (isActive) => {
   }
 };
 
-<Droppable 
-  onDrop={handleDrop}
-  onActiveChange={handleActiveChange}
->
+<Droppable onDrop={handleDrop} onActiveChange={handleActiveChange}>
   <Text>Interactive drop zone</Text>
-</Droppable>
+</Droppable>;
 ```
 
 ### Positioning Props
 
 #### dropAlignment
+
 - **Type**: `DropAlignment`
 - **Default**: `"center"`
 - **Description**: How dropped items should be aligned within this droppable area.
 
 Available alignments:
+
 - `center`: Center the item within the droppable (default)
 - `top-left`: Align to top-left corner
 - `top-center`: Align to top edge, centered horizontally
@@ -133,22 +132,20 @@ Available alignments:
 
 ```tsx
 // Items dropped here will snap to the top-left corner
-<Droppable 
-  onDrop={handleDrop}
-  dropAlignment="top-left"
->
+<Droppable onDrop={handleDrop} dropAlignment="top-left">
   <Text>Top-left aligned drops</Text>
 </Droppable>
 ```
 
 #### dropOffset
+
 - **Type**: `DropOffset`
 - **Required**: No
 - **Description**: Additional pixel offset to apply after alignment. Useful for fine-tuning the exact position where items are dropped.
 
 ```tsx
 // Drop items 10px to the right and 5px down from the center
-<Droppable 
+<Droppable
   onDrop={handleDrop}
   dropAlignment="center"
   dropOffset={{ x: 10, y: 5 }}
@@ -160,36 +157,35 @@ Available alignments:
 ### Visual Feedback Props
 
 #### activeStyle
+
 - **Type**: `StyleProp<ViewStyle>`
 - **Required**: No
 - **Description**: Style to apply when a draggable item is hovering over this droppable. This provides visual feedback to users about valid drop targets.
 
 ```tsx
 const activeStyle = {
-  backgroundColor: 'rgba(0, 255, 0, 0.2)',
-  borderColor: '#00ff00',
+  backgroundColor: "rgba(0, 255, 0, 0.2)",
+  borderColor: "#00ff00",
   borderWidth: 2,
-  transform: [{ scale: 1.05 }]
+  transform: [{ scale: 1.05 }],
 };
 
-<Droppable 
-  onDrop={handleDrop}
-  activeStyle={activeStyle}
->
+<Droppable onDrop={handleDrop} activeStyle={activeStyle}>
   <Text>Visual feedback drop zone</Text>
-</Droppable>
+</Droppable>;
 ```
 
 ### Capacity Props
 
 #### capacity
+
 - **Type**: `number`
 - **Default**: `1`
 - **Description**: Maximum number of items that can be dropped on this droppable. When capacity is reached, additional items cannot be dropped here.
 
 ```tsx
 // Allow up to 5 items in this drop zone
-<Droppable 
+<Droppable
   onDrop={handleDrop}
   capacity={5}
 >
@@ -197,7 +193,7 @@ const activeStyle = {
 </Droppable>
 
 // Unlimited capacity
-<Droppable 
+<Droppable
   onDrop={handleDrop}
   capacity={Infinity}
 >
@@ -210,11 +206,11 @@ const activeStyle = {
 ### Basic Drop Zone
 
 ```tsx
-import { Droppable } from 'react-native-reanimated-dnd';
+import { Droppable } from "react-native-reanimated-dnd";
 
 function BasicDropZone() {
   const handleDrop = (data) => {
-    console.log('Item dropped:', data);
+    console.log("Item dropped:", data);
     addItemToList(data);
   };
 
@@ -235,34 +231,31 @@ function VisualDropZone() {
   const [isHovered, setIsHovered] = useState(false);
 
   const activeStyle = {
-    backgroundColor: 'rgba(34, 197, 94, 0.2)',
-    borderColor: '#22c55e',
+    backgroundColor: "rgba(34, 197, 94, 0.2)",
+    borderColor: "#22c55e",
     borderWidth: 2,
-    borderStyle: 'dashed',
-    transform: [{ scale: 1.02 }]
+    borderStyle: "dashed",
+    transform: [{ scale: 1.02 }],
   };
 
   return (
     <Droppable
       onDrop={(data) => {
-        console.log('Dropped:', data.name);
+        console.log("Dropped:", data.name);
         processDroppedItem(data);
       }}
       onActiveChange={setIsHovered}
       activeStyle={activeStyle}
       style={styles.dropZone}
     >
-      <View style={[
-        styles.dropContent,
-        isHovered && styles.hoveredContent
-      ]}>
+      <View style={[styles.dropContent, isHovered && styles.hoveredContent]}>
         <Icon
           name={isHovered ? "check-circle" : "plus-circle"}
           size={32}
-          color={isHovered ? '#22c55e' : '#6b7280'}
+          color={isHovered ? "#22c55e" : "#6b7280"}
         />
         <Text style={[styles.dropText, isHovered && styles.activeText]}>
-          {isHovered ? 'Release to drop' : 'Drag items here'}
+          {isHovered ? "Release to drop" : "Drag items here"}
         </Text>
       </View>
     </Droppable>
@@ -291,10 +284,10 @@ function TaskColumn({ status, tasks, onTaskDrop }) {
       capacity={maxTasks}
       dropDisabled={isFull}
       activeStyle={{
-        backgroundColor: 'rgba(59, 130, 246, 0.1)',
-        borderColor: '#3b82f6',
+        backgroundColor: "rgba(59, 130, 246, 0.1)",
+        borderColor: "#3b82f6",
         borderWidth: 2,
-        borderStyle: 'dashed'
+        borderStyle: "dashed",
       }}
       style={[styles.column, isFull && styles.fullColumn]}
     >
@@ -302,21 +295,15 @@ function TaskColumn({ status, tasks, onTaskDrop }) {
         {status.toUpperCase()} ({tasks.length}/{maxTasks})
       </Text>
 
-      {tasks.map(task => (
+      {tasks.map((task) => (
         <TaskCard key={task.id} task={task} />
       ))}
 
       {tasks.length === 0 && (
-        <Text style={styles.emptyText}>
-          Drop tasks here
-        </Text>
+        <Text style={styles.emptyText}>Drop tasks here</Text>
       )}
 
-      {isFull && (
-        <Text style={styles.fullText}>
-          Column is full
-        </Text>
-      )}
+      {isFull && <Text style={styles.fullText}>Column is full</Text>}
     </Droppable>
   );
 }
@@ -331,18 +318,19 @@ function FileUploadZone() {
 
   const handleFileDrop = async (fileData) => {
     // Validate file
-    if (fileData.size > 10000000) { // 10MB limit
-      showError('File size must be under 10MB');
+    if (fileData.size > 10000000) {
+      // 10MB limit
+      showError("File size must be under 10MB");
       return;
     }
 
     setIsUploading(true);
     try {
       await uploadFile(fileData);
-      setUploadedFiles(prev => [...prev, fileData]);
+      setUploadedFiles((prev) => [...prev, fileData]);
       showSuccess(`${fileData.name} uploaded successfully`);
     } catch (error) {
-      showError('Upload failed');
+      showError("Upload failed");
     } finally {
       setIsUploading(false);
     }
@@ -354,32 +342,32 @@ function FileUploadZone() {
       dropDisabled={isUploading}
       capacity={20}
       activeStyle={{
-        backgroundColor: 'rgba(59, 130, 246, 0.1)',
-        borderColor: '#3b82f6',
+        backgroundColor: "rgba(59, 130, 246, 0.1)",
+        borderColor: "#3b82f6",
         borderWidth: 2,
-        borderStyle: 'dashed'
+        borderStyle: "dashed",
       }}
       onActiveChange={(active) => {
         if (active && isUploading) {
-          showTooltip('Upload in progress...');
+          showTooltip("Upload in progress...");
         }
       }}
       style={[styles.uploadZone, isUploading && styles.uploading]}
     >
       <View style={styles.uploadContent}>
-        <Icon 
-          name="cloud-upload" 
-          size={48} 
-          color={isUploading ? "#6b7280" : "#3b82f6"} 
+        <Icon
+          name="cloud-upload"
+          size={48}
+          color={isUploading ? "#6b7280" : "#3b82f6"}
         />
         <Text style={styles.uploadText}>
-          {isUploading ? 'Uploading...' : 'Drop files here'}
+          {isUploading ? "Uploading..." : "Drop files here"}
         </Text>
         <Text style={styles.fileCount}>
           {uploadedFiles.length}/20 files uploaded
         </Text>
-        
-        {uploadedFiles.slice(-3).map(file => (
+
+        {uploadedFiles.slice(-3).map((file) => (
           <View key={file.id} style={styles.recentFile}>
             <Text>{file.name}</Text>
           </View>
@@ -404,8 +392,8 @@ function ConditionalDropZone({ allowedTypes, userRole }) {
     }
 
     // Validate user permissions
-    if (userRole !== 'admin' && data.restricted) {
-      showError('Insufficient permissions');
+    if (userRole !== "admin" && data.restricted) {
+      showError("Insufficient permissions");
       return;
     }
 
@@ -418,7 +406,7 @@ function ConditionalDropZone({ allowedTypes, userRole }) {
       const hoveringItem = getCurrentHoveringItem();
       if (hoveringItem) {
         const isValidType = allowedTypes.includes(hoveringItem.type);
-        const hasPermission = userRole === 'admin' || !hoveringItem.restricted;
+        const hasPermission = userRole === "admin" || !hoveringItem.restricted;
         setValidDrop(isValidType && hasPermission);
       }
     }
@@ -429,23 +417,19 @@ function ConditionalDropZone({ allowedTypes, userRole }) {
       onDrop={handleDrop}
       onActiveChange={handleActiveChange}
       activeStyle={{
-        backgroundColor: validDrop 
-          ? 'rgba(34, 197, 94, 0.2)' 
-          : 'rgba(239, 68, 68, 0.2)',
-        borderColor: validDrop ? '#22c55e' : '#ef4444',
-        borderWidth: 2
+        backgroundColor: validDrop
+          ? "rgba(34, 197, 94, 0.2)"
+          : "rgba(239, 68, 68, 0.2)",
+        borderColor: validDrop ? "#22c55e" : "#ef4444",
+        borderWidth: 2,
       }}
       style={styles.conditionalZone}
     >
       <View style={styles.zoneContent}>
         <Text style={styles.title}>Restricted Drop Zone</Text>
-        <Text style={styles.subtitle}>
-          Accepts: {allowedTypes.join(', ')}
-        </Text>
-        <Text style={styles.permission}>
-          Role: {userRole}
-        </Text>
-        
+        <Text style={styles.subtitle}>Accepts: {allowedTypes.join(", ")}</Text>
+        <Text style={styles.permission}>Role: {userRole}</Text>
+
         {!validDrop && (
           <Text style={styles.errorText}>
             Invalid item or insufficient permissions
@@ -466,23 +450,25 @@ function ShoppingCartDropZone() {
 
   const handleProductDrop = (product) => {
     // Check if item already in cart
-    const existingItem = cartItems.find(item => item.id === product.id);
-    
+    const existingItem = cartItems.find((item) => item.id === product.id);
+
     if (existingItem) {
       // Increase quantity
-      setCartItems(prev => prev.map(item => 
-        item.id === product.id 
-          ? { ...item, quantity: item.quantity + 1 }
-          : item
-      ));
+      setCartItems((prev) =>
+        prev.map((item) =>
+          item.id === product.id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        )
+      );
     } else {
       // Add new item
-      setCartItems(prev => [...prev, { ...product, quantity: 1 }]);
+      setCartItems((prev) => [...prev, { ...product, quantity: 1 }]);
     }
 
     // Update total
-    setTotal(prev => prev + product.price);
-    
+    setTotal((prev) => prev + product.price);
+
     // Show feedback
     showToast(`${product.name} added to cart`);
     hapticFeedback();
@@ -493,10 +479,10 @@ function ShoppingCartDropZone() {
       onDrop={handleProductDrop}
       capacity={50}
       activeStyle={{
-        backgroundColor: 'rgba(34, 197, 94, 0.1)',
-        borderColor: '#22c55e',
+        backgroundColor: "rgba(34, 197, 94, 0.1)",
+        borderColor: "#22c55e",
         borderWidth: 2,
-        transform: [{ scale: 1.02 }]
+        transform: [{ scale: 1.02 }],
       }}
       style={styles.cartZone}
     >
@@ -504,22 +490,16 @@ function ShoppingCartDropZone() {
         <Icon name="shopping-cart" size={24} />
         <Text style={styles.cartTitle}>Shopping Cart</Text>
       </View>
-      
-      <Text style={styles.cartTotal}>
-        Total: ${total.toFixed(2)}
-      </Text>
-      
-      <Text style={styles.itemCount}>
-        {cartItems.length} items
-      </Text>
-      
+
+      <Text style={styles.cartTotal}>Total: ${total.toFixed(2)}</Text>
+
+      <Text style={styles.itemCount}>{cartItems.length} items</Text>
+
       {cartItems.length === 0 ? (
-        <Text style={styles.emptyCart}>
-          Drop products here to add to cart
-        </Text>
+        <Text style={styles.emptyCart}>Drop products here to add to cart</Text>
       ) : (
         <ScrollView style={styles.cartItems}>
-          {cartItems.map(item => (
+          {cartItems.map((item) => (
             <CartItem key={item.id} item={item} />
           ))}
         </ScrollView>
@@ -534,28 +514,32 @@ function ShoppingCartDropZone() {
 ```tsx
 function AlignedDropZones() {
   const alignments = [
-    'top-left', 'top-center', 'top-right',
-    'center-left', 'center', 'center-right',
-    'bottom-left', 'bottom-center', 'bottom-right'
+    "top-left",
+    "top-center",
+    "top-right",
+    "center-left",
+    "center",
+    "center-right",
+    "bottom-left",
+    "bottom-center",
+    "bottom-right",
   ];
 
   return (
     <View style={styles.grid}>
-      {alignments.map(alignment => (
+      {alignments.map((alignment) => (
         <Droppable
           key={alignment}
           onDrop={(data) => console.log(`Dropped at ${alignment}:`, data)}
           dropAlignment={alignment}
           dropOffset={{ x: 5, y: 5 }}
           activeStyle={{
-            backgroundColor: 'rgba(59, 130, 246, 0.2)',
-            borderColor: '#3b82f6'
+            backgroundColor: "rgba(59, 130, 246, 0.2)",
+            borderColor: "#3b82f6",
           }}
           style={styles.alignedZone}
         >
-          <Text style={styles.alignmentLabel}>
-            {alignment}
-          </Text>
+          <Text style={styles.alignmentLabel}>{alignment}</Text>
         </Droppable>
       ))}
     </View>

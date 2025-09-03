@@ -22,10 +22,14 @@ Drag handles allow you to designate specific areas within a draggable component 
 ## Basic Implementation
 
 ```tsx
-import React, { useRef } from 'react';
-import { View, Text, StyleSheet, Alert } from 'react-native';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { DropProvider, Draggable, Droppable } from 'react-native-reanimated-dnd';
+import React, { useRef } from "react";
+import { View, Text, StyleSheet, Alert } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import {
+  DropProvider,
+  Draggable,
+  Droppable,
+} from "react-native-reanimated-dnd";
 
 interface DraggableItemData {
   id: string;
@@ -48,7 +52,10 @@ export function DragHandlesExample() {
             <Droppable<DraggableItemData>
               droppableId="handle-drop-zone"
               onDrop={(data) =>
-                Alert.alert('Item Dropped', `"${data.label}" dropped in handle demo zone`)
+                Alert.alert(
+                  "Item Dropped",
+                  `"${data.label}" dropped in handle demo zone`
+                )
               }
               style={styles.dropZone}
               activeStyle={styles.activeDropZone}
@@ -64,11 +71,11 @@ export function DragHandlesExample() {
             <Draggable<DraggableItemData>
               draggableId="handle-demo-item-1"
               data={{
-                id: 'handle-demo-item-1',
-                label: 'Full Handle Item',
-                backgroundColor: '#2a9d8f',
+                id: "handle-demo-item-1",
+                label: "Full Handle Item",
+                backgroundColor: "#2a9d8f",
               }}
-              style={[styles.draggable, { backgroundColor: '#2a9d8f' }]}
+              style={[styles.draggable, { backgroundColor: "#2a9d8f" }]}
             >
               <Draggable.Handle>
                 <View style={styles.cardContent}>
@@ -82,9 +89,9 @@ export function DragHandlesExample() {
             <Draggable<DraggableItemData>
               draggableId="handle-demo-item-2"
               data={{
-                id: 'handle-demo-item-2',
-                label: 'Handle-Only Item',
-                backgroundColor: '#e9c46a',
+                id: "handle-demo-item-2",
+                label: "Handle-Only Item",
+                backgroundColor: "#e9c46a",
               }}
               style={[styles.draggable, styles.handleOnlyDraggable]}
             >
@@ -103,9 +110,9 @@ export function DragHandlesExample() {
             <Draggable<DraggableItemData>
               draggableId="handle-demo-item-3"
               data={{
-                id: 'handle-demo-item-3',
-                label: 'Card with Header Handle',
-                backgroundColor: '#606c38',
+                id: "handle-demo-item-3",
+                label: "Card with Header Handle",
+                backgroundColor: "#606c38",
               }}
               style={styles.cardDraggable}
             >
@@ -118,8 +125,8 @@ export function DragHandlesExample() {
                 <View style={styles.cardBody}>
                   <Text style={styles.cardBodyTitle}>Card Content</Text>
                   <Text style={styles.cardBodyText}>
-                    This area is not draggable. Only the header can be used
-                    to drag this card.
+                    This area is not draggable. Only the header can be used to
+                    drag this card.
                   </Text>
                 </View>
               </View>
@@ -129,19 +136,25 @@ export function DragHandlesExample() {
           {/* Info */}
           <View style={styles.infoContainer}>
             <View style={styles.infoItem}>
-              <View style={[styles.infoIndicator, { backgroundColor: '#2a9d8f' }]} />
+              <View
+                style={[styles.infoIndicator, { backgroundColor: "#2a9d8f" }]}
+              />
               <Text style={styles.infoText}>
                 Entire component as drag handle - drag from anywhere
               </Text>
             </View>
             <View style={styles.infoItem}>
-              <View style={[styles.infoIndicator, { backgroundColor: '#e9c46a' }]} />
+              <View
+                style={[styles.infoIndicator, { backgroundColor: "#e9c46a" }]}
+              />
               <Text style={styles.infoText}>
                 Specific handle area - only handle responds to drag
               </Text>
             </View>
             <View style={styles.infoItem}>
-              <View style={[styles.infoIndicator, { backgroundColor: '#606c38' }]} />
+              <View
+                style={[styles.infoIndicator, { backgroundColor: "#606c38" }]}
+              />
               <Text style={styles.infoText}>
                 Card with header handle - realistic UI pattern
               </Text>
@@ -156,7 +169,7 @@ export function DragHandlesExample() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000000',
+    backgroundColor: "#000000",
   },
   content: {
     flex: 1,
@@ -164,48 +177,48 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-    textAlign: 'center',
+    fontWeight: "bold",
+    color: "#FFFFFF",
+    textAlign: "center",
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 15,
-    color: '#8E8E93',
-    textAlign: 'center',
+    color: "#8E8E93",
+    textAlign: "center",
     marginBottom: 30,
     lineHeight: 22,
   },
   dropZoneArea: {
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 40,
   },
   dropZone: {
-    width: '80%',
+    width: "80%",
     height: 120,
     borderWidth: 2,
-    borderStyle: 'dashed',
-    borderColor: '#58a6ff',
-    backgroundColor: 'rgba(88, 166, 255, 0.08)',
+    borderStyle: "dashed",
+    borderColor: "#58a6ff",
+    backgroundColor: "rgba(88, 166, 255, 0.08)",
     borderRadius: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: 16,
   },
   activeDropZone: {
-    borderColor: '#FFFFFF',
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderColor: "#FFFFFF",
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
     transform: [{ scale: 1.02 }],
   },
   dropZoneText: {
     fontSize: 16,
-    fontWeight: '600',
-    color: '#FFFFFF',
+    fontWeight: "600",
+    color: "#FFFFFF",
     marginBottom: 4,
   },
   dropZoneSubtext: {
     fontSize: 12,
-    color: '#8E8E93',
+    color: "#8E8E93",
   },
   draggableItemsArea: {
     gap: 20,
@@ -215,48 +228,48 @@ const styles = StyleSheet.create({
     width: 160,
     height: 100,
     borderRadius: 12,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 6,
     elevation: 8,
-    alignSelf: 'center',
+    alignSelf: "center",
   },
   handleOnlyDraggable: {
-    backgroundColor: '#e9c46a',
+    backgroundColor: "#e9c46a",
     padding: 0,
   },
   cardDraggable: {
     width: 200,
-    backgroundColor: '#ffffff',
+    backgroundColor: "#ffffff",
     borderRadius: 12,
-    overflow: 'hidden',
-    shadowColor: '#000',
+    overflow: "hidden",
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 3,
-    alignSelf: 'center',
+    alignSelf: "center",
   },
   cardContent: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: 12,
   },
   cardLabel: {
     fontSize: 16,
-    fontWeight: 'bold',
-    color: '#000000',
+    fontWeight: "bold",
+    color: "#000000",
     marginBottom: 4,
   },
   cardHint: {
     fontSize: 12,
-    color: '#333333',
-    textAlign: 'center',
+    color: "#333333",
+    textAlign: "center",
   },
   dragHandle: {
-    backgroundColor: 'rgba(0, 0, 0, 0.1)',
+    backgroundColor: "rgba(0, 0, 0, 0.1)",
     borderRadius: 8,
     paddingVertical: 8,
     paddingHorizontal: 16,
@@ -264,50 +277,50 @@ const styles = StyleSheet.create({
   },
   handleText: {
     fontSize: 12,
-    fontWeight: 'bold',
-    color: '#333333',
-    textAlign: 'center',
+    fontWeight: "bold",
+    color: "#333333",
+    textAlign: "center",
   },
   cardWithHeader: {
     flex: 1,
   },
   cardHeader: {
-    backgroundColor: '#606c38',
+    backgroundColor: "#606c38",
     paddingVertical: 12,
     paddingHorizontal: 16,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   cardHeaderText: {
     fontSize: 16,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
+    fontWeight: "bold",
+    color: "#FFFFFF",
   },
   cardHeaderIcon: {
     fontSize: 16,
-    color: '#FFFFFF',
+    color: "#FFFFFF",
   },
   cardBody: {
     padding: 16,
   },
   cardBodyTitle: {
     fontSize: 14,
-    fontWeight: '600',
-    color: '#000000',
+    fontWeight: "600",
+    color: "#000000",
     marginBottom: 8,
   },
   cardBodyText: {
     fontSize: 12,
-    color: '#666666',
+    color: "#666666",
     lineHeight: 16,
   },
   infoContainer: {
     gap: 12,
   },
   infoItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 12,
   },
   infoIndicator: {
@@ -317,7 +330,7 @@ const styles = StyleSheet.create({
   },
   infoText: {
     fontSize: 14,
-    color: '#8E8E93',
+    color: "#8E8E93",
     flex: 1,
   },
 });
@@ -347,7 +360,7 @@ When you want only specific areas to initiate dragging:
 <Draggable data={itemData}>
   <View style={styles.itemContainer}>
     <Text>This text is not draggable</Text>
-    
+
     <Draggable.Handle style={styles.handle}>
       <Text>Only this area can drag</Text>
     </Draggable.Handle>
@@ -365,11 +378,11 @@ You can have multiple handle areas within a single draggable:
     <Draggable.Handle style={styles.topHandle}>
       <Text>Top Handle</Text>
     </Draggable.Handle>
-    
+
     <View style={styles.content}>
       <Text>Non-draggable content</Text>
     </View>
-    
+
     <Draggable.Handle style={styles.bottomHandle}>
       <Text>Bottom Handle</Text>
     </Draggable.Handle>
@@ -398,7 +411,7 @@ You can have multiple handle areas within a single draggable:
       <Text style={styles.headerTitle}>Card Title</Text>
       <Text style={styles.dragIcon}>⬌</Text>
     </Draggable.Handle>
-    
+
     <View style={styles.cardContent}>
       <Text>Card content that's not draggable</Text>
     </View>
@@ -414,7 +427,7 @@ You can have multiple handle areas within a single draggable:
     <Draggable.Handle style={styles.sideHandle}>
       <View style={styles.handleBar} />
     </Draggable.Handle>
-    
+
     <View style={styles.itemContent}>
       <Text>Item content</Text>
     </View>
@@ -438,7 +451,7 @@ function ConditionalHandleDraggable({ isEditing, data }) {
         ) : (
           <Text>View mode - not draggable</Text>
         )}
-        
+
         <View style={styles.content}>
           <Text>{data.title}</Text>
         </View>
@@ -453,26 +466,26 @@ function ConditionalHandleDraggable({ isEditing, data }) {
 ```tsx
 const handleStyles = StyleSheet.create({
   modernHandle: {
-    backgroundColor: '#f0f0f0',
+    backgroundColor: "#f0f0f0",
     borderRadius: 8,
     padding: 12,
     borderLeftWidth: 4,
-    borderLeftColor: '#007AFF',
+    borderLeftColor: "#007AFF",
   },
   minimalistHandle: {
     width: 24,
     height: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.1)',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.1)",
     borderRadius: 12,
   },
   prominentHandle: {
-    backgroundColor: '#007AFF',
+    backgroundColor: "#007AFF",
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 20,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,

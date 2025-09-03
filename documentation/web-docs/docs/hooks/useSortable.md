@@ -13,8 +13,8 @@ This hook works in conjunction with `useSortableList` to provide a complete sort
 ## Basic Usage
 
 ```tsx
-import { useSortable } from 'react-native-reanimated-dnd';
-import { PanGestureHandler } from 'react-native-gesture-handler';
+import { useSortable } from "react-native-reanimated-dnd";
+import { PanGestureHandler } from "react-native-gesture-handler";
 
 function SortableTaskItem({ task, positions, ...sortableProps }) {
   const { animatedStyle, panGestureHandler, isMoving } = useSortable({
@@ -24,7 +24,7 @@ function SortableTaskItem({ task, positions, ...sortableProps }) {
     onMove: (id, from, to) => {
       console.log(`Task ${id} moved from ${from} to ${to}`);
       reorderTasks(id, from, to);
-    }
+    },
   });
 
   return (
@@ -43,21 +43,21 @@ function SortableTaskItem({ task, positions, ...sortableProps }) {
 
 ### UseSortableOptions&lt;T&gt;
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `id` | `string` | **Required** | Unique identifier for the sortable item |
-| `positions` | `SharedValue<{[id: string]: number}>` | **Required** | Shared value tracking item positions |
-| `lowerBound` | `SharedValue<number>` | **Required** | Lower scroll boundary for auto-scroll |
-| `autoScrollDirection` | `SharedValue<ScrollDirection>` | **Required** | Auto-scroll direction state |
-| `itemsCount` | `number` | **Required** | Total number of items in the list |
-| `itemHeight` | `number` | **Required** | Height of each item in pixels |
-| `containerHeight` | `number` | - | Height of the container |
-| `onMove` | `(id: string, from: number, to: number) => void` | - | Callback when item is moved |
-| `onDragStart` | `(id: string, position: number) => void` | - | Callback when dragging starts |
-| `onDrop` | `(id: string, position: number) => void` | - | Callback when dragging ends |
-| `onDragging` | `(id: string, overItemId: string \| null, yPosition: number) => void` | - | Callback during dragging |
-| `children` | `ReactNode` | - | Children for handle detection |
-| `handleComponent` | `ComponentType<any>` | - | Handle component type |
+| Option                | Type                                                                  | Default      | Description                             |
+| --------------------- | --------------------------------------------------------------------- | ------------ | --------------------------------------- |
+| `id`                  | `string`                                                              | **Required** | Unique identifier for the sortable item |
+| `positions`           | `SharedValue<{[id: string]: number}>`                                 | **Required** | Shared value tracking item positions    |
+| `lowerBound`          | `SharedValue<number>`                                                 | **Required** | Lower scroll boundary for auto-scroll   |
+| `autoScrollDirection` | `SharedValue<ScrollDirection>`                                        | **Required** | Auto-scroll direction state             |
+| `itemsCount`          | `number`                                                              | **Required** | Total number of items in the list       |
+| `itemHeight`          | `number`                                                              | **Required** | Height of each item in pixels           |
+| `containerHeight`     | `number`                                                              | -            | Height of the container                 |
+| `onMove`              | `(id: string, from: number, to: number) => void`                      | -            | Callback when item is moved             |
+| `onDragStart`         | `(id: string, position: number) => void`                              | -            | Callback when dragging starts           |
+| `onDrop`              | `(id: string, position: number) => void`                              | -            | Callback when dragging ends             |
+| `onDragging`          | `(id: string, overItemId: string \| null, yPosition: number) => void` | -            | Callback during dragging                |
+| `children`            | `ReactNode`                                                           | -            | Children for handle detection           |
+| `handleComponent`     | `ComponentType<any>`                                                  | -            | Handle component type                   |
 
 ### ScrollDirection Enum
 
@@ -65,7 +65,7 @@ function SortableTaskItem({ task, positions, ...sortableProps }) {
 enum ScrollDirection {
   None = "none",
   Up = "up",
-  Down = "down"
+  Down = "down",
 }
 ```
 
@@ -73,12 +73,12 @@ enum ScrollDirection {
 
 ### UseSortableReturn
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `animatedStyle` | `StyleProp<ViewStyle>` | Animated styles for position and transforms |
-| `panGestureHandler` | `object` | Pan gesture handler props |
-| `isMoving` | `boolean` | Whether the item is currently being dragged |
-| `hasHandle` | `boolean` | Whether the item has a drag handle |
+| Property            | Type                   | Description                                 |
+| ------------------- | ---------------------- | ------------------------------------------- |
+| `animatedStyle`     | `StyleProp<ViewStyle>` | Animated styles for position and transforms |
+| `panGestureHandler` | `object`               | Pan gesture handler props                   |
+| `isMoving`          | `boolean`              | Whether the item is currently being dragged |
+| `hasHandle`         | `boolean`              | Whether the item has a drag handle          |
 
 ## Examples
 
@@ -95,19 +95,19 @@ function TaskItem({ task, positions, ...sortableProps }) {
     ...sortableProps,
     onMove: (id, from, to) => {
       console.log(`Task ${id} moved from position ${from} to ${to}`);
-      
+
       // Update data
       reorderTasks(id, from, to);
-      
+
       // Analytics
-      analytics.track('task_reordered', {
+      analytics.track("task_reordered", {
         taskId: id,
         fromPosition: from,
         toPosition: to,
         taskTitle: task.title,
         dragDuration: Date.now() - dragStartTime,
       });
-      
+
       // Auto-save
       saveTasks();
     },
@@ -115,27 +115,27 @@ function TaskItem({ task, positions, ...sortableProps }) {
       setIsDragging(true);
       setDragStartTime(Date.now());
       hapticFeedback();
-      
+
       console.log(`Started dragging task ${id} at position ${position}`);
-      
+
       // Show global drag feedback
       showDragOverlay(task);
     },
     onDrop: (id, position) => {
       setIsDragging(false);
       hideDragOverlay();
-      
+
       console.log(`Dropped task ${id} at position ${position}`);
-      
+
       // Success feedback
-      showToast('Task reordered successfully');
+      showToast("Task reordered successfully");
     },
     onDragging: (id, overItemId, yPosition) => {
       if (overItemId) {
         // Highlight the item being hovered over
         highlightItem(overItemId);
       }
-      
+
       // Update drag position for global overlay
       updateDragPosition(yPosition);
     },
@@ -144,11 +144,13 @@ function TaskItem({ task, positions, ...sortableProps }) {
   return (
     <PanGestureHandler {...panGestureHandler}>
       <Animated.View style={[styles.taskItem, animatedStyle]}>
-        <View style={[
-          styles.taskContent,
-          isDragging && styles.draggingContent,
-          isMoving && styles.movingContent
-        ]}>
+        <View
+          style={[
+            styles.taskContent,
+            isDragging && styles.draggingContent,
+            isMoving && styles.movingContent,
+          ]}
+        >
           <Text style={styles.taskTitle}>{task.title}</Text>
           <Text style={styles.taskDescription}>{task.description}</Text>
           <View style={styles.taskMeta}>
@@ -172,10 +174,10 @@ const styles = StyleSheet.create({
     marginVertical: 4,
   },
   taskContent: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderRadius: 8,
     padding: 16,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 2,
@@ -185,49 +187,49 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 8,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: "#f8f9fa",
   },
   movingContent: {
     opacity: 0.8,
   },
   taskTitle: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
     marginBottom: 4,
-    color: '#1f2937',
+    color: "#1f2937",
   },
   taskDescription: {
     fontSize: 14,
-    color: '#6b7280',
+    color: "#6b7280",
     marginBottom: 8,
   },
   taskMeta: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   taskPriority: {
     fontSize: 12,
-    fontWeight: 'bold',
-    textTransform: 'uppercase',
-    color: '#ef4444',
+    fontWeight: "bold",
+    textTransform: "uppercase",
+    color: "#ef4444",
   },
   taskDue: {
     fontSize: 12,
-    color: '#9ca3af',
+    color: "#9ca3af",
   },
   dragIndicator: {
-    position: 'absolute',
+    position: "absolute",
     top: 8,
     right: 8,
-    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+    backgroundColor: "rgba(59, 130, 246, 0.1)",
     borderRadius: 4,
     padding: 4,
   },
   dragText: {
     fontSize: 10,
-    color: '#3b82f6',
-    fontWeight: 'bold',
+    color: "#3b82f6",
+    fontWeight: "bold",
   },
 });
 ```
@@ -235,45 +237,44 @@ const styles = StyleSheet.create({
 ### Sortable Item with Drag Handle
 
 ```tsx
-import { SortableHandle } from 'react-native-reanimated-dnd';
+import { SortableHandle } from "react-native-reanimated-dnd";
 
 function TaskWithHandle({ task, positions, ...sortableProps }) {
-  const { animatedStyle, panGestureHandler, hasHandle, isMoving } = useSortable({
-    id: task.id,
-    positions,
-    ...sortableProps,
-    children: (
-      <View style={styles.taskContent}>
-        <View style={styles.taskInfo}>
-          <Text style={styles.taskTitle}>{task.title}</Text>
-          <Text style={styles.taskSubtitle}>{task.subtitle}</Text>
-        </View>
-        <SortableHandle style={styles.dragHandle}>
-          <View style={styles.handleIcon}>
-            <View style={styles.handleDot} />
-            <View style={styles.handleDot} />
-            <View style={styles.handleDot} />
-            <View style={styles.handleDot} />
-            <View style={styles.handleDot} />
-            <View style={styles.handleDot} />
-          </View>
-        </SortableHandle>
-      </View>
-    ),
-  });
-
-  return (
-    <PanGestureHandler {...panGestureHandler}>
-      <Animated.View style={[styles.taskContainer, animatedStyle]}>
-        <View style={[
-          styles.taskContent,
-          isMoving && styles.movingTask
-        ]}>
+  const { animatedStyle, panGestureHandler, hasHandle, isMoving } = useSortable(
+    {
+      id: task.id,
+      positions,
+      ...sortableProps,
+      children: (
+        <View style={styles.taskContent}>
           <View style={styles.taskInfo}>
             <Text style={styles.taskTitle}>{task.title}</Text>
             <Text style={styles.taskSubtitle}>{task.subtitle}</Text>
           </View>
-          
+          <SortableHandle style={styles.dragHandle}>
+            <View style={styles.handleIcon}>
+              <View style={styles.handleDot} />
+              <View style={styles.handleDot} />
+              <View style={styles.handleDot} />
+              <View style={styles.handleDot} />
+              <View style={styles.handleDot} />
+              <View style={styles.handleDot} />
+            </View>
+          </SortableHandle>
+        </View>
+      ),
+    }
+  );
+
+  return (
+    <PanGestureHandler {...panGestureHandler}>
+      <Animated.View style={[styles.taskContainer, animatedStyle]}>
+        <View style={[styles.taskContent, isMoving && styles.movingTask]}>
+          <View style={styles.taskInfo}>
+            <Text style={styles.taskTitle}>{task.title}</Text>
+            <Text style={styles.taskSubtitle}>{task.subtitle}</Text>
+          </View>
+
           {/* Only this handle can initiate dragging */}
           <SortableHandle style={styles.dragHandle}>
             <View style={styles.handleIcon}>
@@ -297,12 +298,12 @@ const styles = StyleSheet.create({
     marginVertical: 4,
   },
   taskContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'white',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "white",
     padding: 16,
     borderRadius: 8,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 2,
@@ -319,13 +320,13 @@ const styles = StyleSheet.create({
   },
   taskTitle: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
     marginBottom: 4,
-    color: '#1f2937',
+    color: "#1f2937",
   },
   taskSubtitle: {
     fontSize: 14,
-    color: '#6b7280',
+    color: "#6b7280",
   },
   dragHandle: {
     padding: 8,
@@ -334,15 +335,15 @@ const styles = StyleSheet.create({
   handleIcon: {
     width: 20,
     height: 20,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    alignContent: 'space-between',
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    alignContent: "space-between",
   },
   handleDot: {
     width: 3,
     height: 3,
-    backgroundColor: '#9ca3af',
+    backgroundColor: "#9ca3af",
     borderRadius: 1.5,
   },
 });
@@ -366,13 +367,13 @@ function AdvancedSortableItem({ item, positions, ...sortableProps }) {
     onMove: (id, from, to) => {
       // Calculate drag distance
       const distance = Math.abs(to - from);
-      setLocalState(prev => ({ ...prev, dragDistance: distance }));
-      
+      setLocalState((prev) => ({ ...prev, dragDistance: distance }));
+
       // Update global state
       dispatch(reorderItems({ id, from, to }));
-      
+
       // Complex analytics
-      analytics.track('item_reordered', {
+      analytics.track("item_reordered", {
         itemId: id,
         fromPosition: from,
         toPosition: to,
@@ -381,7 +382,7 @@ function AdvancedSortableItem({ item, positions, ...sortableProps }) {
         category: item.category,
         timestamp: Date.now(),
       });
-      
+
       // Conditional auto-save based on distance
       if (distance > 2) {
         debouncedSave();
@@ -390,33 +391,33 @@ function AdvancedSortableItem({ item, positions, ...sortableProps }) {
       }
     },
     onDragStart: (id, position) => {
-      setLocalState(prev => ({
+      setLocalState((prev) => ({
         ...prev,
         isDragging: true,
         dragStartPosition: position,
         dragDistance: 0,
       }));
-      
+
       // Global state updates
       dispatch(setDraggedItem(id));
-      
+
       // Haptic feedback based on item type
-      if (item.type === 'important') {
+      if (item.type === "important") {
         strongHapticFeedback();
       } else {
         lightHapticFeedback();
       }
     },
     onDrop: (id, position) => {
-      setLocalState(prev => ({
+      setLocalState((prev) => ({
         ...prev,
         isDragging: false,
         dragStartPosition: null,
       }));
-      
+
       // Clear global drag state
       dispatch(clearDraggedItem());
-      
+
       // Success feedback with position info
       const moved = localState.dragStartPosition !== position;
       if (moved) {
@@ -425,16 +426,16 @@ function AdvancedSortableItem({ item, positions, ...sortableProps }) {
     },
     onDragging: (id, overItemId, yPosition) => {
       // Update hover state
-      setLocalState(prev => ({
+      setLocalState((prev) => ({
         ...prev,
         isHovered: !!overItemId,
       }));
-      
+
       // Real-time position feedback
       if (overItemId) {
         showPositionIndicator(overItemId, yPosition);
       }
-      
+
       // Update global drag position for overlays
       dispatch(updateDragPosition({ itemId: id, yPosition }));
     },
@@ -443,24 +444,24 @@ function AdvancedSortableItem({ item, positions, ...sortableProps }) {
   // Derived state for styling
   const itemStyle = useMemo(() => {
     const baseStyle = [styles.item, animatedStyle];
-    
+
     if (localState.isDragging) {
       baseStyle.push(styles.dragging);
     }
-    
+
     if (localState.isHovered) {
       baseStyle.push(styles.hovered);
     }
-    
+
     if (isMoving) {
       baseStyle.push(styles.moving);
     }
-    
+
     // Style based on item properties
-    if (item.priority === 'high') {
+    if (item.priority === "high") {
       baseStyle.push(styles.highPriority);
     }
-    
+
     return baseStyle;
   }, [animatedStyle, localState, isMoving, item.priority]);
 
@@ -473,14 +474,16 @@ function AdvancedSortableItem({ item, positions, ...sortableProps }) {
             {localState.isDragging && (
               <View style={styles.dragBadge}>
                 <Text style={styles.dragBadgeText}>
-                  {localState.dragDistance > 0 ? `+${localState.dragDistance}` : 'Dragging'}
+                  {localState.dragDistance > 0
+                    ? `+${localState.dragDistance}`
+                    : "Dragging"}
                 </Text>
               </View>
             )}
           </View>
-          
+
           <Text style={styles.itemDescription}>{item.description}</Text>
-          
+
           <View style={styles.itemFooter}>
             <Text style={styles.itemCategory}>{item.category}</Text>
             <Text style={styles.itemPosition}>
@@ -507,9 +510,9 @@ function SortableFileItem({ file, positions, ...sortableProps }) {
     ...sortableProps,
     onMove: (id, from, to) => {
       reorderFiles(id, from, to);
-      
+
       // File-specific analytics
-      analytics.track('file_reordered', {
+      analytics.track("file_reordered", {
         fileId: id,
         fileName: file.name,
         fileType: file.type,
@@ -522,21 +525,31 @@ function SortableFileItem({ file, positions, ...sortableProps }) {
 
   const getFileIcon = (type) => {
     switch (type) {
-      case 'image': return 'image';
-      case 'video': return 'video';
-      case 'audio': return 'music';
-      case 'document': return 'file-text';
-      default: return 'file';
+      case "image":
+        return "image";
+      case "video":
+        return "video";
+      case "audio":
+        return "music";
+      case "document":
+        return "file-text";
+      default:
+        return "file";
     }
   };
 
   const getFileColor = (type) => {
     switch (type) {
-      case 'image': return '#10b981';
-      case 'video': return '#3b82f6';
-      case 'audio': return '#8b5cf6';
-      case 'document': return '#f59e0b';
-      default: return '#6b7280';
+      case "image":
+        return "#10b981";
+      case "video":
+        return "#3b82f6";
+      case "audio":
+        return "#8b5cf6";
+      case "document":
+        return "#f59e0b";
+      default:
+        return "#6b7280";
     }
   };
 
@@ -547,27 +560,25 @@ function SortableFileItem({ file, positions, ...sortableProps }) {
           style={[
             styles.fileContent,
             isSelected && styles.selectedFile,
-            isMoving && styles.movingFile
+            isMoving && styles.movingFile,
           ]}
           onPress={() => setIsSelected(!isSelected)}
           onLongPress={() => setShowPreview(true)}
         >
           <View style={styles.fileIcon}>
-            <Icon 
-              name={getFileIcon(file.type)} 
-              size={24} 
-              color={getFileColor(file.type)} 
+            <Icon
+              name={getFileIcon(file.type)}
+              size={24}
+              color={getFileColor(file.type)}
             />
           </View>
-          
+
           <View style={styles.fileInfo}>
             <Text style={styles.fileName} numberOfLines={1}>
               {file.name}
             </Text>
             <View style={styles.fileDetails}>
-              <Text style={styles.fileSize}>
-                {formatFileSize(file.size)}
-              </Text>
+              <Text style={styles.fileSize}>{formatFileSize(file.size)}</Text>
               <Text style={styles.fileDate}>
                 {formatDate(file.modifiedDate)}
               </Text>
@@ -580,7 +591,7 @@ function SortableFileItem({ file, positions, ...sortableProps }) {
                 <Icon name="check" size={16} color="#3b82f6" />
               </View>
             )}
-            
+
             <SortableHandle style={styles.dragHandle}>
               <Icon name="grip-vertical" size={16} color="#9ca3af" />
             </SortableHandle>
@@ -588,10 +599,7 @@ function SortableFileItem({ file, positions, ...sortableProps }) {
         </Pressable>
 
         {showPreview && (
-          <FilePreview 
-            file={file} 
-            onClose={() => setShowPreview(false)} 
-          />
+          <FilePreview file={file} onClose={() => setShowPreview(false)} />
         )}
       </Animated.View>
     </PanGestureHandler>
@@ -604,20 +612,20 @@ const styles = StyleSheet.create({
     marginVertical: 2,
   },
   fileContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'white',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "white",
     padding: 12,
     borderRadius: 6,
     borderWidth: 1,
-    borderColor: '#e5e7eb',
+    borderColor: "#e5e7eb",
   },
   selectedFile: {
-    backgroundColor: '#eff6ff',
-    borderColor: '#3b82f6',
+    backgroundColor: "#eff6ff",
+    borderColor: "#3b82f6",
   },
   movingFile: {
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
@@ -631,34 +639,34 @@ const styles = StyleSheet.create({
   },
   fileName: {
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: "500",
     marginBottom: 2,
-    color: '#1f2937',
+    color: "#1f2937",
   },
   fileDetails: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 8,
   },
   fileSize: {
     fontSize: 12,
-    color: '#6b7280',
+    color: "#6b7280",
   },
   fileDate: {
     fontSize: 12,
-    color: '#9ca3af',
+    color: "#9ca3af",
   },
   fileActions: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 8,
   },
   selectedIndicator: {
     width: 20,
     height: 20,
     borderRadius: 10,
-    backgroundColor: '#dbeafe',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "#dbeafe",
+    justifyContent: "center",
+    alignItems: "center",
   },
   dragHandle: {
     padding: 4,
@@ -693,20 +701,15 @@ function AnimatedSortableItem({ item, positions, ...sortableProps }) {
   });
 
   const customAnimatedStyle = useAnimatedStyle(() => ({
-    transform: [
-      { scale: scale.value },
-      { rotate: `${rotation.value}deg` },
-    ],
+    transform: [{ scale: scale.value }, { rotate: `${rotation.value}deg` }],
     opacity: opacity.value,
   }));
 
   return (
     <PanGestureHandler {...panGestureHandler}>
-      <Animated.View style={[
-        styles.animatedItem,
-        animatedStyle,
-        customAnimatedStyle
-      ]}>
+      <Animated.View
+        style={[styles.animatedItem, animatedStyle, customAnimatedStyle]}
+      >
         <View style={styles.itemContent}>
           <Text style={styles.itemTitle}>{item.title}</Text>
           <Text style={styles.itemSubtitle}>{item.subtitle}</Text>
@@ -775,7 +778,7 @@ The hook is fully typed with generic support:
 interface TaskData {
   id: string;
   title: string;
-  priority: 'low' | 'medium' | 'high';
+  priority: "low" | "medium" | "high";
   completed: boolean;
 }
 
@@ -806,9 +809,7 @@ function SortableList() {
     <SortableListContainer {...listProps}>
       {items.map((item, index) => {
         const itemProps = getItemProps(item, index);
-        return (
-          <SortableItemComponent key={item.id} {...itemProps} />
-        );
+        return <SortableItemComponent key={item.id} {...itemProps} />;
       })}
     </SortableListContainer>
   );
@@ -820,4 +821,4 @@ function SortableList() {
 - [useSortableList](./useSortableList) - Hook for managing sortable lists
 - [SortableItem Component](../components/sortable-item) - High-level component using this hook
 - [Sortable Component](../components/sortable) - Complete sortable list solution
-- [Examples](../examples/sortable-lists) - More comprehensive examples 
+- [Examples](../examples/sortable-lists) - More comprehensive examples

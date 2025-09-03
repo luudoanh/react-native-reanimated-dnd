@@ -13,7 +13,7 @@ The `useSortable` hook provides the core functionality for individual items with
 ## Import
 
 ```tsx
-import { useSortable } from 'react-native-reanimated-dnd';
+import { useSortable } from "react-native-reanimated-dnd";
 ```
 
 ## Parameters
@@ -23,61 +23,69 @@ import { useSortable } from 'react-native-reanimated-dnd';
 #### Core Parameters
 
 ##### id
+
 - **Type**: `string`
 - **Required**: Yes
 - **Description**: Unique identifier for this sortable item. Used for tracking position and reordering.
 
 ##### positions
+
 - **Type**: `SharedValue<{ [id: string]: number }>`
 - **Required**: Yes
 - **Description**: Shared value containing the position mapping for all items in the sortable list.
 
 ##### itemsCount
+
 - **Type**: `number`
 - **Required**: Yes
 - **Description**: Total number of items in the sortable list.
 
 ##### itemHeight
+
 - **Type**: `number`
 - **Required**: Yes
 - **Description**: Height of each item in pixels. Used for position calculations and animations.
 
 ##### lowerBound
+
 - **Type**: `SharedValue<number>`
 - **Required**: Yes
 - **Description**: Lower boundary for auto-scrolling calculations.
 
 ##### autoScrollDirection
+
 - **Type**: `SharedValue<ScrollDirection>`
 - **Required**: Yes
 - **Description**: Current auto-scroll direction state.
 
 ```tsx
 const { animatedStyle, panGestureHandler } = useSortable({
-  id: 'task-1',
+  id: "task-1",
   positions: positionsSharedValue,
   itemsCount: 10,
   itemHeight: 60,
   lowerBound: scrollBound,
-  autoScrollDirection: scrollDirection
+  autoScrollDirection: scrollDirection,
 });
 ```
 
 #### Optional Parameters
 
 ##### containerHeight
+
 - **Type**: `number`
 - **Required**: No
 - **Description**: Height of the container holding the sortable list. Used for auto-scrolling calculations.
 
 ##### onMove
+
 - **Type**: `(id: string, from: number, to: number) => void`
 - **Required**: No
 - **Description**: Callback fired when the item is moved to a new position.
 
 ```tsx
 const { animatedStyle, panGestureHandler } = useSortable({
-  id: 'task-1',
+  id: "task-1",
   positions,
   itemsCount: 10,
   itemHeight: 60,
@@ -86,31 +94,36 @@ const { animatedStyle, panGestureHandler } = useSortable({
   onMove: (id, from, to) => {
     console.log(`Item ${id} moved from position ${from} to ${to}`);
     reorderItems(id, from, to);
-  }
+  },
 });
 ```
 
 ##### onDragStart
+
 - **Type**: `(id: string, position: number) => void`
 - **Required**: No
 - **Description**: Callback fired when dragging starts.
 
 ##### onDrop
+
 - **Type**: `(id: string, position: number) => void`
 - **Required**: No
 - **Description**: Callback fired when dragging ends.
 
 ##### onDragging
+
 - **Type**: `(id: string, overItemId: string | null, yPosition: number) => void`
 - **Required**: No
 - **Description**: Callback fired continuously while dragging. Provides information about which item is being hovered over.
 
 ##### children
+
 - **Type**: `React.ReactNode`
 - **Required**: No
 - **Description**: Used internally for handle detection. When provided, the hook will scan for handle components.
 
 ##### handleComponent
+
 - **Type**: `React.ComponentType<any>`
 - **Required**: No
 - **Description**: Component type to look for when detecting handles.
@@ -120,6 +133,7 @@ const { animatedStyle, panGestureHandler } = useSortable({
 ### UseSortableReturn
 
 #### animatedStyle
+
 - **Type**: `StyleProp<ViewStyle>`
 - **Description**: Animated styles to apply to the sortable item. Contains position and transformation animations.
 
@@ -136,10 +150,12 @@ return (
 ```
 
 #### panGestureHandler
+
 - **Type**: `any`
 - **Description**: Gesture handler props to spread on PanGestureHandler for handling drag interactions.
 
 #### isMoving
+
 - **Type**: `boolean`
 - **Description**: Whether this item is currently being dragged.
 
@@ -148,12 +164,8 @@ const { animatedStyle, panGestureHandler, isMoving } = useSortable(options);
 
 return (
   <PanGestureHandler {...panGestureHandler}>
-    <Animated.View 
-      style={[
-        styles.item, 
-        animatedStyle,
-        isMoving && styles.dragging
-      ]}
+    <Animated.View
+      style={[styles.item, animatedStyle, isMoving && styles.dragging]}
     >
       <Text>Item content</Text>
     </Animated.View>
@@ -162,6 +174,7 @@ return (
 ```
 
 #### hasHandle
+
 - **Type**: `boolean`
 - **Description**: Whether this sortable item has a handle component. When true, only the handle can initiate dragging.
 
@@ -170,9 +183,9 @@ return (
 ### Basic Sortable Item
 
 ```tsx
-import { useSortable } from 'react-native-reanimated-dnd';
-import { PanGestureHandler } from 'react-native-gesture-handler';
-import Animated from 'react-native-reanimated';
+import { useSortable } from "react-native-reanimated-dnd";
+import { PanGestureHandler } from "react-native-gesture-handler";
+import Animated from "react-native-reanimated";
 
 function SortableTaskItem({ task, positions, ...sortableProps }) {
   const { animatedStyle, panGestureHandler, isMoving } = useSortable({
@@ -186,23 +199,19 @@ function SortableTaskItem({ task, positions, ...sortableProps }) {
     onDragStart: (id, position) => {
       console.log(`Started dragging task ${id} at position ${position}`);
       hapticFeedback();
-    }
+    },
   });
 
   return (
     <PanGestureHandler {...panGestureHandler}>
-      <Animated.View 
-        style={[
-          styles.taskItem, 
-          animatedStyle,
-          isMoving && styles.dragging
-        ]}
+      <Animated.View
+        style={[styles.taskItem, animatedStyle, isMoving && styles.dragging]}
       >
         <Text style={[styles.taskText, isMoving && styles.draggingText]}>
           {task.title}
         </Text>
         <Text style={styles.taskStatus}>
-          {task.completed ? 'Done' : 'Pending'}
+          {task.completed ? "Done" : "Pending"}
         </Text>
       </Animated.View>
     </PanGestureHandler>
@@ -211,11 +220,11 @@ function SortableTaskItem({ task, positions, ...sortableProps }) {
 
 const styles = StyleSheet.create({
   taskItem: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     padding: 16,
     marginVertical: 4,
     borderRadius: 8,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -230,15 +239,15 @@ const styles = StyleSheet.create({
   },
   taskText: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
     marginBottom: 4,
   },
   draggingText: {
-    color: '#007AFF',
+    color: "#007AFF",
   },
   taskStatus: {
     fontSize: 14,
-    color: '#666',
+    color: "#666",
   },
 });
 ```
@@ -247,7 +256,7 @@ const styles = StyleSheet.create({
 
 ```tsx
 function AdvancedSortableItem({ task, positions, ...sortableProps }) {
-  const [dragState, setDragState] = useState('idle'); // idle, dragging, dropped
+  const [dragState, setDragState] = useState("idle"); // idle, dragging, dropped
   const [hoverTarget, setHoverTarget] = useState(null);
 
   const { animatedStyle, panGestureHandler, isMoving } = useSortable({
@@ -255,14 +264,14 @@ function AdvancedSortableItem({ task, positions, ...sortableProps }) {
     positions,
     ...sortableProps,
     onDragStart: (id, position) => {
-      setDragState('dragging');
+      setDragState("dragging");
       hapticFeedback();
-      analytics.track('drag_start', { taskId: id, position });
+      analytics.track("drag_start", { taskId: id, position });
     },
     onDrop: (id, position) => {
-      setDragState('dropped');
-      setTimeout(() => setDragState('idle'), 300);
-      analytics.track('drag_end', { taskId: id, position });
+      setDragState("dropped");
+      setTimeout(() => setDragState("idle"), 300);
+      analytics.track("drag_end", { taskId: id, position });
     },
     onDragging: (id, overItemId, yPosition) => {
       setHoverTarget(overItemId);
@@ -274,33 +283,29 @@ function AdvancedSortableItem({ task, positions, ...sortableProps }) {
     onMove: (id, from, to) => {
       reorderTasks(id, from, to);
       showToast(`Task moved to position ${to + 1}`);
-    }
+    },
   });
 
   return (
     <PanGestureHandler {...panGestureHandler}>
-      <Animated.View 
-        style={[
-          styles.taskItem, 
-          animatedStyle,
-          styles[dragState]
-        ]}
+      <Animated.View
+        style={[styles.taskItem, animatedStyle, styles[dragState]]}
       >
         <View style={styles.taskContent}>
           <Text style={styles.taskTitle}>{task.title}</Text>
           <Text style={styles.taskPriority}>Priority: {task.priority}</Text>
-          
-          {dragState === 'dragging' && (
+
+          {dragState === "dragging" && (
             <Text style={styles.dragIndicator}>
-              {hoverTarget ? `Over: ${hoverTarget}` : 'Dragging...'}
+              {hoverTarget ? `Over: ${hoverTarget}` : "Dragging..."}
             </Text>
           )}
-          
-          {dragState === 'dropped' && (
+
+          {dragState === "dropped" && (
             <Text style={styles.dropIndicator}>Dropped!</Text>
           )}
         </View>
-        
+
         <View style={styles.taskMeta}>
           <Text style={styles.taskId}>#{task.id}</Text>
           <Text style={styles.dragState}>{dragState}</Text>
@@ -332,35 +337,40 @@ function SortableFileItem({ file, positions, ...sortableProps }) {
     onMove: (id, from, to) => {
       reorderFiles(id, from, to);
       showToast(`${file.name} moved`);
-    }
+    },
   });
 
   const formatFileSize = (bytes: number) => {
-    if (bytes === 0) return '0 Bytes';
+    if (bytes === 0) return "0 Bytes";
     const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const sizes = ["Bytes", "KB", "MB", "GB"];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
   };
 
   const getFileIcon = (type: string) => {
     switch (type) {
-      case 'pdf': return '📄';
-      case 'image': return '🖼️';
-      case 'video': return '🎥';
-      case 'audio': return '🎵';
-      default: return '📁';
+      case "pdf":
+        return "📄";
+      case "image":
+        return "🖼️";
+      case "video":
+        return "🎥";
+      case "audio":
+        return "🎵";
+      default:
+        return "📁";
     }
   };
 
   return (
     <PanGestureHandler {...panGestureHandler}>
-      <Animated.View 
+      <Animated.View
         style={[
-          styles.fileItem, 
+          styles.fileItem,
           animatedStyle,
           isSelected && styles.selectedFile,
-          isMoving && styles.movingFile
+          isMoving && styles.movingFile,
         ]}
       >
         <TouchableOpacity
@@ -370,11 +380,12 @@ function SortableFileItem({ file, positions, ...sortableProps }) {
           <View style={styles.fileIcon}>
             <Text style={styles.iconText}>{getFileIcon(file.type)}</Text>
           </View>
-          
+
           <View style={styles.fileInfo}>
             <Text style={styles.fileName}>{file.name}</Text>
             <Text style={styles.fileDetails}>
-              {formatFileSize(file.size)} • {file.lastModified.toLocaleDateString()}
+              {formatFileSize(file.size)} •{" "}
+              {file.lastModified.toLocaleDateString()}
             </Text>
           </View>
 
@@ -410,16 +421,16 @@ function SortablePhotoItem({ photo, positions, ...sortableProps }) {
     },
     onDragStart: () => {
       hapticFeedback();
-    }
+    },
   });
 
   return (
     <PanGestureHandler {...panGestureHandler}>
-      <Animated.View 
+      <Animated.View
         style={[
-          styles.photoItem, 
+          styles.photoItem,
           animatedStyle,
-          isMoving && styles.movingPhoto
+          isMoving && styles.movingPhoto,
         ]}
       >
         <Image
@@ -427,16 +438,16 @@ function SortablePhotoItem({ photo, positions, ...sortableProps }) {
           style={styles.photoImage}
           onLoad={() => setImageLoaded(true)}
         />
-        
+
         {!imageLoaded && (
           <View style={styles.photoPlaceholder}>
             <ActivityIndicator size="small" color="#666" />
           </View>
         )}
-        
+
         <View style={styles.photoOverlay}>
           <Text style={styles.photoTitle}>{photo.title}</Text>
-          
+
           {isMoving && (
             <View style={styles.movingIndicator}>
               <Text style={styles.movingText}>Moving...</Text>
@@ -470,28 +481,19 @@ function AnimatedSortableItem({ item, positions, ...sortableProps }) {
       scale.value = withSpring(1);
       opacity.value = withTiming(1);
       rotation.value = withSpring(0);
-    }
+    },
   });
 
   const customAnimatedStyle = useAnimatedStyle(() => {
     return {
-      transform: [
-        { scale: scale.value },
-        { rotate: `${rotation.value}deg` }
-      ],
+      transform: [{ scale: scale.value }, { rotate: `${rotation.value}deg` }],
       opacity: opacity.value,
     };
   });
 
   return (
     <PanGestureHandler {...panGestureHandler}>
-      <Animated.View 
-        style={[
-          styles.item, 
-          animatedStyle, 
-          customAnimatedStyle
-        ]}
-      >
+      <Animated.View style={[styles.item, animatedStyle, customAnimatedStyle]}>
         <Text style={styles.itemTitle}>{item.title}</Text>
         <Text style={styles.itemDescription}>{item.description}</Text>
       </Animated.View>
@@ -503,27 +505,29 @@ function AnimatedSortableItem({ item, positions, ...sortableProps }) {
 ### Performance Optimized Sortable Item
 
 ```tsx
-const MemoizedSortableItem = React.memo(({ item, positions, ...sortableProps }) => {
-  const { animatedStyle, panGestureHandler, isMoving } = useSortable({
-    id: item.id,
-    positions,
-    ...sortableProps,
-    onMove: useCallback((id, from, to) => {
-      reorderItems(id, from, to);
-    }, []),
-    onDragStart: useCallback((id, position) => {
-      hapticFeedback();
-    }, [])
-  });
+const MemoizedSortableItem = React.memo(
+  ({ item, positions, ...sortableProps }) => {
+    const { animatedStyle, panGestureHandler, isMoving } = useSortable({
+      id: item.id,
+      positions,
+      ...sortableProps,
+      onMove: useCallback((id, from, to) => {
+        reorderItems(id, from, to);
+      }, []),
+      onDragStart: useCallback((id, position) => {
+        hapticFeedback();
+      }, []),
+    });
 
-  return (
-    <PanGestureHandler {...panGestureHandler}>
-      <Animated.View style={[styles.item, animatedStyle]}>
-        <ItemContent item={item} isMoving={isMoving} />
-      </Animated.View>
-    </PanGestureHandler>
-  );
-});
+    return (
+      <PanGestureHandler {...panGestureHandler}>
+        <Animated.View style={[styles.item, animatedStyle]}>
+          <ItemContent item={item} isMoving={isMoving} />
+        </Animated.View>
+      </PanGestureHandler>
+    );
+  }
+);
 
 // Separate memoized content component
 const ItemContent = React.memo(({ item, isMoving }) => (
@@ -537,34 +541,34 @@ const ItemContent = React.memo(({ item, isMoving }) => (
 ### Conditional Sortable Item
 
 ```tsx
-function ConditionalSortableItem({ item, positions, canReorder, ...sortableProps }) {
+function ConditionalSortableItem({
+  item,
+  positions,
+  canReorder,
+  ...sortableProps
+}) {
   const { animatedStyle, panGestureHandler, isMoving } = useSortable({
     id: item.id,
     positions,
     ...sortableProps,
     onDragStart: (id, position) => {
       if (!canReorder) {
-        showError('Reordering is disabled');
+        showError("Reordering is disabled");
         return;
       }
       hapticFeedback();
     },
-    onMove: canReorder ? (id, from, to) => {
-      reorderItems(id, from, to);
-    } : undefined
+    onMove: canReorder
+      ? (id, from, to) => {
+          reorderItems(id, from, to);
+        }
+      : undefined,
   });
 
   return (
-    <PanGestureHandler 
-      {...panGestureHandler}
-      enabled={canReorder}
-    >
-      <Animated.View 
-        style={[
-          styles.item, 
-          animatedStyle,
-          !canReorder && styles.disabled
-        ]}
+    <PanGestureHandler {...panGestureHandler} enabled={canReorder}>
+      <Animated.View
+        style={[styles.item, animatedStyle, !canReorder && styles.disabled]}
       >
         <Text style={styles.itemTitle}>{item.title}</Text>
         {!canReorder && (
@@ -594,7 +598,9 @@ function PositionTrackingSortableItem({ item, positions, ...sortableProps }) {
       setCurrentPosition(position);
     },
     onDragging: (id, overItemId, yPosition) => {
-      const distance = Math.abs(yPosition - (startPosition.current * sortableProps.itemHeight));
+      const distance = Math.abs(
+        yPosition - startPosition.current * sortableProps.itemHeight
+      );
       setDragDistance(distance);
     },
     onMove: (id, from, to) => {
@@ -603,7 +609,7 @@ function PositionTrackingSortableItem({ item, positions, ...sortableProps }) {
     },
     onDrop: () => {
       setDragDistance(0);
-    }
+    },
   });
 
   return (
@@ -634,7 +640,7 @@ The hook is fully typed with generic support:
 interface TaskData {
   id: string;
   title: string;
-  priority: 'low' | 'medium' | 'high';
+  priority: "low" | "medium" | "high";
   completed: boolean;
 }
 
@@ -650,7 +656,7 @@ function TypedSortableItem({ task, positions, ...props }) {
     onDragStart: (id: string, position: number) => {
       // Parameters are typed
       console.log(`Started dragging task ${id} at position ${position}`);
-    }
+    },
   });
 
   return (
@@ -681,7 +687,7 @@ const MemoizedSortableItem = React.memo(({ item, ...props }) => {
   const { animatedStyle, panGestureHandler } = useSortable({
     id: item.id,
     ...props,
-    onMove: handleMove
+    onMove: handleMove,
   });
 
   return (
@@ -712,7 +718,7 @@ function SortableWithHandle({ item, positions, ...props }) {
         </SortableHandle>
       </View>
     ),
-    handleComponent: SortableHandle
+    handleComponent: SortableHandle,
   });
 
   return (
@@ -742,4 +748,4 @@ function SortableWithHandle({ item, positions, ...props }) {
 - [useSortableList Hook](./useSortableList) - List management hook
 - [Sortable Component](../../components/sortable) - Complete sortable list solution
 - [ScrollDirection Enum](../types/enums#scrolldirection) - Auto-scroll direction values
-- [UseSortableOptions Type](../types/sortable-types#usesortableoptionst) - Complete type definitions 
+- [UseSortableOptions Type](../types/sortable-types#usesortableoptionst) - Complete type definitions

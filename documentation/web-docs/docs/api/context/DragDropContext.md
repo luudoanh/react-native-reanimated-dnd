@@ -9,7 +9,7 @@ Complete API reference for the `DragDropContext` (exported as `SlotsContext`).
 ## Import
 
 ```tsx
-import { SlotsContext } from 'react-native-reanimated-dnd';
+import { SlotsContext } from "react-native-reanimated-dnd";
 ```
 
 ## Context Value
@@ -29,12 +29,19 @@ interface SlotsContextValue<TData = unknown> {
   activeHoverSlotId: number | null;
 
   // Position updates
-  registerPositionUpdateListener: (id: string, listener: PositionUpdateListener) => void;
+  registerPositionUpdateListener: (
+    id: string,
+    listener: PositionUpdateListener
+  ) => void;
   unregisterPositionUpdateListener: (id: string) => void;
   requestPositionUpdate: () => void;
 
   // Dropped items management
-  registerDroppedItem: (draggableId: string, droppableId: string, itemData: any) => void;
+  registerDroppedItem: (
+    draggableId: string,
+    droppableId: string,
+    itemData: any
+  ) => void;
   unregisterDroppedItem: (draggableId: string) => void;
   getDroppedItems: () => DroppedItemsMap<any>;
 
@@ -209,11 +216,16 @@ interface DropSlot<TData = unknown> {
 ### DropAlignment
 
 ```tsx
-type DropAlignment = 
-  | 'center'
-  | 'top-left' | 'top-center' | 'top-right'
-  | 'center-left' | 'center-right'
-  | 'bottom-left' | 'bottom-center' | 'bottom-right';
+type DropAlignment =
+  | "center"
+  | "top-left"
+  | "top-center"
+  | "top-right"
+  | "center-left"
+  | "center-right"
+  | "bottom-left"
+  | "bottom-center"
+  | "bottom-right";
 ```
 
 ### DropOffset
@@ -246,11 +258,11 @@ interface DroppedItemsMap<TData = unknown> {
 
 ```tsx
 interface DraggingPayload {
-  x: number;        // Original X position
-  y: number;        // Original Y position  
-  tx: number;       // Current X translation
-  ty: number;       // Current Y translation
-  itemData: any;    // Data associated with the draggable item
+  x: number; // Original X position
+  y: number; // Original Y position
+  tx: number; // Current X translation
+  ty: number; // Current Y translation
+  itemData: any; // Data associated with the draggable item
 }
 ```
 
@@ -259,16 +271,16 @@ interface DraggingPayload {
 ### Accessing the Context
 
 ```tsx
-import { useContext } from 'react';
-import { SlotsContext } from 'react-native-reanimated-dnd';
+import { useContext } from "react";
+import { SlotsContext } from "react-native-reanimated-dnd";
 
 function MyComponent() {
   const context = useContext(SlotsContext);
-  
+
   if (!context) {
-    throw new Error('Component must be used within a DropProvider');
+    throw new Error("Component must be used within a DropProvider");
   }
-  
+
   return <View />;
 }
 ```
@@ -276,16 +288,16 @@ function MyComponent() {
 ### Custom Hook
 
 ```tsx
-import { useContext } from 'react';
-import { SlotsContext } from 'react-native-reanimated-dnd';
+import { useContext } from "react";
+import { SlotsContext } from "react-native-reanimated-dnd";
 
 function useDragDropContext() {
   const context = useContext(SlotsContext);
-  
+
   if (!context) {
-    throw new Error('useDragDropContext must be used within a DropProvider');
+    throw new Error("useDragDropContext must be used within a DropProvider");
   }
-  
+
   return context;
 }
 ```
@@ -302,13 +314,13 @@ function CustomDroppable({ onDrop, children }) {
     const measureAndRegister = () => {
       viewRef.current?.measure((x, y, width, height, pageX, pageY) => {
         context.register(slotId.current, {
-          id: 'custom-drop-zone',
+          id: "custom-drop-zone",
           x: pageX,
           y: pageY,
           width,
           height,
           onDrop,
-          dropAlignment: 'center',
+          dropAlignment: "center",
           capacity: 5,
         });
       });
@@ -331,7 +343,7 @@ function CustomDroppable({ onDrop, children }) {
 ```tsx
 function ActiveStateMonitor() {
   const { activeHoverSlotId, getSlots } = useDragDropContext();
-  
+
   const activeSlot = useMemo(() => {
     if (!activeHoverSlotId) return null;
     const slots = getSlots();
@@ -354,17 +366,18 @@ function ActiveStateMonitor() {
 
 ```tsx
 function ResponsiveComponent() {
-  const { registerPositionUpdateListener, unregisterPositionUpdateListener } = useDragDropContext();
+  const { registerPositionUpdateListener, unregisterPositionUpdateListener } =
+    useDragDropContext();
   const listenerId = useRef(`listener-${Math.random()}`);
 
   useEffect(() => {
     const handlePositionUpdate = () => {
       // Re-measure and update positions
-      console.log('Position update triggered');
+      console.log("Position update triggered");
     };
 
     registerPositionUpdateListener(listenerId.current, handlePositionUpdate);
-    
+
     return () => {
       unregisterPositionUpdateListener(listenerId.current);
     };
@@ -421,11 +434,13 @@ function CapacityChecker({ droppableId }) {
   }, [droppableId, hasAvailableCapacity]);
 
   return (
-    <View style={[
-      styles.indicator,
-      { backgroundColor: canAcceptDrop ? 'green' : 'red' }
-    ]}>
-      <Text>{canAcceptDrop ? 'Available' : 'Full'}</Text>
+    <View
+      style={[
+        styles.indicator,
+        { backgroundColor: canAcceptDrop ? "green" : "red" },
+      ]}
+    >
+      <Text>{canAcceptDrop ? "Available" : "Full"}</Text>
     </View>
   );
 }
@@ -436,10 +451,12 @@ function CapacityChecker({ droppableId }) {
 ### Context Validation
 
 ```tsx
-function validateContext(context: SlotsContextValue | null): asserts context is SlotsContextValue {
+function validateContext(
+  context: SlotsContextValue | null
+): asserts context is SlotsContextValue {
   if (!context) {
     throw new Error(
-      'DragDropContext not found. Make sure your component is wrapped in a DropProvider.'
+      "DragDropContext not found. Make sure your component is wrapped in a DropProvider."
     );
   }
 }
@@ -450,13 +467,13 @@ function validateContext(context: SlotsContextValue | null): asserts context is 
 ```tsx
 function SafeContextConsumer() {
   const context = useContext(SlotsContext);
-  
+
   try {
     validateContext(context);
-    
+
     // Safe to use context methods
     const slots = context.getSlots();
-    
+
     return <View>{/* Your component */}</View>;
   } catch (error) {
     return (
@@ -483,15 +500,15 @@ The context is fully typed with generic support:
 interface TaskData {
   id: string;
   title: string;
-  priority: 'low' | 'medium' | 'high';
+  priority: "low" | "medium" | "high";
 }
 
 function TypedComponent() {
   const context = useContext(SlotsContext) as SlotsContextValue<TaskData>;
-  
+
   // All methods are properly typed
   const droppedItems = context.getDroppedItems();
-  
+
   return <View />;
 }
 ```

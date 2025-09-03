@@ -22,10 +22,14 @@ Sortable lists allow users to reorder items by dragging them to new positions. T
 ## Basic Implementation
 
 ```tsx
-import React, { useState, useCallback } from 'react';
-import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { Sortable, SortableItem, SortableRenderItemProps } from 'react-native-reanimated-dnd';
+import React, { useState, useCallback } from "react";
+import { View, Text, StyleSheet, SafeAreaView } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import {
+  Sortable,
+  SortableItem,
+  SortableRenderItemProps,
+} from "react-native-reanimated-dnd";
 
 interface ListItem {
   id: string;
@@ -36,15 +40,48 @@ interface ListItem {
 
 export function SortableListsExample() {
   const [items] = useState<ListItem[]>([
-    { id: '1', title: 'First Item', subtitle: 'Drag to reorder', color: '#ff6b6b' },
-    { id: '2', title: 'Second Item', subtitle: 'Move me around', color: '#4ecdc4' },
-    { id: '3', title: 'Third Item', subtitle: 'I can be sorted', color: '#45b7d1' },
-    { id: '4', title: 'Fourth Item', subtitle: 'Reorder the list', color: '#96ceb4' },
-    { id: '5', title: 'Fifth Item', subtitle: 'Drag and drop', color: '#feca57' },
+    {
+      id: "1",
+      title: "First Item",
+      subtitle: "Drag to reorder",
+      color: "#ff6b6b",
+    },
+    {
+      id: "2",
+      title: "Second Item",
+      subtitle: "Move me around",
+      color: "#4ecdc4",
+    },
+    {
+      id: "3",
+      title: "Third Item",
+      subtitle: "I can be sorted",
+      color: "#45b7d1",
+    },
+    {
+      id: "4",
+      title: "Fourth Item",
+      subtitle: "Reorder the list",
+      color: "#96ceb4",
+    },
+    {
+      id: "5",
+      title: "Fifth Item",
+      subtitle: "Drag and drop",
+      color: "#feca57",
+    },
   ]);
 
   const renderItem = useCallback((props: SortableRenderItemProps<ListItem>) => {
-    const { item, id, positions, lowerBound, autoScrollDirection, itemsCount, itemHeight } = props;
+    const {
+      item,
+      id,
+      positions,
+      lowerBound,
+      autoScrollDirection,
+      itemsCount,
+      itemHeight,
+    } = props;
 
     return (
       <SortableItem
@@ -62,7 +99,9 @@ export function SortableListsExample() {
           console.log(`Item ${currentId} moved from ${from} to ${to}`);
         }}
         onDragStart={(currentId, position) => {
-          console.log(`Item ${currentId} started dragging from position ${position}`);
+          console.log(
+            `Item ${currentId} started dragging from position ${position}`
+          );
         }}
         onDrop={(currentId, position) => {
           console.log(`Item ${currentId} dropped at position ${position}`);
@@ -90,7 +129,7 @@ export function SortableListsExample() {
         <View style={styles.content}>
           <Text style={styles.title}>Sortable Lists</Text>
           <Text style={styles.subtitle}>Drag items to reorder</Text>
-          
+
           <View style={styles.listContainer}>
             <Sortable
               data={items}
@@ -115,7 +154,7 @@ export function SortableListsExample() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000000',
+    backgroundColor: "#000000",
   },
   content: {
     flex: 1,
@@ -123,15 +162,15 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-    textAlign: 'center',
+    fontWeight: "bold",
+    color: "#FFFFFF",
+    textAlign: "center",
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 16,
-    color: '#8E8E93',
-    textAlign: 'center',
+    color: "#8E8E93",
+    textAlign: "center",
     marginBottom: 30,
   },
   listContainer: {
@@ -145,13 +184,13 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   itemContent: {
-    backgroundColor: '#1a1a1a',
+    backgroundColor: "#1a1a1a",
     borderRadius: 12,
     padding: 16,
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     borderLeftWidth: 4,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -160,53 +199,53 @@ const styles = StyleSheet.create({
   dragHandle: {
     width: 24,
     height: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     marginRight: 12,
   },
   dragIcon: {
-    color: '#58a6ff',
+    color: "#58a6ff",
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   itemText: {
     flex: 1,
   },
   itemTitle: {
-    color: '#FFFFFF',
+    color: "#FFFFFF",
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
     marginBottom: 4,
   },
   itemSubtitle: {
-    color: '#8E8E93',
+    color: "#8E8E93",
     fontSize: 14,
   },
   itemIndex: {
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: '#333333',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "#333333",
+    justifyContent: "center",
+    alignItems: "center",
   },
   indexText: {
-    color: '#FFFFFF',
+    color: "#FFFFFF",
     fontSize: 14,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   infoContainer: {
-    backgroundColor: '#1a1a1a',
+    backgroundColor: "#1a1a1a",
     borderRadius: 12,
     padding: 16,
     borderLeftWidth: 4,
-    borderLeftColor: '#58a6ff',
+    borderLeftColor: "#58a6ff",
   },
   infoText: {
-    color: '#8E8E93',
+    color: "#8E8E93",
     fontSize: 14,
     lineHeight: 20,
-    textAlign: 'center',
+    textAlign: "center",
   },
 });
 ```
@@ -219,10 +258,10 @@ The main container for sortable lists:
 
 ```tsx
 <Sortable
-  data={items}              // Array of items with id field
-  renderItem={renderItem}   // Function to render each item
-  itemHeight={80}          // Fixed height for each item
-  style={styles.list}      // Optional styling
+  data={items} // Array of items with id field
+  renderItem={renderItem} // Function to render each item
+  itemHeight={80} // Fixed height for each item
+  style={styles.list} // Optional styling
 />
 ```
 
@@ -301,7 +340,9 @@ Track sorting events with callbacks:
     // Clean up visual feedback
   }}
   onDragging={(currentId, overItemId, yPosition) => {
-    console.log(`Item ${currentId} is over item ${overItemId} at y: ${yPosition}`);
+    console.log(
+      `Item ${currentId} is over item ${overItemId} at y: ${yPosition}`
+    );
     // Real-time feedback during drag
   }}
 >
@@ -320,7 +361,7 @@ Track sorting events with callbacks:
   renderItem={renderItem}
   itemHeight={80} // All items will occupy 80px of layout space
   style={styles.list}
-/>
+/>;
 
 // ❌ Incorrect: Don't use dynamic heights
 const getItemHeight = (item: Item) => {
@@ -341,39 +382,48 @@ interface TodoItem {
   id: string;
   text: string;
   completed: boolean;
-  priority: 'high' | 'medium' | 'low';
+  priority: "high" | "medium" | "low";
 }
 
 function TodoSortableList() {
   const [todos, setTodos] = useState<TodoItem[]>([
-    { id: '1', text: 'Learn React Native', completed: false, priority: 'high' },
-    { id: '2', text: 'Build awesome app', completed: false, priority: 'medium' },
-    { id: '3', text: 'Deploy to stores', completed: false, priority: 'low' },
+    { id: "1", text: "Learn React Native", completed: false, priority: "high" },
+    {
+      id: "2",
+      text: "Build awesome app",
+      completed: false,
+      priority: "medium",
+    },
+    { id: "3", text: "Deploy to stores", completed: false, priority: "low" },
   ]);
 
-  const renderTodoItem = useCallback((props: SortableRenderItemProps<TodoItem>) => {
-    const { item, id, ...sortableProps } = props;
+  const renderTodoItem = useCallback(
+    (props: SortableRenderItemProps<TodoItem>) => {
+      const { item, id, ...sortableProps } = props;
 
-    return (
-      <SortableItem key={id} id={id} data={item} {...sortableProps}>
-        <View style={styles.todoItem}>
-          <View style={[styles.priorityIndicator, styles[`priority${item.priority}`]]} />
-          <Text style={[styles.todoText, item.completed && styles.completedText]}>
-            {item.text}
-          </Text>
-          <Text style={styles.priorityText}>{item.priority}</Text>
-        </View>
-      </SortableItem>
-    );
-  }, []);
-
-  return (
-    <Sortable
-      data={todos}
-      renderItem={renderTodoItem}
-      itemHeight={60}
-    />
+      return (
+        <SortableItem key={id} id={id} data={item} {...sortableProps}>
+          <View style={styles.todoItem}>
+            <View
+              style={[
+                styles.priorityIndicator,
+                styles[`priority${item.priority}`],
+              ]}
+            />
+            <Text
+              style={[styles.todoText, item.completed && styles.completedText]}
+            >
+              {item.text}
+            </Text>
+            <Text style={styles.priorityText}>{item.priority}</Text>
+          </View>
+        </SortableItem>
+      );
+    },
+    []
   );
+
+  return <Sortable data={todos} renderItem={renderTodoItem} itemHeight={60} />;
 }
 ```
 
@@ -390,37 +440,48 @@ interface Track {
 
 function PlaylistSortableList() {
   const [tracks, setTracks] = useState<Track[]>([
-    { id: '1', title: 'Song 1', artist: 'Artist 1', duration: '3:45', coverUrl: '...' },
-    { id: '2', title: 'Song 2', artist: 'Artist 2', duration: '4:12', coverUrl: '...' },
+    {
+      id: "1",
+      title: "Song 1",
+      artist: "Artist 1",
+      duration: "3:45",
+      coverUrl: "...",
+    },
+    {
+      id: "2",
+      title: "Song 2",
+      artist: "Artist 2",
+      duration: "4:12",
+      coverUrl: "...",
+    },
   ]);
 
-  const renderTrackItem = useCallback((props: SortableRenderItemProps<Track>) => {
-    const { item, id, ...sortableProps } = props;
+  const renderTrackItem = useCallback(
+    (props: SortableRenderItemProps<Track>) => {
+      const { item, id, ...sortableProps } = props;
 
-    return (
-      <SortableItem key={id} id={id} data={item} {...sortableProps}>
-        <View style={styles.trackItem}>
-          <Image source={{ uri: item.coverUrl }} style={styles.coverImage} />
-          <View style={styles.trackInfo}>
-            <Text style={styles.trackTitle}>{item.title}</Text>
-            <Text style={styles.trackArtist}>{item.artist}</Text>
+      return (
+        <SortableItem key={id} id={id} data={item} {...sortableProps}>
+          <View style={styles.trackItem}>
+            <Image source={{ uri: item.coverUrl }} style={styles.coverImage} />
+            <View style={styles.trackInfo}>
+              <Text style={styles.trackTitle}>{item.title}</Text>
+              <Text style={styles.trackArtist}>{item.artist}</Text>
+            </View>
+            <Text style={styles.trackDuration}>{item.duration}</Text>
+
+            <SortableItem.Handle style={styles.dragHandle}>
+              <Text style={styles.dragIcon}>⋮⋮</Text>
+            </SortableItem.Handle>
           </View>
-          <Text style={styles.trackDuration}>{item.duration}</Text>
-          
-          <SortableItem.Handle style={styles.dragHandle}>
-            <Text style={styles.dragIcon}>⋮⋮</Text>
-          </SortableItem.Handle>
-        </View>
-      </SortableItem>
-    );
-  }, []);
+        </SortableItem>
+      );
+    },
+    []
+  );
 
   return (
-    <Sortable
-      data={tracks}
-      renderItem={renderTrackItem}
-      itemHeight={80}
-    />
+    <Sortable data={tracks} renderItem={renderTrackItem} itemHeight={80} />
   );
 }
 ```
@@ -463,33 +524,33 @@ Use memoized callbacks to prevent unnecessary re-renders:
 
 ```tsx
 function OptimizedSortableList() {
-  const handleMove = useCallback((currentId: string, from: number, to: number) => {
-    // Handle move logic
-  }, []);
+  const handleMove = useCallback(
+    (currentId: string, from: number, to: number) => {
+      // Handle move logic
+    },
+    []
+  );
 
   const handleDragStart = useCallback((currentId: string, position: number) => {
     // Handle drag start
   }, []);
 
-  const renderItem = useCallback((props: SortableRenderItemProps<Item>) => {
-    return (
-      <SortableItem
-        {...props}
-        onMove={handleMove}
-        onDragStart={handleDragStart}
-      >
-        {/* Content */}
-      </SortableItem>
-    );
-  }, [handleMove, handleDragStart]);
-
-  return (
-    <Sortable
-      data={items}
-      renderItem={renderItem}
-      itemHeight={80}
-    />
+  const renderItem = useCallback(
+    (props: SortableRenderItemProps<Item>) => {
+      return (
+        <SortableItem
+          {...props}
+          onMove={handleMove}
+          onDragStart={handleDragStart}
+        >
+          {/* Content */}
+        </SortableItem>
+      );
+    },
+    [handleMove, handleDragStart]
   );
+
+  return <Sortable data={items} renderItem={renderItem} itemHeight={80} />;
 }
 ```
 

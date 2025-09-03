@@ -9,26 +9,34 @@ Complete API reference for React Native Reanimated DnD library. This section pro
 ## Quick Navigation
 
 ### 🧩 [Components](./components/draggable)
+
 High-level React components for implementing drag-and-drop functionality:
+
 - **[Draggable](./components/draggable)** - Make any component draggable (includes `Draggable.Handle`)
 - **[Droppable](./components/droppable)** - Create drop zones for draggable items
 - **[Sortable](./components/sortable)** - High-level sortable list component
 - **[SortableItem](./components/sortable-item)** - Individual items in sortable lists (includes `SortableItem.Handle`)
 
 ### 🪝 [Hooks](./hooks/useDraggable)
+
 Low-level hooks for custom implementations:
+
 - **[useDraggable](./hooks/useDraggable)** - Core draggable functionality
 - **[useDroppable](./hooks/useDroppable)** - Core droppable functionality
 - **[useSortable](./hooks/useSortable)** - Individual sortable item logic
 - **[useSortableList](./hooks/useSortableList)** - Sortable list management
 
 ### 🏗️ [Context & Providers](./context/DropProvider)
+
 Context providers and their APIs:
+
 - **[DropProvider](./context/DropProvider)** - Main context provider for drag-and-drop
 - **[DragDropContext](./context/DragDropContext)** - Context value and methods
 
 ### 📝 [Types & Interfaces](./types/draggable-types)
+
 Complete TypeScript definitions:
+
 - **[Draggable Types](./types/draggable-types)** - Types for draggable functionality
 - **[Droppable Types](./types/droppable-types)** - Types for droppable functionality
 - **[Sortable Types](./types/sortable-types)** - Types for sortable functionality
@@ -36,7 +44,9 @@ Complete TypeScript definitions:
 - **[Enums](./types/enums)** - Enumeration definitions
 
 ### 🛠️ [Utilities](./utilities/collision-algorithms)
+
 Helper functions and algorithms:
+
 - **[Collision Algorithms](./utilities/collision-algorithms)** - Collision detection methods
 - **[Animation Functions](./utilities/animation-functions)** - Custom animation utilities
 - **[Helper Functions](./utilities/helper-functions)** - Utility functions
@@ -78,18 +88,22 @@ DropProvider
 ### Basic Usage Pattern
 
 ```tsx
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { DropProvider, Draggable, Droppable } from 'react-native-reanimated-dnd';
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import {
+  DropProvider,
+  Draggable,
+  Droppable,
+} from "react-native-reanimated-dnd";
 
 function App() {
   return (
     <GestureHandlerRootView style={styles.container}>
       <DropProvider>
-        <Draggable data={{ id: '1', name: 'Item 1' }}>
+        <Draggable data={{ id: "1", name: "Item 1" }}>
           <Text>Drag me!</Text>
         </Draggable>
-        
-        <Droppable onDrop={(data) => console.log('Dropped:', data)}>
+
+        <Droppable onDrop={(data) => console.log("Dropped:", data)}>
           <Text>Drop zone</Text>
         </Droppable>
       </DropProvider>
@@ -101,11 +115,15 @@ function App() {
 ### Hook-Based Usage
 
 ```tsx
-import { DropProvider, useDraggable, useDroppable } from 'react-native-reanimated-dnd';
+import {
+  DropProvider,
+  useDraggable,
+  useDroppable,
+} from "react-native-reanimated-dnd";
 
 function CustomDraggable() {
   const { animatedViewProps, gesture } = useDraggable({
-    data: { id: '1', name: 'Custom Item' }
+    data: { id: "1", name: "Custom Item" },
   });
 
   return (
@@ -119,7 +137,7 @@ function CustomDraggable() {
 
 function CustomDroppable() {
   const { viewProps, isActive } = useDroppable({
-    onDrop: (data) => console.log('Dropped:', data)
+    onDrop: (data) => console.log("Dropped:", data),
   });
 
   return (
@@ -140,12 +158,12 @@ The library is fully typed with comprehensive TypeScript support:
 interface TaskData {
   id: string;
   title: string;
-  priority: 'low' | 'medium' | 'high';
+  priority: "low" | "medium" | "high";
 }
 
 // Typed draggable
 const { animatedViewProps } = useDraggable<TaskData>({
-  data: { id: '1', title: 'Task 1', priority: 'high' }
+  data: { id: "1", title: "Task 1", priority: "high" },
 });
 
 // Typed droppable
@@ -153,7 +171,7 @@ const { viewProps } = useDroppable<TaskData>({
   onDrop: (data: TaskData) => {
     // data is properly typed
     console.log(`Dropped task: ${data.title}`);
-  }
+  },
 });
 ```
 
@@ -169,8 +187,8 @@ import type {
   UseDraggableOptions,
   UseDroppableOptions,
   DroppedItemsMap,
-  SlotsContextValue
-} from 'react-native-reanimated-dnd';
+  SlotsContextValue,
+} from "react-native-reanimated-dnd";
 ```
 
 ## Performance Considerations
@@ -197,11 +215,11 @@ import type {
 // Context validation
 function useSafeDragDropContext() {
   const context = useContext(SlotsContext);
-  
+
   if (!context) {
-    throw new Error('Component must be used within a DropProvider');
+    throw new Error("Component must be used within a DropProvider");
   }
-  
+
   return context;
 }
 
@@ -210,7 +228,7 @@ function DragDropErrorBoundary({ children }) {
   return (
     <ErrorBoundary
       fallback={<Text>Drag and drop error occurred</Text>}
-      onError={(error) => console.error('DnD Error:', error)}
+      onError={(error) => console.error("DnD Error:", error)}
     >
       {children}
     </ErrorBoundary>
@@ -231,6 +249,7 @@ If you're migrating from other drag-and-drop libraries:
 ### Version Updates
 
 Check the changelog for breaking changes between versions:
+
 - Type definitions may change
 - Component props may be added/removed
 - Hook return values may be modified
@@ -261,21 +280,25 @@ Check the changelog for breaking changes between versions:
 ## Examples by Use Case
 
 ### Task Management
+
 - Kanban boards with drag-and-drop between columns
 - Priority reordering within lists
 - Task assignment between team members
 
 ### File Management
+
 - File organization with drag-and-drop
 - Folder creation and management
 - Batch operations on multiple files
 
 ### Content Creation
+
 - Layout builders with draggable components
 - Image galleries with reordering
 - Form builders with draggable fields
 
 ### Gaming
+
 - Inventory management systems
 - Puzzle games with draggable pieces
 - Card games with hand management
@@ -305,4 +328,4 @@ Check the changelog for breaking changes between versions:
 
 ---
 
-This API reference provides complete documentation for all library features. Use the navigation above to explore specific components, hooks, and utilities in detail. 
+This API reference provides complete documentation for all library features. Use the navigation above to explore specific components, hooks, and utilities in detail.

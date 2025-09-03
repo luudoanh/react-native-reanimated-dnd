@@ -20,20 +20,20 @@ The DropProvider creates a context that allows draggable and droppable component
 ## Basic Usage
 
 ```tsx
-import { DropProvider } from 'react-native-reanimated-dnd';
-import { Draggable, Droppable } from 'react-native-reanimated-dnd';
+import { DropProvider } from "react-native-reanimated-dnd";
+import { Draggable, Droppable } from "react-native-reanimated-dnd";
 
 function App() {
   return (
     <DropProvider>
       <View style={styles.container}>
-        <Draggable data={{ id: '1', name: 'Task 1' }}>
+        <Draggable data={{ id: "1", name: "Task 1" }}>
           <View style={styles.draggableItem}>
             <Text>Drag me!</Text>
           </View>
         </Draggable>
 
-        <Droppable onDrop={(data) => console.log('Dropped:', data)}>
+        <Droppable onDrop={(data) => console.log("Dropped:", data)}>
           <View style={styles.dropZone}>
             <Text>Drop zone</Text>
           </View>
@@ -51,21 +51,21 @@ const styles = StyleSheet.create({
   draggableItem: {
     width: 100,
     height: 50,
-    backgroundColor: '#3b82f6',
+    backgroundColor: "#3b82f6",
     borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   dropZone: {
     width: 200,
     height: 100,
-    backgroundColor: '#f3f4f6',
+    backgroundColor: "#f3f4f6",
     borderRadius: 8,
     borderWidth: 2,
-    borderStyle: 'dashed',
-    borderColor: '#d1d5db',
-    justifyContent: 'center',
-    alignItems: 'center',
+    borderStyle: "dashed",
+    borderColor: "#d1d5db",
+    justifyContent: "center",
+    alignItems: "center",
     marginTop: 50,
   },
 });
@@ -75,24 +75,24 @@ const styles = StyleSheet.create({
 
 ### DropProviderProps
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `children` | `ReactNode` | **Required** | Child components that will have access to drag-and-drop context |
-| `onLayoutUpdateComplete` | `() => void` | - | Callback fired when layout updates are complete |
-| `onDroppedItemsUpdate` | `(droppedItems: DroppedItemsMap) => void` | - | Callback fired when dropped items mapping changes |
-| `onDragging` | `(payload: DraggingPayload) => void` | - | Global callback fired during drag operations |
-| `onDragStart` | `(data: any) => void` | - | Global callback fired when any drag operation starts |
-| `onDragEnd` | `(data: any) => void` | - | Global callback fired when any drag operation ends |
+| Prop                     | Type                                      | Default      | Description                                                     |
+| ------------------------ | ----------------------------------------- | ------------ | --------------------------------------------------------------- |
+| `children`               | `ReactNode`                               | **Required** | Child components that will have access to drag-and-drop context |
+| `onLayoutUpdateComplete` | `() => void`                              | -            | Callback fired when layout updates are complete                 |
+| `onDroppedItemsUpdate`   | `(droppedItems: DroppedItemsMap) => void` | -            | Callback fired when dropped items mapping changes               |
+| `onDragging`             | `(payload: DraggingPayload) => void`      | -            | Global callback fired during drag operations                    |
+| `onDragStart`            | `(data: any) => void`                     | -            | Global callback fired when any drag operation starts            |
+| `onDragEnd`              | `(data: any) => void`                     | -            | Global callback fired when any drag operation ends              |
 
 ### DraggingPayload
 
 ```tsx
 interface DraggingPayload {
-  x: number;        // Original X position
-  y: number;        // Original Y position  
-  tx: number;       // Current X translation
-  ty: number;       // Current Y translation
-  itemData: any;    // Data associated with the draggable item
+  x: number; // Original X position
+  y: number; // Original Y position
+  tx: number; // Current X translation
+  ty: number; // Current Y translation
+  itemData: any; // Data associated with the draggable item
 }
 ```
 
@@ -120,10 +120,10 @@ interface DropProviderRef {
 }
 ```
 
-| Method | Description |
-|--------|-------------|
+| Method                    | Description                                                     |
+| ------------------------- | --------------------------------------------------------------- |
 | `requestPositionUpdate()` | Manually trigger position updates for all registered components |
-| `getDroppedItems()` | Get current mapping of dropped items |
+| `getDroppedItems()`       | Get current mapping of dropped items                            |
 
 ## Examples
 
@@ -132,56 +132,64 @@ interface DropProviderRef {
 ```tsx
 function TaskManager() {
   const [tasks, setTasks] = useState([
-    { id: '1', title: 'Design UI', status: 'todo' },
-    { id: '2', title: 'Implement API', status: 'todo' },
-    { id: '3', title: 'Write Tests', status: 'todo' },
+    { id: "1", title: "Design UI", status: "todo" },
+    { id: "2", title: "Implement API", status: "todo" },
+    { id: "3", title: "Write Tests", status: "todo" },
   ]);
 
   const [droppedItems, setDroppedItems] = useState({});
 
   const handleDrop = (task, newStatus) => {
-    setTasks(prev => prev.map(t => 
-      t.id === task.id ? { ...t, status: newStatus } : t
-    ));
+    setTasks((prev) =>
+      prev.map((t) => (t.id === task.id ? { ...t, status: newStatus } : t))
+    );
   };
 
   return (
     <DropProvider
       onDroppedItemsUpdate={setDroppedItems}
       onDragStart={(data) => {
-        console.log('Started dragging:', data.title);
+        console.log("Started dragging:", data.title);
         hapticFeedback();
       }}
       onDragEnd={(data) => {
-        console.log('Finished dragging:', data.title);
+        console.log("Finished dragging:", data.title);
       }}
     >
       <View style={styles.container}>
         <Text style={styles.title}>Task Manager</Text>
-        
+
         {/* Draggable Tasks */}
         <View style={styles.tasksContainer}>
-          {tasks.filter(task => task.status === 'todo').map(task => (
-            <Draggable key={task.id} data={task}>
-              <TaskCard task={task} />
-            </Draggable>
-          ))}
+          {tasks
+            .filter((task) => task.status === "todo")
+            .map((task) => (
+              <Draggable key={task.id} data={task}>
+                <TaskCard task={task} />
+              </Draggable>
+            ))}
         </View>
 
         {/* Drop Zones */}
         <View style={styles.columnsContainer}>
-          <Droppable 
+          <Droppable
             droppableId="in-progress"
-            onDrop={(task) => handleDrop(task, 'in-progress')}
+            onDrop={(task) => handleDrop(task, "in-progress")}
           >
-            <Column title="In Progress" tasks={tasks.filter(t => t.status === 'in-progress')} />
+            <Column
+              title="In Progress"
+              tasks={tasks.filter((t) => t.status === "in-progress")}
+            />
           </Droppable>
 
-          <Droppable 
+          <Droppable
             droppableId="done"
-            onDrop={(task) => handleDrop(task, 'done')}
+            onDrop={(task) => handleDrop(task, "done")}
           >
-            <Column title="Done" tasks={tasks.filter(t => t.status === 'done')} />
+            <Column
+              title="Done"
+              tasks={tasks.filter((t) => t.status === "done")}
+            />
           </Droppable>
         </View>
       </View>
@@ -209,8 +217,8 @@ function AdvancedTaskBoard() {
 
   const handleDragStart = useCallback((data) => {
     dragStartTime.current = Date.now();
-    setAnalytics(prev => ({ ...prev, totalDrags: prev.totalDrags + 1 }));
-    
+    setAnalytics((prev) => ({ ...prev, totalDrags: prev.totalDrags + 1 }));
+
     // Global drag start logic
     showDragOverlay(data);
     updateGlobalDragState(true);
@@ -218,11 +226,11 @@ function AdvancedTaskBoard() {
 
   const handleDragEnd = useCallback((data) => {
     const duration = Date.now() - dragStartTime.current;
-    setAnalytics(prev => ({
+    setAnalytics((prev) => ({
       ...prev,
       averageDragDuration: (prev.averageDragDuration + duration) / 2,
     }));
-    
+
     // Global drag end logic
     hideDragOverlay();
     updateGlobalDragState(false);
@@ -231,7 +239,7 @@ function AdvancedTaskBoard() {
   const handleDragging = useCallback(({ x, y, tx, ty, itemData }) => {
     // Real-time position tracking
     updateDragPosition(x + tx, y + ty);
-    
+
     // Update global drag indicator
     updateGlobalDragIndicator({
       position: { x: x + tx, y: y + ty },
@@ -241,11 +249,11 @@ function AdvancedTaskBoard() {
 
   const handleDroppedItemsUpdate = useCallback((droppedItems) => {
     const dropCount = Object.keys(droppedItems).length;
-    setAnalytics(prev => ({ ...prev, totalDrops: dropCount }));
-    
+    setAnalytics((prev) => ({ ...prev, totalDrops: dropCount }));
+
     // Persist state
     saveDroppedItemsToStorage(droppedItems);
-    
+
     // Update global state
     updateGlobalDroppedItems(droppedItems);
   }, []);
@@ -255,7 +263,7 @@ function AdvancedTaskBoard() {
       <DropProvider
         ref={dropProviderRef}
         onLayoutUpdateComplete={() => {
-          console.log('Layout update complete');
+          console.log("Layout update complete");
           // Trigger any additional UI updates
         }}
         onDroppedItemsUpdate={handleDroppedItemsUpdate}
@@ -263,7 +271,7 @@ function AdvancedTaskBoard() {
         onDragEnd={handleDragEnd}
         onDragging={handleDragging}
       >
-        <ScrollView 
+        <ScrollView
           style={styles.scrollView}
           onLayout={handleLayoutChange}
           onContentSizeChange={handleLayoutChange}
@@ -271,7 +279,9 @@ function AdvancedTaskBoard() {
           <View style={styles.analyticsPanel}>
             <Text>Total Drags: {analytics.totalDrags}</Text>
             <Text>Total Drops: {analytics.totalDrops}</Text>
-            <Text>Avg Duration: {Math.round(analytics.averageDragDuration)}ms</Text>
+            <Text>
+              Avg Duration: {Math.round(analytics.averageDragDuration)}ms
+            </Text>
           </View>
 
           <TaskBoard />
@@ -288,15 +298,15 @@ function AdvancedTaskBoard() {
 function FileOrganizer() {
   const [files, setFiles] = useState(initialFiles);
   const [folders, setFolders] = useState([
-    { id: 'documents', name: 'Documents', maxFiles: 10 },
-    { id: 'images', name: 'Images', maxFiles: 20 },
-    { id: 'videos', name: 'Videos', maxFiles: 5 },
+    { id: "documents", name: "Documents", maxFiles: 10 },
+    { id: "images", name: "Images", maxFiles: 20 },
+    { id: "videos", name: "Videos", maxFiles: 5 },
   ]);
 
   const moveFileToFolder = useCallback((file, folderId) => {
-    setFiles(prev => prev.map(f => 
-      f.id === file.id ? { ...f, folderId } : f
-    ));
+    setFiles((prev) =>
+      prev.map((f) => (f.id === file.id ? { ...f, folderId } : f))
+    );
   }, []);
 
   return (
@@ -304,7 +314,7 @@ function FileOrganizer() {
       onDroppedItemsUpdate={(droppedItems) => {
         // Update file locations based on drops
         Object.entries(droppedItems).forEach(([fileId, { droppableId }]) => {
-          const file = files.find(f => f.id === fileId);
+          const file = files.find((f) => f.id === fileId);
           if (file && file.folderId !== droppableId) {
             moveFileToFolder(file, droppableId);
           }
@@ -315,19 +325,21 @@ function FileOrganizer() {
         {/* File List */}
         <View style={styles.fileList}>
           <Text style={styles.sectionTitle}>Files</Text>
-          {files.filter(file => !file.folderId).map(file => (
-            <Draggable key={file.id} data={file}>
-              <FileItem file={file} />
-            </Draggable>
-          ))}
+          {files
+            .filter((file) => !file.folderId)
+            .map((file) => (
+              <Draggable key={file.id} data={file}>
+                <FileItem file={file} />
+              </Draggable>
+            ))}
         </View>
 
         {/* Folder Drop Zones */}
         <View style={styles.foldersContainer}>
-          {folders.map(folder => {
-            const folderFiles = files.filter(f => f.folderId === folder.id);
+          {folders.map((folder) => {
+            const folderFiles = files.filter((f) => f.folderId === folder.id);
             const isAtCapacity = folderFiles.length >= folder.maxFiles;
-            
+
             return (
               <Droppable
                 key={folder.id}
@@ -342,12 +354,12 @@ function FileOrganizer() {
                   }
                 }}
                 activeStyle={{
-                  backgroundColor: isAtCapacity ? '#fee2e2' : '#dcfce7',
-                  borderColor: isAtCapacity ? '#ef4444' : '#22c55e',
+                  backgroundColor: isAtCapacity ? "#fee2e2" : "#dcfce7",
+                  borderColor: isAtCapacity ? "#ef4444" : "#22c55e",
                 }}
               >
-                <FolderDropZone 
-                  folder={folder} 
+                <FolderDropZone
+                  folder={folder}
                   files={folderFiles}
                   isAtCapacity={isAtCapacity}
                 />
@@ -371,14 +383,14 @@ function CollaborativeBoard() {
 
   // WebSocket connection for real-time updates
   useEffect(() => {
-    const ws = new WebSocket('ws://localhost:8080/board');
-    
+    const ws = new WebSocket("ws://localhost:8080/board");
+
     ws.onmessage = (event) => {
       const update = JSON.parse(event.data);
-      if (update.type === 'ITEM_MOVED') {
+      if (update.type === "ITEM_MOVED") {
         // Update local state based on remote changes
         handleRemoteItemMove(update.payload);
-        
+
         // Trigger position update to reflect changes
         dropProviderRef.current?.requestPositionUpdate();
       }
@@ -390,7 +402,7 @@ function CollaborativeBoard() {
   const handleDragStart = useCallback((data) => {
     // Broadcast drag start to other users
     broadcastToCollaborators({
-      type: 'DRAG_START',
+      type: "DRAG_START",
       userId: currentUser.id,
       itemId: data.id,
       timestamp: Date.now(),
@@ -400,7 +412,7 @@ function CollaborativeBoard() {
   const handleDragging = useCallback(({ x, y, tx, ty, itemData }) => {
     // Broadcast real-time position updates
     throttledBroadcast({
-      type: 'DRAGGING',
+      type: "DRAGGING",
       userId: currentUser.id,
       itemId: itemData.id,
       position: { x: x + tx, y: y + ty },
@@ -411,12 +423,12 @@ function CollaborativeBoard() {
   const handleDroppedItemsUpdate = useCallback((droppedItems) => {
     // Broadcast final positions to other users
     broadcastToCollaborators({
-      type: 'ITEMS_UPDATED',
+      type: "ITEMS_UPDATED",
       userId: currentUser.id,
       droppedItems,
       timestamp: Date.now(),
     });
-    
+
     // Save to backend
     saveToBackend(droppedItems);
   }, []);
@@ -428,7 +440,7 @@ function CollaborativeBoard() {
       onDragging={handleDragging}
       onDragEnd={(data) => {
         broadcastToCollaborators({
-          type: 'DRAG_END',
+          type: "DRAG_END",
           userId: currentUser.id,
           itemId: data.id,
           timestamp: Date.now(),
@@ -438,15 +450,15 @@ function CollaborativeBoard() {
     >
       <View style={styles.collaborativeBoard}>
         {/* Show other users' cursors */}
-        {collaborators.map(collaborator => (
-          <CollaboratorCursor 
-            key={collaborator.id} 
-            collaborator={collaborator} 
+        {collaborators.map((collaborator) => (
+          <CollaboratorCursor
+            key={collaborator.id}
+            collaborator={collaborator}
           />
         ))}
 
         {/* Real-time update indicators */}
-        {realTimeUpdates.map(update => (
+        {realTimeUpdates.map((update) => (
           <UpdateIndicator key={update.id} update={update} />
         ))}
 
@@ -462,20 +474,20 @@ function CollaborativeBoard() {
 The DropProvider creates a context that can be accessed by child components:
 
 ```tsx
-import { useContext } from 'react';
-import { SlotsContext } from 'react-native-reanimated-dnd';
+import { useContext } from "react";
+import { SlotsContext } from "react-native-reanimated-dnd";
 
 function CustomComponent() {
   const context = useContext(SlotsContext);
-  
+
   // Access context methods
   const droppedItems = context.getDroppedItems();
-  const hasCapacity = context.hasAvailableCapacity('my-droppable');
-  
+  const hasCapacity = context.hasAvailableCapacity("my-droppable");
+
   return (
     <View>
       <Text>Dropped Items: {Object.keys(droppedItems).length}</Text>
-      <Text>Has Capacity: {hasCapacity ? 'Yes' : 'No'}</Text>
+      <Text>Has Capacity: {hasCapacity ? "Yes" : "No"}</Text>
     </View>
   );
 }
@@ -498,17 +510,15 @@ function OptimizedProvider({ children }) {
   }, []);
 
   const handleDragging = useMemo(
-    () => throttle(({ x, y, tx, ty, itemData }) => {
-      // Throttled dragging updates
-    }, 16), // 60fps
+    () =>
+      throttle(({ x, y, tx, ty, itemData }) => {
+        // Throttled dragging updates
+      }, 16), // 60fps
     []
   );
 
   return (
-    <DropProvider
-      onDragStart={handleDragStart}
-      onDragging={handleDragging}
-    >
+    <DropProvider onDragStart={handleDragStart} onDragging={handleDragging}>
       {children}
     </DropProvider>
   );
@@ -522,9 +532,9 @@ function RobustProvider({ children }) {
   const [error, setError] = useState(null);
 
   const handleError = useCallback((error) => {
-    console.error('Drag and drop error:', error);
+    console.error("Drag and drop error:", error);
     setError(error);
-    
+
     // Report to error tracking service
     errorTracker.captureException(error);
   }, []);
@@ -535,9 +545,7 @@ function RobustProvider({ children }) {
 
   return (
     <ErrorBoundary onError={handleError}>
-      <DropProvider>
-        {children}
-      </DropProvider>
+      <DropProvider>{children}</DropProvider>
     </ErrorBoundary>
   );
 }
@@ -551,17 +559,19 @@ The DropProvider is fully typed with generic support:
 interface TaskData {
   id: string;
   title: string;
-  priority: 'low' | 'medium' | 'high';
+  priority: "low" | "medium" | "high";
 }
 
 function TypedTaskBoard() {
   const handleDroppedItemsUpdate = useCallback(
     (droppedItems: DroppedItemsMap<TaskData>) => {
       // droppedItems is fully typed
-      Object.entries(droppedItems).forEach(([taskId, { data, droppableId }]) => {
-        // data is typed as TaskData
-        console.log(`Task ${data.title} dropped in ${droppableId}`);
-      });
+      Object.entries(droppedItems).forEach(
+        ([taskId, { data, droppableId }]) => {
+          // data is typed as TaskData
+          console.log(`Task ${data.title} dropped in ${droppableId}`);
+        }
+      );
     },
     []
   );

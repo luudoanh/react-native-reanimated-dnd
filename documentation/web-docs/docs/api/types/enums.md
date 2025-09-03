@@ -24,14 +24,17 @@ enum DraggableState {
 ### Values
 
 #### IDLE
+
 - **Value**: `"IDLE"`
 - **Description**: Item is at rest in its original or dropped position. This is the default state when the item is not being interacted with.
 
 #### DRAGGING
+
 - **Value**: `"DRAGGING"`
 - **Description**: Item is currently being dragged by the user. The item is actively following the user's finger/cursor movement.
 
 #### DROPPED
+
 - **Value**: `"DROPPED"`
 - **Description**: Item has been successfully dropped on a valid drop zone. This state is typically brief, as the item usually transitions back to IDLE after the drop animation completes.
 
@@ -40,28 +43,30 @@ enum DraggableState {
 #### State Change Handling
 
 ```tsx
-import { DraggableState } from 'react-native-reanimated-dnd';
+import { DraggableState } from "react-native-reanimated-dnd";
 
 function TaskItem({ task }: { task: TaskData }) {
-  const [currentState, setCurrentState] = useState<DraggableState>(DraggableState.IDLE);
+  const [currentState, setCurrentState] = useState<DraggableState>(
+    DraggableState.IDLE
+  );
 
   const handleStateChange = (state: DraggableState) => {
     setCurrentState(state);
-    
+
     switch (state) {
       case DraggableState.IDLE:
-        console.log('Task is at rest');
+        console.log("Task is at rest");
         setItemOpacity(1.0);
         break;
-        
+
       case DraggableState.DRAGGING:
-        console.log('Task is being dragged');
+        console.log("Task is being dragged");
         setItemOpacity(0.8);
         hapticFeedback();
         break;
-        
+
       case DraggableState.DROPPED:
-        console.log('Task was successfully dropped');
+        console.log("Task was successfully dropped");
         showSuccessAnimation();
         playDropSound();
         break;
@@ -69,15 +74,14 @@ function TaskItem({ task }: { task: TaskData }) {
   };
 
   return (
-    <Draggable 
-      data={task} 
-      onStateChange={handleStateChange}
-    >
-      <View style={[
-        styles.taskItem,
-        currentState === DraggableState.DRAGGING && styles.dragging,
-        currentState === DraggableState.DROPPED && styles.dropped
-      ]}>
+    <Draggable data={task} onStateChange={handleStateChange}>
+      <View
+        style={[
+          styles.taskItem,
+          currentState === DraggableState.DRAGGING && styles.dragging,
+          currentState === DraggableState.DROPPED && styles.dropped,
+        ]}
+      >
         <Text>{task.title}</Text>
       </View>
     </Draggable>
@@ -111,13 +115,13 @@ function DraggableCard({ data }: { data: CardData }) {
           {renderStateIndicator()}
           <Text style={styles.title}>{data.title}</Text>
         </View>
-        
+
         {state === DraggableState.DRAGGING && (
           <View style={styles.dragOverlay}>
             <Text style={styles.dragText}>Release to drop</Text>
           </View>
         )}
-        
+
         <Text style={styles.content}>{data.content}</Text>
       </View>
     </Draggable>
@@ -133,42 +137,42 @@ function useAnalytics() {
     totalDrags: 0,
     totalDrops: 0,
     averageDragDuration: 0,
-    stateHistory: [] as Array<{ state: DraggableState; timestamp: number }>
+    stateHistory: [] as Array<{ state: DraggableState; timestamp: number }>,
   });
 
   const trackStateChange = useCallback((state: DraggableState) => {
     const timestamp = Date.now();
-    
-    setAnalytics(prev => {
+
+    setAnalytics((prev) => {
       const newHistory = [...prev.stateHistory, { state, timestamp }];
-      
+
       // Calculate metrics
       let totalDrags = prev.totalDrags;
       let totalDrops = prev.totalDrops;
       let averageDragDuration = prev.averageDragDuration;
-      
+
       if (state === DraggableState.DRAGGING) {
         totalDrags++;
       } else if (state === DraggableState.DROPPED) {
         totalDrops++;
-        
+
         // Calculate drag duration
         const dragStart = newHistory
           .slice()
           .reverse()
-          .find(entry => entry.state === DraggableState.DRAGGING);
-          
+          .find((entry) => entry.state === DraggableState.DRAGGING);
+
         if (dragStart) {
           const duration = timestamp - dragStart.timestamp;
           averageDragDuration = (averageDragDuration + duration) / 2;
         }
       }
-      
+
       return {
         totalDrags,
         totalDrops,
         averageDragDuration,
-        stateHistory: newHistory.slice(-100) // Keep last 100 entries
+        stateHistory: newHistory.slice(-100), // Keep last 100 entries
       };
     });
   }, []);
@@ -192,14 +196,17 @@ enum ScrollDirection {
 ### Values
 
 #### None
+
 - **Value**: `"none"`
 - **Description**: No auto-scrolling is occurring. The dragged item is not near the edges of the scrollable container.
 
 #### Up
+
 - **Value**: `"up"`
 - **Description**: Auto-scrolling upward. The dragged item is near the top edge of the container, triggering automatic upward scrolling.
 
 #### Down
+
 - **Value**: `"down"`
 - **Description**: Auto-scrolling downward. The dragged item is near the bottom edge of the container, triggering automatic downward scrolling.
 
@@ -208,7 +215,7 @@ enum ScrollDirection {
 #### Auto-Scroll Indicator
 
 ```tsx
-import { ScrollDirection } from 'react-native-reanimated-dnd';
+import { ScrollDirection } from "react-native-reanimated-dnd";
 
 function AutoScrollIndicator({ direction }: { direction: ScrollDirection }) {
   if (direction === ScrollDirection.None) {
@@ -216,18 +223,18 @@ function AutoScrollIndicator({ direction }: { direction: ScrollDirection }) {
   }
 
   return (
-    <View style={[
-      styles.scrollIndicator,
-      direction === ScrollDirection.Up ? styles.scrollUp : styles.scrollDown
-    ]}>
-      <Icon 
-        name={direction === ScrollDirection.Up ? "chevron-up" : "chevron-down"} 
-        size={20} 
-        color="#3b82f6" 
+    <View
+      style={[
+        styles.scrollIndicator,
+        direction === ScrollDirection.Up ? styles.scrollUp : styles.scrollDown,
+      ]}
+    >
+      <Icon
+        name={direction === ScrollDirection.Up ? "chevron-up" : "chevron-down"}
+        size={20}
+        color="#3b82f6"
       />
-      <Text style={styles.scrollText}>
-        Auto-scrolling {direction}
-      </Text>
+      <Text style={styles.scrollText}>Auto-scrolling {direction}</Text>
     </View>
   );
 }
@@ -237,15 +244,13 @@ function AutoScrollIndicator({ direction }: { direction: ScrollDirection }) {
 
 ```tsx
 function SortableListWithIndicator() {
-  const [scrollDirection, setScrollDirection] = useState<ScrollDirection>(ScrollDirection.None);
-  
-  const {
-    autoScroll,
-    getItemProps,
-    ...listProps
-  } = useSortableList({
+  const [scrollDirection, setScrollDirection] = useState<ScrollDirection>(
+    ScrollDirection.None
+  );
+
+  const { autoScroll, getItemProps, ...listProps } = useSortableList({
     data: items,
-    itemHeight: 80
+    itemHeight: 80,
   });
 
   // Monitor scroll direction changes
@@ -260,7 +265,7 @@ function SortableListWithIndicator() {
   return (
     <View style={styles.container}>
       <AutoScrollIndicator direction={scrollDirection} />
-      
+
       <Animated.ScrollView {...listProps}>
         <View style={{ height: listProps.contentHeight }}>
           {items.map((item, index) => {
@@ -273,7 +278,7 @@ function SortableListWithIndicator() {
           })}
         </View>
       </Animated.ScrollView>
-      
+
       {scrollDirection !== ScrollDirection.None && (
         <View style={styles.scrollOverlay}>
           <Text>Scrolling {scrollDirection}...</Text>
@@ -288,34 +293,39 @@ function SortableListWithIndicator() {
 
 ```tsx
 function CustomSortableList() {
-  const [scrollDirection, setScrollDirection] = useState<ScrollDirection>(ScrollDirection.None);
+  const [scrollDirection, setScrollDirection] = useState<ScrollDirection>(
+    ScrollDirection.None
+  );
   const [scrollSpeed, setScrollSpeed] = useState(0);
 
-  const handleScrollDirectionChange = useCallback((direction: ScrollDirection) => {
-    setScrollDirection(direction);
-    
-    // Adjust scroll speed based on direction
-    switch (direction) {
-      case ScrollDirection.None:
-        setScrollSpeed(0);
-        break;
-      case ScrollDirection.Up:
-        setScrollSpeed(-50); // Negative for upward
-        break;
-      case ScrollDirection.Down:
-        setScrollSpeed(50); // Positive for downward
-        break;
-    }
-    
-    // Provide haptic feedback
-    if (direction !== ScrollDirection.None) {
-      hapticFeedback('light');
-    }
-  }, []);
+  const handleScrollDirectionChange = useCallback(
+    (direction: ScrollDirection) => {
+      setScrollDirection(direction);
+
+      // Adjust scroll speed based on direction
+      switch (direction) {
+        case ScrollDirection.None:
+          setScrollSpeed(0);
+          break;
+        case ScrollDirection.Up:
+          setScrollSpeed(-50); // Negative for upward
+          break;
+        case ScrollDirection.Down:
+          setScrollSpeed(50); // Positive for downward
+          break;
+      }
+
+      // Provide haptic feedback
+      if (direction !== ScrollDirection.None) {
+        hapticFeedback("light");
+      }
+    },
+    []
+  );
 
   const getScrollIndicatorStyle = () => {
     const baseStyle = styles.scrollIndicator;
-    
+
     switch (scrollDirection) {
       case ScrollDirection.Up:
         return [baseStyle, styles.scrollUp, { opacity: 0.8 }];
@@ -332,7 +342,7 @@ function CustomSortableList() {
         <Text>Auto-scroll: {scrollDirection}</Text>
         <Text>Speed: {Math.abs(scrollSpeed)}px/s</Text>
       </Animated.View>
-      
+
       {/* Your sortable list implementation */}
     </View>
   );
@@ -352,15 +362,15 @@ function useScrollAnalytics() {
       direction: ScrollDirection;
       timestamp: number;
       duration?: number;
-    }>
+    }>,
   });
 
   const trackScrollDirection = useCallback((direction: ScrollDirection) => {
     const timestamp = Date.now();
-    
-    setAnalytics(prev => {
+
+    setAnalytics((prev) => {
       const newHistory = [...prev.scrollHistory];
-      
+
       if (direction === ScrollDirection.None) {
         // End of scroll - calculate duration
         const lastScroll = newHistory[newHistory.length - 1];
@@ -371,23 +381,29 @@ function useScrollAnalytics() {
         // Start of new scroll
         newHistory.push({ direction, timestamp });
       }
-      
+
       // Calculate metrics
       const totalScrollEvents = newHistory.length;
-      const upScrollCount = newHistory.filter(s => s.direction === ScrollDirection.Up).length;
-      const downScrollCount = newHistory.filter(s => s.direction === ScrollDirection.Down).length;
-      
-      const completedScrolls = newHistory.filter(s => s.duration);
-      const averageScrollDuration = completedScrolls.length > 0
-        ? completedScrolls.reduce((sum, s) => sum + (s.duration || 0), 0) / completedScrolls.length
-        : 0;
-      
+      const upScrollCount = newHistory.filter(
+        (s) => s.direction === ScrollDirection.Up
+      ).length;
+      const downScrollCount = newHistory.filter(
+        (s) => s.direction === ScrollDirection.Down
+      ).length;
+
+      const completedScrolls = newHistory.filter((s) => s.duration);
+      const averageScrollDuration =
+        completedScrolls.length > 0
+          ? completedScrolls.reduce((sum, s) => sum + (s.duration || 0), 0) /
+            completedScrolls.length
+          : 0;
+
       return {
         totalScrollEvents,
         upScrollCount,
         downScrollCount,
         averageScrollDuration,
-        scrollHistory: newHistory.slice(-50) // Keep last 50 entries
+        scrollHistory: newHistory.slice(-50), // Keep last 50 entries
       };
     });
   }, []);
@@ -413,7 +429,7 @@ function handleUnknownState(state: unknown) {
     // state is now typed as DraggableState
     console.log(`Valid draggable state: ${state}`);
   } else {
-    console.error('Invalid draggable state:', state);
+    console.error("Invalid draggable state:", state);
   }
 }
 ```
@@ -431,7 +447,7 @@ function handleScrollEvent(direction: unknown) {
     // direction is now typed as ScrollDirection
     updateScrollIndicator(direction);
   } else {
-    console.error('Invalid scroll direction:', direction);
+    console.error("Invalid scroll direction:", direction);
   }
 }
 ```
@@ -447,12 +463,18 @@ const VALID_STATE_TRANSITIONS: Record<DraggableState, DraggableState[]> = {
   [DraggableState.DROPPED]: [DraggableState.IDLE],
 };
 
-function isValidStateTransition(from: DraggableState, to: DraggableState): boolean {
+function isValidStateTransition(
+  from: DraggableState,
+  to: DraggableState
+): boolean {
   return VALID_STATE_TRANSITIONS[from].includes(to);
 }
 
 // Usage
-function validateStateChange(currentState: DraggableState, newState: DraggableState) {
+function validateStateChange(
+  currentState: DraggableState,
+  newState: DraggableState
+) {
   if (!isValidStateTransition(currentState, newState)) {
     console.warn(`Invalid state transition: ${currentState} -> ${newState}`);
     return false;
@@ -465,15 +487,15 @@ function validateStateChange(currentState: DraggableState, newState: DraggableSt
 
 ```tsx
 const STATE_COLORS: Record<DraggableState, string> = {
-  [DraggableState.IDLE]: '#6b7280',
-  [DraggableState.DRAGGING]: '#3b82f6',
-  [DraggableState.DROPPED]: '#22c55e',
+  [DraggableState.IDLE]: "#6b7280",
+  [DraggableState.DRAGGING]: "#3b82f6",
+  [DraggableState.DROPPED]: "#22c55e",
 };
 
 const SCROLL_ICONS: Record<ScrollDirection, string> = {
-  [ScrollDirection.None]: 'minus',
-  [ScrollDirection.Up]: 'chevron-up',
-  [ScrollDirection.Down]: 'chevron-down',
+  [ScrollDirection.None]: "minus",
+  [ScrollDirection.Up]: "chevron-up",
+  [ScrollDirection.Down]: "chevron-down",
 };
 
 // Usage

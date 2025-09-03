@@ -13,14 +13,14 @@ This hook handles the registration of drop zones, collision detection with dragg
 ## Basic Usage
 
 ```tsx
-import { useDroppable } from 'react-native-reanimated-dnd';
+import { useDroppable } from "react-native-reanimated-dnd";
 
 function BasicDropZone() {
   const { viewProps, isActive } = useDroppable({
     onDrop: (data) => {
-      console.log('Item dropped:', data);
+      console.log("Item dropped:", data);
       // Handle the dropped item
-    }
+    },
   });
 
   return (
@@ -29,7 +29,7 @@ function BasicDropZone() {
       style={[
         styles.dropZone,
         viewProps.style, // Important: include the active style
-        isActive && styles.highlighted
+        isActive && styles.highlighted,
       ]}
     >
       <Text>Drop items here</Text>
@@ -42,28 +42,28 @@ function BasicDropZone() {
 
 ### UseDroppableOptions&lt;TData&gt;
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `onDrop` | `(data: TData) => void` | **Required** | Callback when item is dropped |
-| `droppableId` | `string` | auto-generated | Unique identifier for the droppable |
-| `dropDisabled` | `boolean` | `false` | Whether dropping is disabled |
-| `onActiveChange` | `(isActive: boolean) => void` | - | Callback when hover state changes |
-| `dropAlignment` | `DropAlignment` | `'center'` | How dropped items are positioned |
-| `dropOffset` | `DropOffset` | `{ x: 0, y: 0 }` | Additional positioning offset |
-| `activeStyle` | `StyleProp<ViewStyle>` | - | Style applied when item is hovering |
-| `capacity` | `number` | `1` | Maximum items that can be dropped |
+| Option           | Type                          | Default          | Description                         |
+| ---------------- | ----------------------------- | ---------------- | ----------------------------------- |
+| `onDrop`         | `(data: TData) => void`       | **Required**     | Callback when item is dropped       |
+| `droppableId`    | `string`                      | auto-generated   | Unique identifier for the droppable |
+| `dropDisabled`   | `boolean`                     | `false`          | Whether dropping is disabled        |
+| `onActiveChange` | `(isActive: boolean) => void` | -                | Callback when hover state changes   |
+| `dropAlignment`  | `DropAlignment`               | `'center'`       | How dropped items are positioned    |
+| `dropOffset`     | `DropOffset`                  | `{ x: 0, y: 0 }` | Additional positioning offset       |
+| `activeStyle`    | `StyleProp<ViewStyle>`        | -                | Style applied when item is hovering |
+| `capacity`       | `number`                      | `1`              | Maximum items that can be dropped   |
 
 ### DropAlignment Options
 
 ```tsx
-type DropAlignment = 
-  | "center"        // Center of droppable (default)
-  | "top-left"      // Top-left corner
-  | "top-center"    // Top edge, centered horizontally
-  | "top-right"     // Top-right corner
-  | "center-left"   // Left edge, centered vertically
-  | "center-right"  // Right edge, centered vertically
-  | "bottom-left"   // Bottom-left corner
+type DropAlignment =
+  | "center" // Center of droppable (default)
+  | "top-left" // Top-left corner
+  | "top-center" // Top edge, centered horizontally
+  | "top-right" // Top-right corner
+  | "center-left" // Left edge, centered vertically
+  | "center-right" // Right edge, centered vertically
+  | "bottom-left" // Bottom-left corner
   | "bottom-center" // Bottom edge, centered horizontally
   | "bottom-right"; // Bottom-right corner
 ```
@@ -81,13 +81,13 @@ interface DropOffset {
 
 ### UseDroppableReturn
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `viewProps` | `object` | Props to spread on the droppable view |
-| `viewProps.style` | `AnimatedStyle` | Animated styles including active state |
-| `viewProps.onLayout` | `function` | Layout handler for measurements |
-| `isActive` | `boolean` | Whether a draggable is currently hovering |
-| `animatedViewRef` | `AnimatedRef` | Ref for the droppable view |
+| Property             | Type            | Description                               |
+| -------------------- | --------------- | ----------------------------------------- |
+| `viewProps`          | `object`        | Props to spread on the droppable view     |
+| `viewProps.style`    | `AnimatedStyle` | Animated styles including active state    |
+| `viewProps.onLayout` | `function`      | Layout handler for measurements           |
+| `isActive`           | `boolean`       | Whether a draggable is currently hovering |
+| `animatedViewRef`    | `AnimatedRef`   | Ref for the droppable view                |
 
 ## Examples
 
@@ -96,31 +96,31 @@ interface DropOffset {
 ```tsx
 function VisualDropZone() {
   const [droppedItems, setDroppedItems] = useState([]);
-  const [feedbackMessage, setFeedbackMessage] = useState('');
+  const [feedbackMessage, setFeedbackMessage] = useState("");
 
   const { viewProps, isActive } = useDroppable({
     onDrop: (data) => {
-      console.log('Dropped:', data.name);
-      setDroppedItems(prev => [...prev, data]);
+      console.log("Dropped:", data.name);
+      setDroppedItems((prev) => [...prev, data]);
       setFeedbackMessage(`${data.name} added successfully!`);
-      
+
       // Clear message after 2 seconds
-      setTimeout(() => setFeedbackMessage(''), 2000);
+      setTimeout(() => setFeedbackMessage(""), 2000);
     },
     onActiveChange: (active) => {
       if (active) {
-        setFeedbackMessage('Release to drop');
+        setFeedbackMessage("Release to drop");
       } else {
-        setFeedbackMessage('');
+        setFeedbackMessage("");
       }
     },
     activeStyle: {
-      backgroundColor: 'rgba(0, 255, 0, 0.2)',
-      borderColor: '#00ff00',
+      backgroundColor: "rgba(0, 255, 0, 0.2)",
+      borderColor: "#00ff00",
       borderWidth: 2,
-      borderStyle: 'dashed',
-      transform: [{ scale: 1.05 }]
-    }
+      borderStyle: "dashed",
+      transform: [{ scale: 1.05 }],
+    },
   });
 
   return (
@@ -129,10 +129,10 @@ function VisualDropZone() {
         <Icon
           name="cloud-upload"
           size={32}
-          color={isActive ? '#00ff00' : '#666'}
+          color={isActive ? "#00ff00" : "#666"}
         />
         <Text style={[styles.dropText, isActive && styles.activeText]}>
-          {isActive ? 'Release to drop' : 'Drag files here'}
+          {isActive ? "Release to drop" : "Drag files here"}
         </Text>
         {feedbackMessage ? (
           <Text style={styles.feedbackMessage}>{feedbackMessage}</Text>
@@ -151,36 +151,36 @@ const styles = StyleSheet.create({
     height: 150,
     borderRadius: 12,
     borderWidth: 2,
-    borderStyle: 'dashed',
-    borderColor: '#ccc',
-    backgroundColor: '#f9f9f9',
-    justifyContent: 'center',
-    alignItems: 'center',
+    borderStyle: "dashed",
+    borderColor: "#ccc",
+    backgroundColor: "#f9f9f9",
+    justifyContent: "center",
+    alignItems: "center",
   },
   dropContent: {
-    alignItems: 'center',
+    alignItems: "center",
     padding: 20,
   },
   dropText: {
     marginTop: 8,
     fontSize: 14,
-    textAlign: 'center',
-    color: '#666',
+    textAlign: "center",
+    color: "#666",
   },
   activeText: {
-    color: '#00ff00',
-    fontWeight: 'bold',
+    color: "#00ff00",
+    fontWeight: "bold",
   },
   feedbackMessage: {
     marginTop: 4,
     fontSize: 12,
-    color: '#007AFF',
-    fontWeight: 'bold',
+    color: "#007AFF",
+    fontWeight: "bold",
   },
   itemCount: {
     marginTop: 8,
     fontSize: 12,
-    color: '#999',
+    color: "#999",
   },
 });
 ```
@@ -200,11 +200,11 @@ function TaskColumn({ title, status, maxTasks = 5 }) {
         return;
       }
 
-      setTasks(prev => [...prev, task]);
+      setTasks((prev) => [...prev, task]);
       updateTaskStatus(task.id, status);
-      
+
       // Analytics
-      analytics.track('task_moved', {
+      analytics.track("task_moved", {
         taskId: task.id,
         fromStatus: task.status,
         toStatus: status,
@@ -214,17 +214,17 @@ function TaskColumn({ title, status, maxTasks = 5 }) {
     onActiveChange: (active) => {
       setIsOverCapacity(active && tasks.length >= maxTasks);
     },
-    dropAlignment: 'top-center',
+    dropAlignment: "top-center",
     dropOffset: { x: 0, y: 10 },
     capacity: maxTasks,
     activeStyle: {
-      backgroundColor: isOverCapacity 
-        ? 'rgba(239, 68, 68, 0.1)' 
-        : 'rgba(59, 130, 246, 0.1)',
-      borderColor: isOverCapacity ? '#ef4444' : '#3b82f6',
+      backgroundColor: isOverCapacity
+        ? "rgba(239, 68, 68, 0.1)"
+        : "rgba(59, 130, 246, 0.1)",
+      borderColor: isOverCapacity ? "#ef4444" : "#3b82f6",
       borderWidth: 2,
-      borderStyle: 'dashed'
-    }
+      borderStyle: "dashed",
+    },
   });
 
   return (
@@ -232,10 +232,12 @@ function TaskColumn({ title, status, maxTasks = 5 }) {
       <View style={styles.columnHeader}>
         <Text style={styles.columnTitle}>{title}</Text>
         <View style={styles.capacityIndicator}>
-          <Text style={[
-            styles.taskCount,
-            tasks.length >= maxTasks && styles.fullCapacity
-          ]}>
+          <Text
+            style={[
+              styles.taskCount,
+              tasks.length >= maxTasks && styles.fullCapacity,
+            ]}
+          >
             {tasks.length}/{maxTasks}
           </Text>
           {tasks.length >= maxTasks && (
@@ -245,7 +247,7 @@ function TaskColumn({ title, status, maxTasks = 5 }) {
       </View>
 
       <ScrollView style={styles.taskList} showsVerticalScrollIndicator={false}>
-        {tasks.map(task => (
+        {tasks.map((task) => (
           <TaskCard key={task.id} task={task} />
         ))}
       </ScrollView>
@@ -258,15 +260,19 @@ function TaskColumn({ title, status, maxTasks = 5 }) {
       )}
 
       {isActive && (
-        <View style={[
-          styles.dropIndicator,
-          isOverCapacity && styles.errorIndicator
-        ]}>
-          <Text style={[
-            styles.dropIndicatorText,
-            isOverCapacity && styles.errorText
-          ]}>
-            {isOverCapacity ? 'Column is full!' : 'Drop task here'}
+        <View
+          style={[
+            styles.dropIndicator,
+            isOverCapacity && styles.errorIndicator,
+          ]}
+        >
+          <Text
+            style={[
+              styles.dropIndicatorText,
+              isOverCapacity && styles.errorText,
+            ]}
+          >
+            {isOverCapacity ? "Column is full!" : "Drop task here"}
           </Text>
         </View>
       )}
@@ -278,74 +284,74 @@ const styles = StyleSheet.create({
   column: {
     width: 280,
     minHeight: 400,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: "#f8f9fa",
     borderRadius: 8,
     padding: 16,
     margin: 8,
   },
   columnHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 16,
   },
   columnTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: '#1f2937',
+    fontWeight: "bold",
+    color: "#1f2937",
   },
   capacityIndicator: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 4,
   },
   taskCount: {
     fontSize: 14,
-    color: '#6b7280',
-    fontWeight: '500',
+    color: "#6b7280",
+    fontWeight: "500",
   },
   fullCapacity: {
-    color: '#ef4444',
-    fontWeight: 'bold',
+    color: "#ef4444",
+    fontWeight: "bold",
   },
   taskList: {
     flex: 1,
   },
   emptyState: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     opacity: 0.5,
   },
   emptyText: {
     marginTop: 8,
     fontSize: 14,
-    color: '#9ca3af',
+    color: "#9ca3af",
   },
   dropIndicator: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 16,
     left: 16,
     right: 16,
     padding: 12,
-    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+    backgroundColor: "rgba(59, 130, 246, 0.1)",
     borderRadius: 6,
     borderWidth: 1,
-    borderColor: '#3b82f6',
-    borderStyle: 'dashed',
+    borderColor: "#3b82f6",
+    borderStyle: "dashed",
   },
   errorIndicator: {
-    backgroundColor: 'rgba(239, 68, 68, 0.1)',
-    borderColor: '#ef4444',
+    backgroundColor: "rgba(239, 68, 68, 0.1)",
+    borderColor: "#ef4444",
   },
   dropIndicatorText: {
-    textAlign: 'center',
+    textAlign: "center",
     fontSize: 14,
-    color: '#3b82f6',
-    fontWeight: '500',
+    color: "#3b82f6",
+    fontWeight: "500",
   },
   errorText: {
-    color: '#ef4444',
+    color: "#ef4444",
   },
 });
 ```
@@ -357,18 +363,18 @@ function FileUploadZone() {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState([]);
-  const [validationError, setValidationError] = useState('');
+  const [validationError, setValidationError] = useState("");
 
   const validateFile = (fileData) => {
-    const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf'];
+    const allowedTypes = ["image/jpeg", "image/png", "application/pdf"];
     const maxSize = 10 * 1024 * 1024; // 10MB
 
     if (!allowedTypes.includes(fileData.type)) {
-      return 'Only JPEG, PNG, and PDF files are allowed';
+      return "Only JPEG, PNG, and PDF files are allowed";
     }
 
     if (fileData.size > maxSize) {
-      return 'File size must be under 10MB';
+      return "File size must be under 10MB";
     }
 
     return null;
@@ -379,20 +385,20 @@ function FileUploadZone() {
       const error = validateFile(fileData);
       if (error) {
         setValidationError(error);
-        setTimeout(() => setValidationError(''), 3000);
+        setTimeout(() => setValidationError(""), 3000);
         return;
       }
 
       try {
         setIsUploading(true);
         setUploadProgress(0);
-        setValidationError('');
+        setValidationError("");
 
         const result = await uploadFile(fileData, (progress) => {
           setUploadProgress(progress);
         });
 
-        setUploadedFiles(prev => [...prev, result]);
+        setUploadedFiles((prev) => [...prev, result]);
         showSuccess(`${fileData.name} uploaded successfully!`);
       } catch (error) {
         setValidationError(`Upload failed: ${error.message}`);
@@ -404,20 +410,20 @@ function FileUploadZone() {
     dropDisabled: isUploading,
     onActiveChange: (active) => {
       if (active && isUploading) {
-        setValidationError('Upload in progress...');
+        setValidationError("Upload in progress...");
       } else if (!active) {
-        setValidationError('');
+        setValidationError("");
       }
     },
     activeStyle: {
       backgroundColor: isUploading
-        ? 'rgba(239, 68, 68, 0.1)'
-        : 'rgba(34, 197, 94, 0.1)',
-      borderColor: isUploading ? '#ef4444' : '#22c55e',
+        ? "rgba(239, 68, 68, 0.1)"
+        : "rgba(34, 197, 94, 0.1)",
+      borderColor: isUploading ? "#ef4444" : "#22c55e",
       borderWidth: 2,
-      borderStyle: 'dashed',
-      transform: [{ scale: 1.02 }]
-    }
+      borderStyle: "dashed",
+      transform: [{ scale: 1.02 }],
+    },
   });
 
   return (
@@ -427,7 +433,7 @@ function FileUploadZone() {
         style={[
           styles.uploadZone,
           viewProps.style,
-          isUploading && styles.uploading
+          isUploading && styles.uploading,
         ]}
       >
         <View style={styles.uploadContent}>
@@ -436,11 +442,11 @@ function FileUploadZone() {
               <ActivityIndicator size="large" color="#3b82f6" />
               <View style={styles.progressContainer}>
                 <View style={styles.progressBar}>
-                  <View 
+                  <View
                     style={[
                       styles.progressFill,
-                      { width: `${uploadProgress * 100}%` }
-                    ]} 
+                      { width: `${uploadProgress * 100}%` },
+                    ]}
                   />
                 </View>
                 <Text style={styles.progressText}>
@@ -451,13 +457,15 @@ function FileUploadZone() {
             </>
           ) : (
             <>
-              <Icon 
-                name="cloud-upload" 
-                size={48} 
-                color={isActive ? '#22c55e' : '#6b7280'} 
+              <Icon
+                name="cloud-upload"
+                size={48}
+                color={isActive ? "#22c55e" : "#6b7280"}
               />
-              <Text style={[styles.uploadTitle, isActive && styles.activeTitle]}>
-                {isActive ? 'Release to upload' : 'Drop files to upload'}
+              <Text
+                style={[styles.uploadTitle, isActive && styles.activeTitle]}
+              >
+                {isActive ? "Release to upload" : "Drop files to upload"}
               </Text>
               <Text style={styles.uploadSubtitle}>
                 JPEG, PNG, PDF (max 10MB)
@@ -506,32 +514,34 @@ function ShoppingCart() {
 
   const { viewProps, isActive } = useDroppable({
     onDrop: (product) => {
-      const existingItem = cartItems.find(item => item.id === product.id);
-      
+      const existingItem = cartItems.find((item) => item.id === product.id);
+
       if (existingItem) {
         // Increase quantity
-        setCartItems(prev => prev.map(item =>
-          item.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        ));
+        setCartItems((prev) =>
+          prev.map((item) =>
+            item.id === product.id
+              ? { ...item, quantity: item.quantity + 1 }
+              : item
+          )
+        );
       } else {
         // Add new item
-        setCartItems(prev => [...prev, { ...product, quantity: 1 }]);
+        setCartItems((prev) => [...prev, { ...product, quantity: 1 }]);
       }
 
       // Update total
-      setTotal(prev => prev + product.price);
-      
+      setTotal((prev) => prev + product.price);
+
       // Show last added item
       setLastAddedItem(product);
       setTimeout(() => setLastAddedItem(null), 2000);
-      
+
       // Haptic feedback
       hapticFeedback();
-      
+
       // Analytics
-      analytics.track('product_added_to_cart', {
+      analytics.track("product_added_to_cart", {
         productId: product.id,
         productName: product.name,
         price: product.price,
@@ -539,21 +549,21 @@ function ShoppingCart() {
         cartItemCount: cartItems.length + (existingItem ? 0 : 1),
       });
     },
-    dropAlignment: 'center',
+    dropAlignment: "center",
     activeStyle: {
-      backgroundColor: 'rgba(59, 130, 246, 0.1)',
-      borderColor: '#3b82f6',
+      backgroundColor: "rgba(59, 130, 246, 0.1)",
+      borderColor: "#3b82f6",
       borderWidth: 2,
-      borderStyle: 'dashed',
-      transform: [{ scale: 1.05 }]
-    }
+      borderStyle: "dashed",
+      transform: [{ scale: 1.05 }],
+    },
   });
 
   const removeItem = (productId) => {
-    const item = cartItems.find(item => item.id === productId);
+    const item = cartItems.find((item) => item.id === productId);
     if (item) {
-      setTotal(prev => prev - (item.price * item.quantity));
-      setCartItems(prev => prev.filter(item => item.id !== productId));
+      setTotal((prev) => prev - item.price * item.quantity);
+      setCartItems((prev) => prev.filter((item) => item.id !== productId));
     }
   };
 
@@ -563,14 +573,16 @@ function ShoppingCart() {
       return;
     }
 
-    setCartItems(prev => prev.map(item => {
-      if (item.id === productId) {
-        const quantityDiff = newQuantity - item.quantity;
-        setTotal(prevTotal => prevTotal + (item.price * quantityDiff));
-        return { ...item, quantity: newQuantity };
-      }
-      return item;
-    }));
+    setCartItems((prev) =>
+      prev.map((item) => {
+        if (item.id === productId) {
+          const quantityDiff = newQuantity - item.quantity;
+          setTotal((prevTotal) => prevTotal + item.price * quantityDiff);
+          return { ...item, quantity: newQuantity };
+        }
+        return item;
+      })
+    );
   };
 
   return (
@@ -590,14 +602,12 @@ function ShoppingCart() {
       {lastAddedItem && (
         <View style={styles.addedItemNotification}>
           <Icon name="check-circle" size={16} color="#22c55e" />
-          <Text style={styles.addedItemText}>
-            Added {lastAddedItem.name}
-          </Text>
+          <Text style={styles.addedItemText}>Added {lastAddedItem.name}</Text>
         </View>
       )}
 
       <ScrollView style={styles.cartItems} showsVerticalScrollIndicator={false}>
-        {cartItems.map(item => (
+        {cartItems.map((item) => (
           <View key={item.id} style={styles.cartItem}>
             <View style={styles.itemInfo}>
               <Text style={styles.itemName}>{item.name}</Text>
@@ -630,12 +640,8 @@ function ShoppingCart() {
 
       <View style={styles.cartFooter}>
         <View style={styles.cartSummary}>
-          <Text style={styles.itemCount}>
-            {cartItems.length} items
-          </Text>
-          <Text style={styles.total}>
-            Total: ${total.toFixed(2)}
-          </Text>
+          <Text style={styles.itemCount}>{cartItems.length} items</Text>
+          <Text style={styles.total}>Total: ${total.toFixed(2)}</Text>
         </View>
         {cartItems.length > 0 && (
           <Pressable style={styles.checkoutButton}>
@@ -662,11 +668,11 @@ function ShoppingCart() {
 ```tsx
 function ConditionalDropZone({ acceptedTypes, isEnabled, maxItems = 5 }) {
   const [droppedItems, setDroppedItems] = useState([]);
-  const [rejectionReason, setRejectionReason] = useState('');
+  const [rejectionReason, setRejectionReason] = useState("");
 
   const validateDrop = (data) => {
     if (!isEnabled) {
-      return 'Drop zone is currently disabled';
+      return "Drop zone is currently disabled";
     }
 
     if (droppedItems.length >= maxItems) {
@@ -674,11 +680,11 @@ function ConditionalDropZone({ acceptedTypes, isEnabled, maxItems = 5 }) {
     }
 
     if (!acceptedTypes.includes(data.type)) {
-      return `Only ${acceptedTypes.join(', ')} items are accepted`;
+      return `Only ${acceptedTypes.join(", ")} items are accepted`;
     }
 
-    if (droppedItems.some(item => item.id === data.id)) {
-      return 'Item already exists in this zone';
+    if (droppedItems.some((item) => item.id === data.id)) {
+      return "Item already exists in this zone";
     }
 
     return null;
@@ -689,45 +695,45 @@ function ConditionalDropZone({ acceptedTypes, isEnabled, maxItems = 5 }) {
       const error = validateDrop(data);
       if (error) {
         setRejectionReason(error);
-        setTimeout(() => setRejectionReason(''), 3000);
-        
+        setTimeout(() => setRejectionReason(""), 3000);
+
         // Shake animation for rejection
         shakeAnimation();
         return;
       }
 
       // Process valid drop
-      setDroppedItems(prev => [...prev, data]);
-      setRejectionReason('');
-      
+      setDroppedItems((prev) => [...prev, data]);
+      setRejectionReason("");
+
       // Success feedback
       showToast(`${data.name} added successfully`);
     },
     dropDisabled: !isEnabled,
     onActiveChange: (active) => {
       if (active) {
-        const error = validateDrop({ type: 'unknown', id: 'temp' });
-        if (error && error !== 'Item already exists in this zone') {
+        const error = validateDrop({ type: "unknown", id: "temp" });
+        if (error && error !== "Item already exists in this zone") {
           setRejectionReason(error);
         }
       } else {
-        setRejectionReason('');
+        setRejectionReason("");
       }
     },
     activeStyle: {
-      backgroundColor: isEnabled && droppedItems.length < maxItems
-        ? 'rgba(34, 197, 94, 0.1)'
-        : 'rgba(239, 68, 68, 0.1)',
-      borderColor: isEnabled && droppedItems.length < maxItems 
-        ? '#22c55e' 
-        : '#ef4444',
+      backgroundColor:
+        isEnabled && droppedItems.length < maxItems
+          ? "rgba(34, 197, 94, 0.1)"
+          : "rgba(239, 68, 68, 0.1)",
+      borderColor:
+        isEnabled && droppedItems.length < maxItems ? "#22c55e" : "#ef4444",
       borderWidth: 2,
-      borderStyle: 'dashed',
-    }
+      borderStyle: "dashed",
+    },
   });
 
   const removeItem = (itemId) => {
-    setDroppedItems(prev => prev.filter(item => item.id !== itemId));
+    setDroppedItems((prev) => prev.filter((item) => item.id !== itemId));
   };
 
   return (
@@ -738,22 +744,22 @@ function ConditionalDropZone({ acceptedTypes, isEnabled, maxItems = 5 }) {
           styles.conditionalZone,
           viewProps.style,
           !isEnabled && styles.disabled,
-          droppedItems.length >= maxItems && styles.full
+          droppedItems.length >= maxItems && styles.full,
         ]}
       >
         <View style={styles.zoneHeader}>
           <Icon
-            name={isEnabled ? 'check-circle' : 'x-circle'}
+            name={isEnabled ? "check-circle" : "x-circle"}
             size={24}
-            color={isEnabled ? '#22c55e' : '#ef4444'}
+            color={isEnabled ? "#22c55e" : "#ef4444"}
           />
           <Text style={styles.zoneTitle}>
-            {isEnabled ? 'Drop Zone Active' : 'Drop Zone Disabled'}
+            {isEnabled ? "Drop Zone Active" : "Drop Zone Disabled"}
           </Text>
         </View>
 
         <Text style={styles.acceptedTypes}>
-          Accepts: {acceptedTypes.join(', ')}
+          Accepts: {acceptedTypes.join(", ")}
         </Text>
 
         <Text style={styles.capacity}>
@@ -770,7 +776,7 @@ function ConditionalDropZone({ acceptedTypes, isEnabled, maxItems = 5 }) {
         {droppedItems.length > 0 && (
           <View style={styles.itemsList}>
             <Text style={styles.itemsTitle}>Dropped Items:</Text>
-            {droppedItems.map(item => (
+            {droppedItems.map((item) => (
               <View key={item.id} style={styles.droppedItem}>
                 <Text style={styles.itemName}>{item.name}</Text>
                 <Pressable
@@ -786,7 +792,7 @@ function ConditionalDropZone({ acceptedTypes, isEnabled, maxItems = 5 }) {
 
         {droppedItems.length === 0 && !rejectionReason && (
           <Text style={styles.emptyMessage}>
-            {isActive ? 'Release to drop' : 'Drop items here'}
+            {isActive ? "Release to drop" : "Drop items here"}
           </Text>
         )}
       </Animated.View>
@@ -803,19 +809,19 @@ function ConditionalDropZone({ acceptedTypes, isEnabled, maxItems = 5 }) {
 // Center alignment (default)
 const centerDroppable = useDroppable({
   onDrop: handleDrop,
-  dropAlignment: 'center'
+  dropAlignment: "center",
 });
 
 // Top-left corner positioning
 const topLeftDroppable = useDroppable({
   onDrop: handleDrop,
-  dropAlignment: 'top-left'
+  dropAlignment: "top-left",
 });
 
 // Bottom edge, centered horizontally
 const bottomCenterDroppable = useDroppable({
   onDrop: handleDrop,
-  dropAlignment: 'bottom-center'
+  dropAlignment: "bottom-center",
 });
 ```
 
@@ -824,8 +830,8 @@ const bottomCenterDroppable = useDroppable({
 ```tsx
 const preciseDroppable = useDroppable({
   onDrop: handleDrop,
-  dropAlignment: 'top-left',
-  dropOffset: { x: 10, y: 5 } // 10px right, 5px down from top-left
+  dropAlignment: "top-left",
+  dropOffset: { x: 10, y: 5 }, // 10px right, 5px down from top-left
 });
 ```
 
@@ -839,20 +845,23 @@ function LimitedDropZone() {
   const { viewProps, isActive } = useDroppable({
     onDrop: (data) => {
       if (currentItems.length < maxItems) {
-        setCurrentItems(prev => [...prev, data]);
+        setCurrentItems((prev) => [...prev, data]);
       }
     },
     capacity: maxItems,
     activeStyle: {
-      backgroundColor: currentItems.length >= maxItems
-        ? 'rgba(239, 68, 68, 0.1)'
-        : 'rgba(34, 197, 94, 0.1)'
-    }
+      backgroundColor:
+        currentItems.length >= maxItems
+          ? "rgba(239, 68, 68, 0.1)"
+          : "rgba(34, 197, 94, 0.1)",
+    },
   });
 
   return (
     <Animated.View {...viewProps}>
-      <Text>Capacity: {currentItems.length}/{maxItems}</Text>
+      <Text>
+        Capacity: {currentItems.length}/{maxItems}
+      </Text>
     </Animated.View>
   );
 }
@@ -902,4 +911,4 @@ The hook automatically integrates with the drag-and-drop context when used withi
 - [Droppable Component](../components/droppable) - High-level component using this hook
 - [useDraggable](./useDraggable) - Hook for creating draggable items
 - [Basic Concepts](../getting-started/basic-concepts) - Understanding drop alignment and positioning
-- [Examples](../examples/drop-zones) - More comprehensive examples 
+- [Examples](../examples/drop-zones) - More comprehensive examples

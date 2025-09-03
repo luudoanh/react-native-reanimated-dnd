@@ -230,14 +230,6 @@ export const useDroppable = <TData = unknown>(
     onActiveChange?.(isActive);
   }, [isActive, onActiveChange]);
 
-  useEffect(() => {
-    console.log(
-      `Droppable ${id} using string ID: ${stringId}, provided ID: ${
-        droppableId || "none"
-      }`
-    );
-  }, [id, stringId, droppableId]);
-
   const updateDroppablePosition = useCallback(() => {
     runOnUI(() => {
       "worklet";

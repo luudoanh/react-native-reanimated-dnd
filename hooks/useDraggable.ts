@@ -236,7 +236,6 @@ export const useDraggable = <TData = unknown>(
     onDragEnd: contextOnDragEnd,
   } = useContext(SlotsContext) as SlotsContextValue<TData>;
 
-
   useEffect(() => {
     preDragDelayShared.value = preDragDelay;
   }, [preDragDelay, preDragDelayShared]);

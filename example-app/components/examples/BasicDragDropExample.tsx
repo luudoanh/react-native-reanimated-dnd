@@ -106,11 +106,9 @@ export function BasicDragDropExample({ onBack }: BasicDragDropExampleProps) {
                     <Text style={styles.cardHint}>Drag me too!</Text>
                   </View>
                 </Draggable>
-
-     
               </View>
               <View style={styles.draggableItemsArea}>
-              <Draggable<DraggableItemData>
+                <Draggable<DraggableItemData>
                   key="basic-item-3"
                   preDragDelay={200}
                   data={{
@@ -128,7 +126,7 @@ export function BasicDragDropExample({ onBack }: BasicDragDropExampleProps) {
                     },
                   ]}
                 >
-                  <View style={[styles.cardContent, { width: "100%"}]} >
+                  <View style={[styles.cardContent, { width: "100%" }]}>
                     <Text style={styles.cardLabel}>Item 3</Text>
                     <Text style={styles.cardHint}>With delay of 200ms</Text>
                   </View>

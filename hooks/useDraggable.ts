@@ -605,7 +605,7 @@ export const useDraggable = <TData = unknown>(
   const gesture = React.useMemo<GestureType>(
     () =>
       Gesture.Pan()
-        .activateAfterLongPress(preDragDelayShared.value)
+        .activateAfterLongPress(preDragDelayShared)
         // We use onStart to detect the initial drag start after the preDragDelay
         .onStart(() => {
           "worklet";

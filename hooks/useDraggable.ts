@@ -464,10 +464,10 @@ export const useDraggable = <TData = unknown>(
 
       if (hitSlotData && hitSlotId !== null) {
         if (hitSlotData.onDrop) {
-          scheduleOnUI(hitSlotData.onDrop, draggableData);
+          scheduleOnRN(hitSlotData.onDrop, draggableData);
         }
 
-        scheduleOnUI(
+        scheduleOnRN(
           registerDroppedItem,
           internalDraggableId,
           hitSlotData.id,

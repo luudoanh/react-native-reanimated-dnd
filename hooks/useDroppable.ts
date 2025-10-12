@@ -1,22 +1,12 @@
-import React, {
-  useRef,
-  useEffect,
-  useContext,
-  useCallback,
-  useMemo,
-} from "react";
+import { useCallback, useContext, useEffect, useMemo, useRef } from "react";
 import { LayoutChangeEvent, StyleSheet } from "react-native";
-import Animated, {
-  useAnimatedRef,
-  measure,
-  runOnUI,
-  runOnJS,
-} from "react-native-reanimated";
+import Animated, { measure, useAnimatedRef } from "react-native-reanimated";
+import { scheduleOnRN, scheduleOnUI } from "react-native-worklets";
 import {
-  SlotsContext,
-  SlotsContextValue,
   DropAlignment,
   DropOffset,
+  SlotsContext,
+  SlotsContextValue,
 } from "../types/context";
 import { UseDroppableOptions, UseDroppableReturn } from "../types/droppable";
 
@@ -235,8 +225,7 @@ export const useDroppable = <TData = unknown>(
   }, [isActive, onActiveChange]);
 
   const updateDroppablePosition = useCallback(() => {
-    runOnUI(() => {
-      "worklet";
+    scheduleOnUI(() => {
       const measurement = measure(animatedViewRef);
       if (measurement === null) {
         return;
@@ -244,7 +233,7 @@ export const useDroppable = <TData = unknown>(
 
       if (measurement.width > 0 && measurement.height > 0) {
         // Ensure valid dimensions before registering
-        runOnJS(register)(id, {
+        scheduleOnRN(register, id, {
           id: droppableId || `droppable-${id}`,
           x: measurement.pageX,
           y: measurement.pageY,
@@ -256,7 +245,7 @@ export const useDroppable = <TData = unknown>(
           capacity,
         });
       }
-    })();
+    });
   }, [
     id,
     droppableId,

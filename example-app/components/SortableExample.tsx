@@ -1,23 +1,23 @@
-import React, { useCallback, useEffect, useState, useMemo } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Dimensions,
-  Image,
-  SafeAreaView,
-  TouchableOpacity,
-  ActivityIndicator,
-  Platform,
-  Modal,
-} from "react-native";
 import {
   Sortable,
   SortableItem,
   SortableRenderItemProps,
 } from "@/external-lib";
-import { Footer } from "./Footer";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import {
+  ActivityIndicator,
+  Dimensions,
+  Image,
+  Modal,
+  Platform,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { BottomSheet } from "./BottomSheet";
+import { Footer } from "./Footer";
 
 interface Item {
   id: string;

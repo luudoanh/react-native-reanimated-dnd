@@ -1,11 +1,8 @@
-import { useState, useRef, useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { StyleProp, ViewStyle } from "react-native";
-import React from "react";
-import Animated, {
-  runOnJS,
-  runOnUI,
+import { Gesture } from "react-native-gesture-handler";
+import {
   SharedValue,
-  useAnimatedGestureHandler,
   useAnimatedReaction,
   useAnimatedStyle,
   useDerivedValue,
@@ -13,7 +10,7 @@ import Animated, {
   withSpring,
   withTiming,
 } from "react-native-reanimated";
-import { PanGestureHandlerGestureEvent } from "react-native-gesture-handler";
+import { scheduleOnRN } from "react-native-worklets";
 
 export enum ScrollDirection {
   None = "none",
@@ -303,6 +300,11 @@ export function useSortable<T>(
   const positionY = useSharedValue(initialTopVal);
   const top = useSharedValue(initialTopVal);
   const targetLowerBound = useSharedValue(initialLowerBoundVal);
+  const dragCtx = useSharedValue({
+    initialItemContentY: 0,
+    initialFingerAbsoluteY: 0,
+    initialLowerBound: 0,
+  });
 
   const calculatedContainerHeight = useRef(containerHeight).current;
   const upperBound = useDerivedValue(
@@ -369,7 +371,7 @@ export function useSortable<T>(
       if (onDragging) {
         const now = Date.now();
         if (now - onDraggingLastCallTimestamp.value > THROTTLE_INTERVAL) {
-          runOnJS(onDragging)(id, newOverItemId, Math.round(currentY));
+          scheduleOnRN(onDragging, id, newOverItemId, Math.round(currentY));
           onDraggingLastCallTimestamp.value = now;
         }
       }
@@ -412,7 +414,7 @@ export function useSortable<T>(
         if (!movingSV.value) {
           top.value = withSpring(currentPosition * itemHeight);
           if (onMove) {
-            runOnJS(onMove)(id, previousPosition, currentPosition);
+            scheduleOnRN(onMove, id, previousPosition, currentPosition);
           }
         }
       }
@@ -466,48 +468,47 @@ export function useSortable<T>(
     [movingSV]
   );
 
-  type GestureContext = Record<string, number>;
+  const panGestureHandler = Gesture.Pan()
+    .activateAfterLongPress(200)
+    .shouldCancelWhenOutside(false)
+    .onStart((event) => {
+      dragCtx.value = {
+        initialItemContentY: positions.value[id] * itemHeight,
+        initialFingerAbsoluteY: event.absoluteY,
+        initialLowerBound: lowerBound.value,
+      };
 
-  const panGestureHandler = useAnimatedGestureHandler<
-    PanGestureHandlerGestureEvent,
-    GestureContext
-  >({
-    onStart(event, ctx) {
-      "worklet";
-      ctx.initialItemContentY = positions.value[id] * itemHeight;
-      ctx.initialFingerAbsoluteY = event.absoluteY;
-      ctx.initialLowerBound = lowerBound.value;
-
-      positionY.value = ctx.initialItemContentY;
+      positionY.value = dragCtx.value.initialItemContentY;
       movingSV.value = true;
-      runOnJS(setIsMoving)(true);
+      scheduleOnRN(setIsMoving, true);
 
       if (onDragStart) {
-        runOnJS(onDragStart)(id, positions.value[id]);
+        scheduleOnRN(onDragStart, id, positions.value[id]);
       }
-    },
-    onActive(event, ctx) {
-      "worklet";
-      const fingerDyScreen = event.absoluteY - ctx.initialFingerAbsoluteY;
-      const scrollDeltaSinceStart = lowerBound.value - ctx.initialLowerBound;
+    })
+    .onUpdate((event) => {
+      const fingerDyScreen =
+        event.absoluteY - dragCtx.value.initialFingerAbsoluteY;
+      const scrollDeltaSinceStart =
+        lowerBound.value - dragCtx.value.initialLowerBound;
       positionY.value =
-        ctx.initialItemContentY + fingerDyScreen + scrollDeltaSinceStart;
-    },
-    onFinish() {
-      "worklet";
+        dragCtx.value.initialItemContentY +
+        fingerDyScreen +
+        scrollDeltaSinceStart;
+    })
+    .onFinalize(() => {
       const finishPosition = positions.value[id] * itemHeight;
       top.value = withTiming(finishPosition);
       movingSV.value = false;
-      runOnJS(setIsMoving)(false);
+      scheduleOnRN(setIsMoving, false);
 
       if (onDrop) {
         const positionsCopy = { ...positions.value };
-        runOnJS(onDrop)(id, positions.value[id], positionsCopy);
+        scheduleOnRN(onDrop, id, positions.value[id], positionsCopy);
       }
 
       currentOverItemId.value = null;
-    },
-  });
+    });
 
   const animatedStyle = useAnimatedStyle(() => {
     "worklet";

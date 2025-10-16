@@ -1,5 +1,8 @@
 # React Native Reanimated DnD 🎯
 
+> **🚀 Reanimated v4 Compatible Fork**  
+> This is a fork of the original [react-native-reanimated-dnd](https://github.com/entropyconquers/react-native-reanimated-dnd) library, updated for compatibility with React Native Reanimated v4. All features and APIs remain the same, with improved performance and stability.
+
 <p align="center">
   <img src="https://github.com/user-attachments/assets/dba6226e-c407-4a12-9feb-e8f588d6c1e3" alt="React Native Reanimated DnD Demo" style="max-width: 100%; width: 100%;" />
 </p>
@@ -197,13 +200,15 @@ https://github.com/user-attachments/assets/da5e526f-f2d2-4dc5-96b5-3fecc4faf57a
 ## 🚀 Installation
 
 ```bash
-npm install react-native-reanimated-dnd
+npm install @luudoanh/react-native-reanimated-dnd
 ```
 
 ### Peer Dependencies
 
+**⚠️ Important:** This fork requires React Native Reanimated v4.0.0 or higher.
+
 ```bash
-npm install react-native-reanimated react-native-gesture-handler
+npm install react-native-reanimated@^4.0.0 react-native-gesture-handler
 ```
 
 Follow the setup guides:
@@ -277,7 +282,7 @@ Programmatic list operations (add, update, delete, reorder items) that work corr
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { Draggable, DropProvider } from "react-native-reanimated-dnd";
+import { Draggable, DropProvider } from "@luudoanh/react-native-reanimated-dnd";
 
 export default function App() {
   return (

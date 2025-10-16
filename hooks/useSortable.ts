@@ -323,9 +323,9 @@ export function useSortable<T>(
           return true;
         }
 
-        if (child.props && child.props.children) {
+        if (child.props && (child.props as any).children) {
           if (
-            React.Children.toArray(child.props.children).some(checkForHandle)
+            React.Children.toArray((child.props as any).children).some(checkForHandle)
           ) {
             return true;
           }
